@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LeagueActivityBot.BackgroundJobs\LeagueActivityBot.BackgroundJobs.csproj" />
+      <ProjectReference Include="..\LeagueActivityBot.Controllers\LeagueActivityBot.Controllers.csproj" />
+      <ProjectReference Include="..\LeagueActivityBot.Notification\LeagueActivityBot.Notification.csproj" />
+      <ProjectReference Include="..\LeagueActivityBot.Riot\LeagueActivityBot.Riot.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    </ItemGroup>
+</Project>
