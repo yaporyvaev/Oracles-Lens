@@ -11,11 +11,10 @@ namespace LeagueActivityBot.BackgroundJobs
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();
 
-                var jobKey = new JobKey("GameActivityCheckerJob");
-                q.AddJob<GameActivityCheckerJob>(opts => opts.WithIdentity(jobKey));
-
+                var gameActivityCheckerJobKey = new JobKey("GameActivityCheckerJob");
+                q.AddJob<GameActivityCheckerJob>(opts => opts.WithIdentity(gameActivityCheckerJobKey));
                 q.AddTrigger(opts => opts
-                    .ForJob(jobKey)
+                    .ForJob(gameActivityCheckerJobKey)
                     .WithIdentity("GameActivityCheckerJob-trigger")
                     .WithCronSchedule("0 * * ? * *")); // run every 1 minute
             });

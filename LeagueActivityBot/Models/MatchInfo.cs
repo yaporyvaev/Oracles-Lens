@@ -15,6 +15,7 @@
         public int Kills { get; set; }
         public int Deaths { get; set; }
         public int Assists { get; set; }
+        public int TotalDamageDealtToChampions { get; set; }
         
         public string Puuid { get; set; }
         public string SummonerId { get; set; }

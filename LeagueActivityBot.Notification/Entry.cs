@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using LeagueActivityBot.Notification.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeagueActivityBot.Notification
@@ -19,6 +20,10 @@ namespace LeagueActivityBot.Notification
                 TelegramChatId = options.TelegramChatId
             };
             serviceCollection.AddSingleton(settings);
+
+            var channelMessageHandler = new ChannelMessageHandler(settings);
+            channelMessageHandler.StartHandling();
+            serviceCollection.AddSingleton(channelMessageHandler);
             
             return serviceCollection;
         }

@@ -21,7 +21,7 @@ namespace LeagueActivityBot.Notification.Handlers
             var tgClient = new TelegramBotClient(_options.TelegramBotApiKey);
             
             var message = $"{notification.SummonerName} крыса, играет в соло!";
-            await tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), message, cancellationToken: cancellationToken);
+            await tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), message, cancellationToken: cancellationToken, disableNotification: true);
         }
     }
 }
