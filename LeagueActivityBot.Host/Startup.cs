@@ -2,13 +2,16 @@ using System;
 using System.Reflection;
 using LeagueActivityBot.BackgroundJobs;
 using LeagueActivityBot.Controllers;
+using LeagueActivityBot.Database;
 using LeagueActivityBot.Notification;
 using LeagueActivityBot.Riot;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace LeagueActivityBot.Host
 {
@@ -23,7 +26,14 @@ namespace LeagueActivityBot.Host
         
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddPostgreSqlStorage(options =>
+            {
+                options.UseNpgsql(Configuration["App:DbConnectionString"]);
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
 
+            services.AddMemoryCache();
+            
             services.AddRiot<RiotClientOptions>(options => Configuration.GetSection("App:Riot").Bind(options));
 
             services.AddBot<BotOptions>(options =>
@@ -48,8 +58,11 @@ namespace LeagueActivityBot.Host
                 .AddControllersAsServices();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, IServiceProvider serviceProvider)
         {
+            MigrationsRunner.ApplyMigrations(logger, serviceProvider, "LeagueActivityBot.Host").Wait();
+            SummonersInitializer.Initialize(serviceProvider).Wait();
+            
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

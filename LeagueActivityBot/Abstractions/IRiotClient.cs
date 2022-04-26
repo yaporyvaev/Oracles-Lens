@@ -8,5 +8,6 @@ namespace LeagueActivityBot.Abstractions
         Task<SummonerInfo> GetSummonerInfoByName(string summonerName);
         Task<CurrentGameInfo> GetCurrentGameInfo(string summonerId);
         Task<MatchInfo> GetMatchInfo(long gameId);
+        Task<LeagueInfo[]> GetLeagueInfo(string summonerId);
     }
 }

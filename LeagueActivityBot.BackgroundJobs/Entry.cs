@@ -16,7 +16,7 @@ namespace LeagueActivityBot.BackgroundJobs
                 q.AddTrigger(opts => opts
                     .ForJob(gameActivityCheckerJobKey)
                     .WithIdentity("GameActivityCheckerJob-trigger")
-                    .WithCronSchedule("0 * * ? * *")); // run every 1 minute
+                    .WithCronSchedule("0/30 * * ? * *"));
             });
             
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

@@ -1,31 +1,29 @@
-﻿using LeagueActivityBot.Models;
-using LeagueActivityBot.Repository;
+﻿using System.Linq;
+using LeagueActivityBot.Abstractions;
+using LeagueActivityBot.Entities;
+using LeagueActivityBot.Models;
 
 namespace LeagueActivityBot
 {
     public class GameParticipantsHelper
     {
-        private readonly SummonersInMemoryRepository _summonersRepository;
+        private readonly IRepository<Summoner> _summonersRepository;
 
-        public GameParticipantsHelper(SummonersInMemoryRepository summonersRepository)
+        public GameParticipantsHelper(IRepository<Summoner> summonersRepository)
         {
             _summonersRepository = summonersRepository;
         }
 
         public bool IsSoloGameForSummoner(string summonerName, CurrentGameInfo gameInfo)
         {
-            foreach (var participant in gameInfo.Participants) 
-            {
-                if(participant.SummonerName == summonerName) continue;
-                
-                var summonerInfo = _summonersRepository.FindByName(participant.SummonerName);
-                if (summonerInfo != null)
-                {
-                    return false;
-                }
-            }
+            var participantNames = gameInfo.Participants
+                .Where(p => p.SummonerName != summonerName)
+                .Select(s => s.SummonerName)
+                .ToArray();
 
-            return true;
+            return !_summonersRepository
+                .GetAll()
+                .Any(s => participantNames.Contains(s.Name));
         }
     }
 }

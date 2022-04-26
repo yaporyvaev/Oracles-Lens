@@ -13,10 +13,12 @@ namespace LeagueActivityBot.Riot
         private readonly HttpClient _httpClient;
         private readonly RiotClientOptions _setting;
 
-        public RiotHttpClient(HttpClient httpClient, RiotClientOptions setting)
+        public RiotHttpClient(HttpClient httpClient, RiotClientOptions setting, RiotTokenProvider tokenProvider)
         {
             _httpClient = httpClient;
             _setting = setting;
+
+            _httpClient.DefaultRequestHeaders.Add("X-Riot-Token", tokenProvider.GetKey());
         }
 
         public async Task<SummonerInfo> GetSummonerInfoByName(string summonerName)
@@ -75,6 +77,21 @@ namespace LeagueActivityBot.Riot
                 return null;
             }
 
+            throw new ClientException(
+                $"Получение результата на запрос информации о текущем матче. Произошла ошибка во время выполнения запроса к Riot API." +
+                $" Код: {response.StatusCode}, сообщение: {responseContent}");
+        }
+        
+        public async Task<LeagueInfo[]> GetLeagueInfo(string summonerId)
+        {
+            var response = await _httpClient.GetAsync($"{_setting.LeagueApiResource}/{summonerId}");
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<LeagueInfo[]>(responseContent);
+            }
+            
             throw new ClientException(
                 $"Получение результата на запрос информации о текущем матче. Произошла ошибка во время выполнения запроса к Riot API." +
                 $" Код: {response.StatusCode}, сообщение: {responseContent}");

@@ -8,6 +8,7 @@
     public class Info
     {
         public MatchParticipant[] Participants { get; set; }
+        public int QueueId { get; set; }
     }
 
     public class MatchParticipant
@@ -24,5 +25,8 @@
         public string ChampionName { get; set; }
         public int TeamId { get; set; }
         public bool Win { get; set; }
+        public bool GameEndedInEarlySurrender { get; set; }
+        public bool GameEndedInSurrender { get; set; }
+        
     }
 }

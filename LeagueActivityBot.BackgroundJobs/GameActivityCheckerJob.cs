@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
+using LeagueActivityBot.Entities;
 using LeagueActivityBot.Notifications;
 using LeagueActivityBot.Repository;
 using MediatR;
@@ -12,32 +14,35 @@ namespace LeagueActivityBot.BackgroundJobs
     public class GameActivityCheckerJob : IJob
     {
         private readonly IRiotClient _riotClient;
-        private readonly SummonersInMemoryRepository _summonersRepository;
         private readonly GameInfoInMemoryRepository _gameInfoRepository;
         private readonly GameParticipantsHelper _gameParticipantsHelper;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IRepository<Summoner> _summonerRepository;
 
         public GameActivityCheckerJob(
             IRiotClient riotClient, 
-            SummonersInMemoryRepository summonersRepository, 
             GameInfoInMemoryRepository gameInfoRepository, 
-            GameParticipantsHelper gameParticipantsHelper, IServiceScopeFactory serviceScopeFactory)
+            GameParticipantsHelper gameParticipantsHelper, IServiceScopeFactory serviceScopeFactory, IRepository<Summoner> summonerRepository)
         {
             _riotClient = riotClient;
-            _summonersRepository = summonersRepository;
             _gameInfoRepository = gameInfoRepository;
             _gameParticipantsHelper = gameParticipantsHelper;
             _serviceScopeFactory = serviceScopeFactory;
+            _summonerRepository = summonerRepository;
         }
 
+        //TODO Refactor this shit
         public async Task Execute(IJobExecutionContext context)
         {
             using var scope = _serviceScopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+            var summoners = _summonerRepository.GetAll()
+                .ToList();
             
-            foreach (var summoner in _summonersRepository.SummonersInfo)
+            foreach (var summoner in summoners)
             {
-                var gameInfo = await _riotClient.GetCurrentGameInfo(summoner.Id);
+                var gameInfo = await _riotClient.GetCurrentGameInfo(summoner.SummonerId);
                 
                 //Если в игре и запись существует - скип
                 if (gameInfo.IsInGameNow && _gameInfoRepository.GameExists(summoner.Name))
@@ -62,12 +67,24 @@ namespace LeagueActivityBot.BackgroundJobs
                 //Если в игре и записи не существует - добавляем с уведомлением 
                 if (gameInfo.IsInGameNow && !_gameInfoRepository.GameExists(summoner.Name))
                 {
-                    _gameInfoRepository.AddGame(summoner.Name, gameInfo);
+                    var leagueInfo = (await _riotClient.GetLeagueInfo(summoner.SummonerId))
+                        .FirstOrDefault(l => l.QueueType == "RANKED_SOLO_5x5");
+                    
+                    if (leagueInfo != null)
+                    {
+                        summoner.LeaguePoints = leagueInfo.LeaguePoints;
+                        summoner.Tier = leagueInfo.GetTierIntegerRepresentation();
+                        summoner.Rank = leagueInfo.GetTierIntegerRepresentation();
+                        await _summonerRepository.Update(summoner);
+                    }
+                    
                     
                     if (_gameParticipantsHelper.IsSoloGameForSummoner(summoner.Name, gameInfo))
                     {
                         await mediator.Publish(new OnSoloGameStartedNotification(summoner.Name, gameInfo.GameId));
                     }
+                    
+                    _gameInfoRepository.AddGame(summoner.Name, gameInfo);
                 }
             }
         }

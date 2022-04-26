@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using LeagueActivityBot.Notifications.MessageBuilders;
 using LeagueActivityBot.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,9 +21,9 @@ namespace LeagueActivityBot
             };
             serviceCollection.AddSingleton(settings);
             
-            serviceCollection.AddSingleton<SummonersInMemoryRepository>();
             serviceCollection.AddSingleton<GameInfoInMemoryRepository>();
             serviceCollection.AddTransient<GameParticipantsHelper>();
+            serviceCollection.AddTransient<OnSoloGameEndedMessageBuilder>();
 
             return serviceCollection;
         }
