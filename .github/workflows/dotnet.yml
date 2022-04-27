@@ -17,6 +17,16 @@ jobs:
         dotnet-version: '3.1.x'
     - name: Dotnet Publish
       run: dotnet publish LeagueActivityBot.Host -c Release -o deploy
+    - name: App Settings Variable Substitution
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: '/home/runner/work/Oracles-Lens/Oracles-Lens/deploy/appsettings.json'
+      env:
+        App.DbConnectionString: ${{ secrets.CONNTECTIONSTRING }}
+        App.Telegram.ApiKey: ${{ secrets.TELEGRAMAPIKEY }}
+        App.Telegram.ChatId: ${{ secrets.TELEGRAMCHATID }}
+        App.SummonerNames: ${{ secrets.SUMMONERNAMES }}
+        
     - name: Copy via ssh
       uses: garygrossgarten/github-action-scp@v0.5.3
       with:
