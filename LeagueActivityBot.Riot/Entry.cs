@@ -16,7 +16,6 @@ namespace LeagueActivityBot.Riot
 
             var settings = new RiotClientOptions
             {
-                ApiKey = options.ApiKey,
                 BaseUrl = options.BaseUrl,
                 SpectatorApiResource = options.SpectatorApiResource,
                 SummonerApiResource = options.SummonerApiResource,
