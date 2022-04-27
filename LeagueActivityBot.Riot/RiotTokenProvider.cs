@@ -28,7 +28,7 @@ namespace LeagueActivityBot.Riot
 
                 if (settings != null)
                 {
-                    _cache.Set(RiotSettingsCacheKey, settings, TimeSpan.FromHours(1));
+                    _cache.Set(RiotSettingsCacheKey, settings, TimeSpan.FromMinutes(5));
                     return settings.ApiKey;
                 }
 

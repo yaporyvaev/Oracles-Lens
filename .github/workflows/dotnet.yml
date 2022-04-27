@@ -28,7 +28,7 @@ jobs:
     - name: Run SSH command
       uses: garygrossgarten/github-action-ssh@v0.3.0
       with:
-        command: sudo service LeagueActivityBot.Host start
+        command: sudo service LeagueBot start
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
