@@ -62,6 +62,7 @@ namespace LeagueActivityBot.Host
         {
             MigrationsRunner.ApplyMigrations(logger, serviceProvider, "LeagueActivityBot.Host").Wait();
             SummonersInitializer.Initialize(serviceProvider).Wait();
+            //StartupNotification.SendOnStartedUpNotification(serviceProvider, Manifest.ApplicationVersion).Wait();
             
             app.UseRouting();
 

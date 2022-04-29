@@ -33,6 +33,12 @@ namespace LeagueActivityBot.Notification.Handlers
 
         private async Task HandleUpdateAsync(ITelegramBotClient bot, Update message, CancellationToken ct)
         {
+            //Healthcheck
+            if (message.Message.Text == "@LeagueActivityBot ты жив?")
+            {
+                await bot.SendTextMessageAsync(new ChatId(_options.TelegramChatId), InsultGenerator.GetInsult(), cancellationToken: ct, replyToMessageId:message.Message.MessageId);
+            }
+            
             if (message.Message.From.Id == 501536687 && DateTime.UtcNow.AddHours(-3) > _lastStasMessage)
             {
                 _lastStasMessage = DateTime.UtcNow;
