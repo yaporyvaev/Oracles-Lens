@@ -13,7 +13,6 @@ namespace LeagueActivityBot.Notification.Handlers
     {
         private readonly TelegramBotClient _tgClient;
         private readonly NotificationOptions _options;
-        private DateTime _lastStasMessage = DateTime.MinValue;
 
         public ChannelMessageHandler(NotificationOptions options)
         {
@@ -31,23 +30,13 @@ namespace LeagueActivityBot.Notification.Handlers
                 cts.Token);
         }
 
+        private DateTime _lastStasMessage = DateTime.MinValue;
         private async Task HandleUpdateAsync(ITelegramBotClient bot, Update message, CancellationToken ct)
         {
-            //Healthcheck
-            if (message.Message.Text == "@LeagueActivityBot ты жив?")
-            {
-                await bot.SendTextMessageAsync(new ChatId(_options.TelegramChatId), InsultGenerator.GetInsult(), cancellationToken: ct, replyToMessageId:message.Message.MessageId);
-            }
-            
             if (message.Message.From.Id == 501536687 && DateTime.UtcNow.AddHours(-3) > _lastStasMessage)
             {
                 _lastStasMessage = DateTime.UtcNow;
                 await bot.SendTextMessageAsync(new ChatId(_options.TelegramChatId), "О, Стас пришёл (:", cancellationToken: ct);
-            }
-
-            if (new Random().Next(0, 30) == 13)
-            {
-                await bot.SendTextMessageAsync(new ChatId(_options.TelegramChatId), InsultGenerator.GetInsult(), cancellationToken: ct, replyToMessageId:message.Message.MessageId);
             }
         }
 

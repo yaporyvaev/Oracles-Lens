@@ -33,7 +33,7 @@ namespace LeagueActivityBot.Host
             });
 
             services.AddMemoryCache();
-            
+            services.AddHealthChecks();
             services.AddRiot<RiotClientOptions>(options => Configuration.GetSection("App:Riot").Bind(options));
 
             services.AddBot<BotOptions>(options =>
@@ -65,7 +65,8 @@ namespace LeagueActivityBot.Host
             StartupNotification.SendOnStartedUpNotification(serviceProvider, Manifest.ApplicationVersion).Wait();
             
             app.UseRouting();
-
+            app.UseHealthChecks("/health");
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

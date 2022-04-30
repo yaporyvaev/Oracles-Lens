@@ -63,7 +63,7 @@ namespace LeagueActivityBot.Services
                         await _mediator.Publish(new OnSoloGameEndedNotification(summoner, lastGameInfo.GameId));
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //TODO log
                 }
