@@ -30,7 +30,7 @@ namespace LeagueActivityBot.Notifications.MessageBuilders
             _summonersStat = _matchInfo.Info.Participants.First(p => p.SummonerName == notification.Summoner.Name);
             _summoner = notification.Summoner;
             
-            var sb = new StringBuilder($"{GetActor()} {GetAction()} {GetChampion()} {GetScore()}, {GetDamage()}.\n {await GetRankedStat()}.\n {GetPersonal()}");
+            var sb = new StringBuilder($"{GetActor()} {GetAction()} {GetChampion()}, {GetScore()}, {GetDamage()}.\n {await GetRankedStat()}\n {GetPersonal()}");
             return sb.ToString();
         }
         
@@ -81,6 +81,7 @@ namespace LeagueActivityBot.Notifications.MessageBuilders
                     : $"Даунранкед до {currentLeague.Tier} {currentLeague.Rank} =(");
             }
 
+            sb.Append(".");
             return sb.ToString();
         }
         

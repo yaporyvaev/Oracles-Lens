@@ -1,21 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using LeagueActivityBot.Models;
 
 namespace LeagueActivityBot.Repository
 {
     public class GameInfoInMemoryRepository
     {
-        private Dictionary<string, CurrentGameInfo> GameInfos { get; }
-        private Dictionary<string, long> LastGameIdMap { get; } = new Dictionary<string, long>();
-
-        public GameInfoInMemoryRepository()
-        {
-            GameInfos = new Dictionary<string, CurrentGameInfo>();
-        }
+        //Remove magic numbers
+        private ConcurrentDictionary<string, CurrentGameInfo> GameInfos { get; } = new ConcurrentDictionary<string, CurrentGameInfo>(2,8);
+        private ConcurrentDictionary<string, long> LastGameIdMap { get; } = new ConcurrentDictionary<string, long>(2,8);
 
         public bool GameExists(string summonerName)
         {
-            return GameInfos.ContainsKey(summonerName);
+            return GameInfos.ContainsKey(summonerName) && GameInfos[summonerName] != null;
         }
         
         public CurrentGameInfo GetGame(string summonerName)
@@ -25,22 +21,17 @@ namespace LeagueActivityBot.Repository
         
         public void AddGame(string summonerName, CurrentGameInfo gameInfo)
         {
-            if (GameInfos.ContainsKey(summonerName))
-            {
-                GameInfos[summonerName] = gameInfo;
-            }
-            
-            GameInfos.Add(summonerName, gameInfo);
+            GameInfos[summonerName] = gameInfo;
         }
         
         public void RemoveGame(string summonerName)
         {
-            if (GameInfos.ContainsKey(summonerName))
+            if (GameExists(summonerName))
             {
                 var game = GetGame(summonerName);
-                LastGameIdMap.Add(summonerName, game.GameId);
+                LastGameIdMap[summonerName] = game.GameId;
                 
-                GameInfos.Remove(summonerName);
+                GameInfos[summonerName] = null;
             }
         }
 

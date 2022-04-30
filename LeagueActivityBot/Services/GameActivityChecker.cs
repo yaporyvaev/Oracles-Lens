@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
@@ -33,15 +35,26 @@ namespace LeagueActivityBot.Services
             var summoners = _summonerRepository.GetAll().ToList();
             var gameParticipantsHelper = new GameParticipantsHelper(summoners.Select(s => s.Name));
 
+            var tasks = new List<Task>(summoners.Count);
             foreach (var summoner in summoners)
             {
-                var currentGameInfo = await _riotClient.GetCurrentGameInfo(summoner.SummonerId);
+                tasks.Add(ProcessSummoner(summoner, gameParticipantsHelper));
+            }
 
-                //Если в игре и запись существует - скип
-                if (currentGameInfo.IsInGameNow && _gameInfoRepository.GameExists(summoner.Name)) continue;
+            await Task.WhenAll(tasks);
+        }
+        
+        private async Task ProcessSummoner(Summoner summoner, GameParticipantsHelper gameParticipantsHelper)
+        {
+            var currentGameInfo = await _riotClient.GetCurrentGameInfo(summoner.SummonerId);
 
-                //Если не в игре и запись существует - удаляем запись
-                if (!currentGameInfo.IsInGameNow && _gameInfoRepository.GameExists(summoner.Name))
+            //Если в игре и запись существует - скип
+            if (currentGameInfo.IsInGameNow && _gameInfoRepository.GameExists(summoner.Name)) return;
+
+            //Если не в игре и запись существует - удаляем запись
+            if (!currentGameInfo.IsInGameNow && _gameInfoRepository.GameExists(summoner.Name))
+            {
+                try
                 {
                     var lastGameInfo = _gameInfoRepository.GetGame(summoner.Name);
 
@@ -49,27 +62,31 @@ namespace LeagueActivityBot.Services
                     {
                         await _mediator.Publish(new OnSoloGameEndedNotification(summoner, lastGameInfo.GameId));
                     }
-
-                    _gameInfoRepository.RemoveGame(summoner.Name);
-                    continue;
                 }
-
-                //Если в игре и записи не существует - добавляем запись
-                if (currentGameInfo.IsInGameNow && !_gameInfoRepository.GameExists(summoner.Name))
+                catch (Exception ex)
                 {
-                    //Если эта игра уже была обработана - скип
-                    if(_gameInfoRepository.GetLastGameId(summoner.Name) == currentGameInfo.GameId)
-                        continue;
-                    
-                    await UpdateLeagueInfo(summoner);
-
-                    if (gameParticipantsHelper.IsSoloGame(currentGameInfo.Participants))
-                    {
-                        await _mediator.Publish(new OnSoloGameStartedNotification(summoner.Name, currentGameInfo.GameId, currentGameInfo.GameQueueConfigId ));
-                    }
-
-                    _gameInfoRepository.AddGame(summoner.Name, currentGameInfo);
+                    //TODO log
                 }
+
+                _gameInfoRepository.RemoveGame(summoner.Name);
+                return;
+            }
+
+            //Если в игре и записи не существует - добавляем запись
+            if (currentGameInfo.IsInGameNow && !_gameInfoRepository.GameExists(summoner.Name))
+            {
+                //Если эта игра уже была обработана - скип
+                if(_gameInfoRepository.GetLastGameId(summoner.Name) == currentGameInfo.GameId)
+                    return;
+                    
+                await UpdateLeagueInfo(summoner);
+
+                if (gameParticipantsHelper.IsSoloGame(currentGameInfo.Participants))
+                {
+                    await _mediator.Publish(new OnSoloGameStartedNotification(summoner.Name, currentGameInfo.GameId, currentGameInfo.GameQueueConfigId ));
+                }
+
+                _gameInfoRepository.AddGame(summoner.Name, currentGameInfo);
             }
         }
 
