@@ -6,6 +6,7 @@ namespace LeagueActivityBot.Repository
     public class GameInfoInMemoryRepository
     {
         private Dictionary<string, CurrentGameInfo> GameInfos { get; }
+        private Dictionary<string, long> LastGameIdMap { get; } = new Dictionary<string, long>();
 
         public GameInfoInMemoryRepository()
         {
@@ -17,7 +18,7 @@ namespace LeagueActivityBot.Repository
             return GameInfos.ContainsKey(summonerName);
         }
         
-        public CurrentGameInfo GetLastGame(string summonerName)
+        public CurrentGameInfo GetGame(string summonerName)
         {
             return GameInfos[summonerName];
         }
@@ -36,8 +37,21 @@ namespace LeagueActivityBot.Repository
         {
             if (GameInfos.ContainsKey(summonerName))
             {
+                var game = GetGame(summonerName);
+                LastGameIdMap.Add(summonerName, game.GameId);
+                
                 GameInfos.Remove(summonerName);
             }
+        }
+
+        public long? GetLastGameId(string summonerName)
+        {
+            if (LastGameIdMap.ContainsKey(summonerName))
+            {
+                return LastGameIdMap[summonerName];
+            }
+
+            return null;
         }
     }
 }

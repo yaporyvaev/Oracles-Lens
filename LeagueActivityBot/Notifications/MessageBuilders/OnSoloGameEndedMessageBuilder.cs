@@ -1,9 +1,10 @@
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
+using LeagueActivityBot.Constatnts;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
 
@@ -12,29 +13,13 @@ namespace LeagueActivityBot.Notifications.MessageBuilders
     public class OnSoloGameEndedMessageBuilder
     {
         private readonly IRiotClient _riotClient;
-        private readonly IRepository<Summoner> _summonerRepository;
-        private readonly Random _randomizer;
         private MatchInfo _matchInfo;
-        private MatchParticipant _participantStat;
-        private string _summonerName;
-
-        private readonly Dictionary<int, string> _winPhrasesDictionary = new Dictionary<int, string>
-        {
-            {0, "смог выиграть без друзей"},
-            {1, "фак ёр мазер вери велл"}
-        };
-            
-        private readonly Dictionary<int, string> _losePhrasesDictionary = new Dictionary<int, string>
-        {
-            {0, "обосрался"},
-            {1, "проиграл"}
-        };
+        private Summoner _summoner;
+        private MatchParticipant _summonersStat;
         
-        public OnSoloGameEndedMessageBuilder(IRiotClient riotClient, IRepository<Summoner> summonerRepository)
+        public OnSoloGameEndedMessageBuilder(IRiotClient riotClient)
         {
             _riotClient = riotClient;
-            _summonerRepository = summonerRepository;
-            _randomizer = new Random();
         }
 
         public async Task<string> Build(OnSoloGameEndedNotification notification)
@@ -42,58 +27,58 @@ namespace LeagueActivityBot.Notifications.MessageBuilders
             _matchInfo = await _riotClient.GetMatchInfo(notification.GameId);
             if (_matchInfo == null) return string.Empty;
             
-            _participantStat = _matchInfo.Info.Participants.First(p => p.SummonerName == notification.SummonerName);
-            _summonerName = notification.SummonerName;
+            _summonersStat = _matchInfo.Info.Participants.First(p => p.SummonerName == notification.Summoner.Name);
+            _summoner = notification.Summoner;
             
-            var sb = new StringBuilder($"{GetActor()} {GetAction()} {GetChampion()} {GetScore()} {GetDamage()} {await GetRankedStat()} {GetPersonal()}");
+            var sb = new StringBuilder($"{GetActor()} {GetAction()} {GetChampion()} {GetScore()}, {GetDamage()}.\n {await GetRankedStat()}.\n {GetPersonal()}");
             return sb.ToString();
         }
         
-        private string GetActor() => $"{_participantStat.SummonerName}";
-        private string GetChampion() => $"за {_participantStat.ChampionName}";
+        private string GetActor() => $"{_summonersStat.SummonerName}";
         private string GetAction()
         {
-            if (_participantStat.Win) return _winPhrasesDictionary[_randomizer.Next(0, _winPhrasesDictionary.Count)];
-
-            if (_participantStat.GameEndedInEarlySurrender) return "написал фф на 15))))00";
-            if (_participantStat.GameEndedInSurrender) return "сдался как пусси";
+            if (_summonersStat.Win) return "победил";
+            if (_summonersStat.GameEndedInEarlySurrender) return "написал фф на 15))))00";
+            if (_summonersStat.GameEndedInSurrender) return "сдался";
                 
-            return _losePhrasesDictionary[_randomizer.Next(0, _losePhrasesDictionary.Count)];
+            return "проиграл";
         }
-        private string GetScore() => $"со счётом {_participantStat.Kills}/{_participantStat.Deaths}/{_participantStat.Assists}";
+        private string GetChampion() => $"за {_summonersStat.ChampionName}";
+        private string GetScore() => $"KDA {_summonersStat.Kills}/{_summonersStat.Deaths}/{_summonersStat.Assists}";
         private string GetDamage()
         {
             double teamDamage = _matchInfo.Info.Participants
-                .Where(p => p.TeamId == _participantStat.TeamId)
+                .Where(p => p.TeamId == _summonersStat.TeamId)
                 .Sum(p => p.TotalDamageDealtToChampions);
-            var damagePercentage = Math.Round(_participantStat.TotalDamageDealtToChampions / teamDamage * 100);
+            var damagePercentage = Math.Round(_summonersStat.TotalDamageDealtToChampions / teamDamage * 100);
 
-            var sb = new StringBuilder($"и нанёс {_participantStat.TotalDamageDealtToChampions} ({damagePercentage}%) урона!");
+            var sb = new StringBuilder($"{_summonersStat.TotalDamageDealtToChampions.ToString($"#,#")} ({damagePercentage}%) урона");
             return sb.ToString();
         }
         private async Task<string> GetRankedStat()
         {
             if (_matchInfo.Info.QueueId != 420) return string.Empty;
             
-            var summonerInfo = _summonerRepository.GetAll()
-                .First(s => s.Name == _summonerName);
-
-            var currentLeague = (await _riotClient.GetLeagueInfo(summonerInfo.SummonerId)).FirstOrDefault(l =>
-                l.QueueType == "RANKED_SOLO_5x5"); //TODO move to const
-
+            var currentLeague = (await _riotClient.GetLeagueInfo(_summoner.SummonerId)).FirstOrDefault(l =>
+                l.QueueType == QueueType.RankedSolo);
             if (currentLeague == null) return string.Empty;
                 
             var sb = new StringBuilder();
-            if (currentLeague.GetTierIntegerRepresentation() == summonerInfo.Tier && currentLeague.GetRankIntegerRepresentation() == summonerInfo.Rank)
+            if (currentLeague.GetTierIntegerRepresentation() == _summoner.Tier && currentLeague.GetRankIntegerRepresentation() == _summoner.Rank)
             {
-                if (_participantStat.Win) sb.Append("+");
-                sb.Append($"{currentLeague.LeaguePoints - summonerInfo.LeaguePoints} LP. Текущий ранг {currentLeague.GetRankStringRepresentation()} {currentLeague.LeaguePoints} LP");
+                if (currentLeague.LeaguePoints != _summoner.LeaguePoints)
+                {
+                    if (_summonersStat.Win) sb.Append("+");
+                    sb.Append($"{currentLeague.LeaguePoints - _summoner.LeaguePoints} LP. ");
+                }
+
+                sb.Append($"Текущий ранг {currentLeague.Tier} {currentLeague.Rank}, {currentLeague.LeaguePoints} LP"); 
             }
             else
             {
-                sb.Append(_participantStat.Win
-                    ? $"Наш мальчик поднялся, теперь он {currentLeague.GetRankStringRepresentation()}!"
-                    : $"Даунранкет до {currentLeague.GetRankStringRepresentation()} =(");
+                sb.Append(_summonersStat.Win
+                    ? $"Наш мальчик поднялся, теперь он {currentLeague.Tier} {currentLeague.Rank}!"
+                    : $"Даунранкед до {currentLeague.Tier} {currentLeague.Rank} =(");
             }
 
             return sb.ToString();
@@ -101,7 +86,7 @@ namespace LeagueActivityBot.Notifications.MessageBuilders
         
         private string GetPersonal()
         {
-            if (!_participantStat.Win && _participantStat.SummonerName == "AidenGrimes") return "Но все равно молодец!";
+            if (!_summonersStat.Win && _summonersStat.SummonerName == "AidenGrimes") return "Но все равно молодец!";
             
             return string.Empty;
         }

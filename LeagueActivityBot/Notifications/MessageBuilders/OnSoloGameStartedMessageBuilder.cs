@@ -1,4 +1,5 @@
 using System.Text;
+using LeagueActivityBot.Constatnts;
 
 namespace LeagueActivityBot.Notifications.MessageBuilders
 {
@@ -6,15 +7,8 @@ namespace LeagueActivityBot.Notifications.MessageBuilders
     {
         public string Build(OnSoloGameStartedNotification notification)
         {
-            var sb = new StringBuilder($"{notification.SummonerName} крыса, играет в соло! {GetPersonal(notification.SummonerName)}");
+            var sb = new StringBuilder($"{notification.SummonerName} крыса, начал играть {QueueType.GetQueueTypeById(notification.QueueTypeId)}");
             return sb.ToString();
         } 
-        
-        private string GetPersonal(string summonerName)
-        {
-            if (summonerName == "Frostmeen") return "Стас, ты чё ебанулся?";
-
-            return string.Empty;
-        }
     }
 }

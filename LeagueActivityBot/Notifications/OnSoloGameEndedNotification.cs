@@ -1,15 +1,16 @@
-﻿using MediatR;
+﻿using LeagueActivityBot.Entities;
+using MediatR;
 
 namespace LeagueActivityBot.Notifications
 {
     public class OnSoloGameEndedNotification : INotification
     {
-        public string SummonerName { get; }
+        public Summoner Summoner { get; }
         public long GameId { get; }
         
-        public OnSoloGameEndedNotification(string summonerName, long gameId)
+        public OnSoloGameEndedNotification(Summoner summoner, long gameId)
         {
-            SummonerName = summonerName;
+            Summoner = summoner;
             GameId = gameId;
         }
     }

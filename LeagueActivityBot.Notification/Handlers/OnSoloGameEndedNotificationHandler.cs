@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Notifications;
 using LeagueActivityBot.Notifications.MessageBuilders;
 using MediatR;

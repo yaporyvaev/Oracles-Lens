@@ -39,23 +39,5 @@ namespace LeagueActivityBot.Models
                 _ => 0
             };
         }
-
-        public string GetRankStringRepresentation()
-        {
-            var tier = Tier switch
-            {
-                "IRON" => "айрон",
-                "BRONZE" => "бронза",
-                "SILVER" => "сильвер",
-                "GOLD" => "голд",
-                "PLATINUM" => "платина",
-                "DIAMOND" => "даймонд",
-                "MASTER" => "мастер",
-                "GRANDMASTER" => "грендмастер",
-                _ => "никто"
-            };
-
-            return $"{tier} {GetRankIntegerRepresentation()}";
-        }
     }
 }
