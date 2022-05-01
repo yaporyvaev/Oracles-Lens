@@ -48,7 +48,9 @@ namespace LeagueActivityBot.Notification.Handlers
                 _ => exception.ToString()
             };
 
+            // TODO: Залогировать.
             Console.WriteLine(errorMessage);
+
             return Task.CompletedTask;
         }
     }
