@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using LeagueActivityBot.Notification.Handlers;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot;
 
 namespace LeagueActivityBot.Notification
 {
@@ -17,14 +18,14 @@ namespace LeagueActivityBot.Notification
             var settings = new NotificationOptions
             {
                 TelegramBotApiKey = options.TelegramBotApiKey,
-                TelegramChatId = options.TelegramChatId
+                TelegramChatId = options.TelegramChatId,
+                TelegramLogChatId = options.TelegramLogChatId
             };
-            serviceCollection.AddSingleton(settings);
 
-            var channelMessageHandler = new ChannelMessageHandler(settings);
-            channelMessageHandler.StartHandling();
-            serviceCollection.AddSingleton(channelMessageHandler);
-            
+            serviceCollection.AddSingleton(settings);
+            serviceCollection.AddHostedService<ChannelMessageHandler>();
+            serviceCollection.AddTransient(_ => new TelegramBotClient(settings.TelegramBotApiKey));
+
             return serviceCollection;
         }
     }

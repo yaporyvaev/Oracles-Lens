@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,38 +11,58 @@ using Telegram.Bot.Types.Enums;
 
 namespace LeagueActivityBot.Notification.Handlers
 {
-    public class ChannelMessageHandler
+    public class ChannelMessageHandler : IHostedService
     {
         private readonly TelegramBotClient _tgClient;
         private readonly NotificationOptions _options;
+        private readonly ILogger<ChannelMessageHandler> _logger;
+        private DateTime _lastStasMessage = DateTime.MinValue;
+        private CancellationTokenSource _cts;
 
-        public ChannelMessageHandler(NotificationOptions options)
+        public ChannelMessageHandler(
+            NotificationOptions options,
+            ILogger<ChannelMessageHandler> logger,
+            TelegramBotClient tgClient)
         {
             _options = options;
-            _tgClient =  new TelegramBotClient(_options.TelegramBotApiKey);
+            _logger = logger;
+            _tgClient = tgClient;
         }
 
-        public void StartHandling()
+        #region IHostedService
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            using var cts = new CancellationTokenSource();
-            
-            _tgClient.StartReceiving(HandleUpdateAsync,
+            _cts = new CancellationTokenSource();
+
+            _tgClient.StartReceiving(
+                HandleUpdateAsync,
                 HandleErrorAsync,
-                new ReceiverOptions {AllowedUpdates = new[] {UpdateType.Message},Offset = -1},
-                cts.Token);
+                new ReceiverOptions { AllowedUpdates = new[] { UpdateType.Message }, Offset = -1 },
+                _cts.Token);
+
+            return Task.CompletedTask;
         }
 
-        private DateTime _lastStasMessage = DateTime.MinValue;
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _cts.Cancel();
+
+            return Task.CompletedTask;
+        }
+        #endregion
+
         private async Task HandleUpdateAsync(ITelegramBotClient bot, Update message, CancellationToken ct)
         {
-            if (message.Message.From.Id == 501536687 && DateTime.UtcNow.AddHours(-3) > _lastStasMessage)
+            if (ShouldGreetStas(message))
             {
                 _lastStasMessage = DateTime.UtcNow;
                 await bot.SendTextMessageAsync(new ChatId(_options.TelegramChatId), "О, Стас пришёл (:", cancellationToken: ct);
             }
         }
 
-        private static Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        private bool ShouldGreetStas(Update message) => message.Message.From.Id == 501536687 && DateTime.UtcNow.AddHours(-3) > _lastStasMessage;
+
+        private Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             var errorMessage = exception switch
             {
@@ -48,7 +70,8 @@ namespace LeagueActivityBot.Notification.Handlers
                 _ => exception.ToString()
             };
 
-            Console.WriteLine(errorMessage);
+            _logger.LogError(exception, errorMessage);
+
             return Task.CompletedTask;
         }
     }
