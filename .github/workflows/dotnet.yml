@@ -25,7 +25,9 @@ jobs:
         App.DbConnectionString: ${{ secrets.APP_DB_CONNTECTION_STRING }}
         App.Telegram.ApiKey: ${{ secrets.APP_TELEGRAM_API_KEY }}
         App.Telegram.ChatId: ${{ secrets.APP_TELEGRAM_CHAT_ID }}
+        App.Telegram.LogChatId: ${{ secrets.APP_TELEGRAM_LOGCHAT_ID }}
         App.SummonerNames: ${{ secrets.APP_SUMMONER_NAMES }}
+        Serilog.File.Path: ${{ secrets.APP_SUMMONER_NAMES }}
         
     - name: Copy via ssh
       uses: garygrossgarten/github-action-scp@v0.5.3
