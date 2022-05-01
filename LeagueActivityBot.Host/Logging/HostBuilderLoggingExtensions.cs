@@ -19,14 +19,8 @@ namespace LeagueActivityBot.Host.Logging
                    .WriteTo.File(
                         new RenderedCompactJsonFormatter(),
                         context.Configuration["Serilog:File:Path"],
-                        rollingInterval: RollingInterval.Day);
-
-                // TODO: Вынуть получение настроек телеграма в общий экстеншн.
-                // Или добавить клиент в контейнер.
-                loggerConfiguration
-                    .WriteTo.TeleSink(
-                        logChatId: context.Configuration["App:Telegram:LogChatId"],
-                        apiKey: context.Configuration["App:Telegram:ApiKey"]);
+                        rollingInterval: RollingInterval.Day)
+                   .WriteTo.TeleSink(services);
             });
 
             return hostBuilder;

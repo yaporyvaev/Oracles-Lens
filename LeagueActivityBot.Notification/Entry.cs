@@ -18,7 +18,8 @@ namespace LeagueActivityBot.Notification
             var settings = new NotificationOptions
             {
                 TelegramBotApiKey = options.TelegramBotApiKey,
-                TelegramChatId = options.TelegramChatId
+                TelegramChatId = options.TelegramChatId,
+                TelegramLogChatId = options.TelegramLogChatId
             };
 
             serviceCollection.AddSingleton(settings);

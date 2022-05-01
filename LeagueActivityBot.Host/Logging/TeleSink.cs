@@ -18,9 +18,9 @@ namespace LeagueActivityBot.Host.Logging
         private readonly LogEventLevel _minimumLevel;
         private readonly TelegramBotClient _tgClient;
         private readonly ITextFormatter _formatter;
-        private readonly string _chatId;
+        private readonly long _chatId;
 
-        public TeleSink(TelegramBotClient tgClient, ITextFormatter formatter, string chatId, LogEventLevel minimumLevel)
+        public TeleSink(TelegramBotClient tgClient, ITextFormatter formatter, long chatId, LogEventLevel minimumLevel)
         {
             _tgClient = tgClient;
             _formatter = formatter;
@@ -44,7 +44,7 @@ namespace LeagueActivityBot.Host.Logging
         protected async Task Emit(LogEvent logEvent)
         {
             if (logEvent.Level < _minimumLevel) return;
-            if (_chatId == null) return;
+            if (_chatId == default) return;
 
             var buffer = new StringWriter(new StringBuilder(DefaultWriteBufferCapacity));
             _formatter.Format(logEvent, buffer);

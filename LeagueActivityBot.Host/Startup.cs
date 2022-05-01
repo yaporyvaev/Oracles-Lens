@@ -46,8 +46,9 @@ namespace LeagueActivityBot.Host
             {
                 options.TelegramBotApiKey = Configuration["App:Telegram:ApiKey"];
                 options.TelegramChatId = long.Parse(Configuration["App:Telegram:ChatId"]);
+                options.TelegramLogChatId = long.Parse(Configuration["App:Telegram:LogChatId"]);
             });
-            
+
             services.AddMediatR(
                 Assembly.GetAssembly(typeof(Notification.Entry)), 
                 Assembly.GetAssembly(typeof(Entry)),
