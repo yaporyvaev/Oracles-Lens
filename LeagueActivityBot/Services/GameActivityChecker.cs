@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LeagueActivityBot.Models;
 
 namespace LeagueActivityBot.Services
 {
@@ -61,9 +62,15 @@ namespace LeagueActivityBot.Services
 
             if (currentGameInfo.IsInGameNow && _gameInfoRepository.GameExists(summoner.Name))
             {
-                if (_gameInfoRepository.GetGame(summoner.Name).GameId != currentGameInfo.GameId)
+                var cachedGame = _gameInfoRepository.GetGame(summoner.Name);
+                if (cachedGame.GameId != currentGameInfo.GameId)
                 {
                     _gameInfoRepository.RemoveGame(summoner.Name);
+                    if (gameParticipantsHelper.IsSoloGame(cachedGame.Participants))
+                    {
+                        await _mediator.Publish(new OnSoloGameEndedNotification(summoner, cachedGame.GameId));
+                    }
+                    _logger.LogError("Игра удалена из скип-блока");
                 }
                 else
                 {
@@ -73,39 +80,49 @@ namespace LeagueActivityBot.Services
 
             if (!currentGameInfo.IsInGameNow && _gameInfoRepository.GameExists(summoner.Name))
             {
-                try
-                {
-                    var lastGameInfo = _gameInfoRepository.GetGame(summoner.Name);
-
-                    if (gameParticipantsHelper.IsSoloGame(lastGameInfo.Participants))
-                    {
-                        await _mediator.Publish(new OnSoloGameEndedNotification(summoner, lastGameInfo.GameId));
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, "Ошибка при удалении записи и уведомлении.");
-                }
-
-                _gameInfoRepository.RemoveGame(summoner.Name);
+                await RemoveActivity(summoner, gameParticipantsHelper);
                 return;
             }
 
             if (currentGameInfo.IsInGameNow && !_gameInfoRepository.GameExists(summoner.Name))
             {
-                if (_gameInfoRepository.GetLastGameId(summoner.Name) == currentGameInfo.GameId) return;
-
-                await UpdateLeagueInfo(summoner);
-
-                if (gameParticipantsHelper.IsSoloGame(currentGameInfo.Participants))
-                {
-                    await _mediator.Publish(new OnSoloGameStartedNotification(summoner, currentGameInfo.GameId, currentGameInfo.GameQueueConfigId));
-                }
-
-                _gameInfoRepository.AddGame(summoner.Name, currentGameInfo);
+                await AddActivity(summoner, currentGameInfo, gameParticipantsHelper);
             }
         }
 
+        private async Task RemoveActivity(Summoner summoner, GameParticipantsHelper gameParticipantsHelper)
+        {
+            try
+            {
+                var lastGameInfo = _gameInfoRepository.GetGame(summoner.Name);
+
+                if (gameParticipantsHelper.IsSoloGame(lastGameInfo.Participants))
+                {
+                    await _mediator.Publish(new OnSoloGameEndedNotification(summoner, lastGameInfo.GameId));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Ошибка при удалении записи и уведомлении.");
+            }
+
+            _gameInfoRepository.RemoveGame(summoner.Name);
+        }
+
+        private async Task AddActivity(Summoner summoner, CurrentGameInfo currentGameInfo, GameParticipantsHelper gameParticipantsHelper)
+        {
+            if (_gameInfoRepository.GetLastGameId(summoner.Name) == currentGameInfo.GameId) return;
+
+            await UpdateLeagueInfo(summoner);
+
+            if (gameParticipantsHelper.IsSoloGame(currentGameInfo.Participants))
+            {
+                await _mediator.Publish(new OnSoloGameStartedNotification(summoner, currentGameInfo.GameId, currentGameInfo.GameQueueConfigId));
+            }
+
+            _gameInfoRepository.AddGame(summoner.Name, currentGameInfo);
+        }
+        
         private async Task UpdateLeagueInfo(Summoner summoner)
         {
             var leagueInfo = (await _riotClient.GetLeagueInfo(summoner.SummonerId))
