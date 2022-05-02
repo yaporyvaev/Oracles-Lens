@@ -34,7 +34,7 @@ namespace LeagueActivityBot.Notifications.MessageBuilders
             return sb.ToString();
         }
         
-        private string GetActor() => $"{_summonersStat.SummonerName}";
+        private string GetActor() => $"{(!string.IsNullOrEmpty(_summoner.RealName) ? _summoner.RealName : _summoner.Name)}";
         private string GetAction()
         {
             if (_summonersStat.Win) return "победил";

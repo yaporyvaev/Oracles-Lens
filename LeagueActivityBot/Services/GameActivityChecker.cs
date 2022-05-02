@@ -61,13 +61,18 @@ namespace LeagueActivityBot.Services
 
             if (currentGameInfo.IsInGameNow && _gameInfoRepository.GameExists(summoner.Name))
             {
-                _logger.LogInformation("В игре и запись существует - скип.");
-                return;
+                if (_gameInfoRepository.GetGame(summoner.Name).GameId != currentGameInfo.GameId)
+                {
+                    _gameInfoRepository.RemoveGame(summoner.Name);
+                }
+                else
+                {
+                    return;
+                }
             }
 
             if (!currentGameInfo.IsInGameNow && _gameInfoRepository.GameExists(summoner.Name))
             {
-                _logger.LogInformation("Не в игре и запись существует - удаляем запись.");
                 try
                 {
                     var lastGameInfo = _gameInfoRepository.GetGame(summoner.Name);
@@ -88,23 +93,13 @@ namespace LeagueActivityBot.Services
 
             if (currentGameInfo.IsInGameNow && !_gameInfoRepository.GameExists(summoner.Name))
             {
-                long? lastGameId = _gameInfoRepository.GetLastGameId(summoner.Name);
-                using var lastGameScope = _logger.BeginScope("{LastGameId}", lastGameId);
-                _logger.LogInformation("В игре и записи не существует.");
-
-                if (lastGameId == currentGameInfo.GameId)
-                {
-                    _logger.LogInformation("Эта игра уже была обработана - не добавляем запись.");
-                    return;
-                }
-
-                _logger.LogInformation("Эта игра не была обработана - добавляем запись.");
+                if (_gameInfoRepository.GetLastGameId(summoner.Name) == currentGameInfo.GameId) return;
 
                 await UpdateLeagueInfo(summoner);
 
                 if (gameParticipantsHelper.IsSoloGame(currentGameInfo.Participants))
                 {
-                    await _mediator.Publish(new OnSoloGameStartedNotification(summoner.Name, currentGameInfo.GameId, currentGameInfo.GameQueueConfigId));
+                    await _mediator.Publish(new OnSoloGameStartedNotification(summoner, currentGameInfo.GameId, currentGameInfo.GameQueueConfigId));
                 }
 
                 _gameInfoRepository.AddGame(summoner.Name, currentGameInfo);
