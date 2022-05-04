@@ -1,4 +1,4 @@
-namespace LeagueActivityBot.Constatnts
+namespace LeagueActivityBot.Constants
 {
     public static class QueueType
     {

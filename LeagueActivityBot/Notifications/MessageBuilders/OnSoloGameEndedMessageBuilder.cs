@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
-using LeagueActivityBot.Constatnts;
+using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
 

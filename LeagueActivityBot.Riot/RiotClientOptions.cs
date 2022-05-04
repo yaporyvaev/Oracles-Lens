@@ -2,6 +2,7 @@
 {
     public class RiotClientOptions
     {
+        public string ApiKey { get; set; }
         public string BaseUrl { get; set; }
         public string SummonerApiResource { get; set; }
         public string SpectatorApiResource { get; set; }

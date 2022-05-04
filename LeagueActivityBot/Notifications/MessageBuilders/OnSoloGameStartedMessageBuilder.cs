@@ -1,5 +1,5 @@
 using System.Text;
-using LeagueActivityBot.Constatnts;
+using LeagueActivityBot.Constants;
 
 namespace LeagueActivityBot.Notifications.MessageBuilders
 {

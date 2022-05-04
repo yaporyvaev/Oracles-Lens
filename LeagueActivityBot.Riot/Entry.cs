@@ -16,6 +16,7 @@ namespace LeagueActivityBot.Riot
 
             var settings = new RiotClientOptions
             {
+                ApiKey = options.ApiKey,
                 BaseUrl = options.BaseUrl,
                 SpectatorApiResource = options.SpectatorApiResource,
                 SummonerApiResource = options.SummonerApiResource,
@@ -24,13 +25,10 @@ namespace LeagueActivityBot.Riot
             };
             serviceCollection.AddSingleton(settings);
 
-            serviceCollection
-                .AddHttpClient<IRiotClient, RiotHttpClient>(client =>
-                {
-                    client.BaseAddress = new Uri(options.BaseUrl);
-                });
-
-            serviceCollection.AddTransient<RiotTokenProvider>();
+            serviceCollection.AddHttpClient<IRiotClient, RiotHttpClient>(client =>
+            {
+                client.BaseAddress = new Uri(options.BaseUrl);
+            });
             
             return serviceCollection;
         }

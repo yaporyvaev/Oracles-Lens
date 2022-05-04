@@ -1,5 +1,4 @@
 using LeagueActivityBot.Abstractions;
-using LeagueActivityBot.Constatnts;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Helpers;
 using LeagueActivityBot.Notifications;
@@ -11,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LeagueActivityBot.Constants;
 using LeagueActivityBot.Models;
 
 namespace LeagueActivityBot.Services

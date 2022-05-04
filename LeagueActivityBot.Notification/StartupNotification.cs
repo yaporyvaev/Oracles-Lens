@@ -8,13 +8,13 @@ namespace LeagueActivityBot.Notification
 {
     public class StartupNotification
     {
-        public static async Task SendOnStartedUpNotification(IServiceProvider serviceProvider, string appVersion)
+        public static async Task SendOnStartedUpNotification(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
             var options = scope.ServiceProvider.GetService<NotificationOptions>();
 
             var tgClient = scope.ServiceProvider.GetService<TelegramBotClient>();
-            await tgClient.SendTextMessageAsync(new ChatId(options.TelegramChatId), $"Я родился! Текущая версия: {appVersion}");
+            await tgClient.SendTextMessageAsync(new ChatId(options.TelegramLogChatId), "Service started");
         }
     }
 }

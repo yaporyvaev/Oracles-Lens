@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Entities;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace LeagueActivityBot
 {
@@ -15,7 +16,8 @@ namespace LeagueActivityBot
             var riotClient = scope.ServiceProvider.GetService<IRiotClient>();
             var repository = scope.ServiceProvider.GetService<IRepository<Summoner>>();
             var botOptions = scope.ServiceProvider.GetService<BotOptions>();
-            
+            var logger = scope.ServiceProvider.GetService<ILogger<SummonersInitializer>>();
+
             foreach (var name in botOptions.SummonerNames)
             {
                 try
@@ -36,12 +38,14 @@ namespace LeagueActivityBot
                         continue;
                     }
 
+                    entity.AccountId = summoner.AccountId;
+                    entity.SummonerId = summoner.Id;
                     entity.Puuid = summoner.Puuid;
                     await repository.Update(entity);
                 }
-                catch
+                catch(Exception e)
                 {
-                    //todo log
+                    logger.LogError($"Summoner {name} initialization failed", e);
                 }
             }
         }
