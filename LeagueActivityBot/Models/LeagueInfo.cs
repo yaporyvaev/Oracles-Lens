@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace LeagueActivityBot.Models
 {
     public class LeagueInfo
@@ -8,8 +6,10 @@ namespace LeagueActivityBot.Models
         public string QueueType { get; set; }       
         public string Tier { get; set; }       
         public string Rank { get; set; }       
-        public int LeaguePoints { get; set; }       
+        public int LeaguePoints { get; set; }     
+        
         public int Wins { get; set; }       
+        
         public int Losses { get; set; }
 
         public int GetTierIntegerRepresentation()
@@ -37,6 +37,34 @@ namespace LeagueActivityBot.Models
                 "III" => 3,
                 "IV" => 4,
                 _ => 0
+            };
+        }
+
+        public static string GetRankStringRepresentation(int rank)
+        {
+            return rank switch
+            {
+                1 => "I",
+                2 => "II",
+                3 => "III",
+                4 => "IV",
+                _ => ""
+            };
+        }
+
+        public static string GetTierStringRepresentation(int tier)
+        {
+            return tier switch
+            {
+                1 => "Iron",
+                2 => "Bronze" ,
+                3 => "Silver",
+                4 => "Gold",
+                5 => "Platinum",
+                6 => "Diamond",
+                7 => "Master",
+                8 => "Grandmaster",
+                _ => ""
             };
         }
     }

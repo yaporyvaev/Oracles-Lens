@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Entities;
+using LeagueActivityBot.Models;
 using LeagueActivityBot.Telegram.BotCommands.Abstractions;
 using LeagueActivityBot.Telegram.BotCommands.GeneralStates;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +28,7 @@ namespace LeagueActivityBot.Telegram.BotCommands.GetSummoners
             var repository = serviceScope.ServiceProvider.GetService<IRepository<Summoner>>();
 
             var summoners = repository.GetAll()
-                .OrderBy(s => s.Name).ToList();
+                .OrderByDescending(s => s.Tier).ThenBy(s => s.Rank).ThenByDescending(s => s.LeaguePoints).ToList();
 
             var sb = new StringBuilder();
             var counter = 1;
@@ -39,6 +40,11 @@ namespace LeagueActivityBot.Telegram.BotCommands.GetSummoners
                     sb.Append($" as {summoner.RealName}");
                 }
 
+                if (summoner.Rank != 0 && summoner.Tier != 0)
+                {
+                    sb.Append($". {LeagueInfo.GetTierStringRepresentation(summoner.Tier)} {LeagueInfo.GetRankStringRepresentation(summoner.Rank)}, {summoner.LeaguePoints} LP.");
+                }
+                
                 sb.Append("\n");
                 counter++;
             }

@@ -1,7 +1,7 @@
 using System.Text;
 using LeagueActivityBot.Constants;
 
-namespace LeagueActivityBot.Notifications.MessageBuilders
+namespace LeagueActivityBot.Notifications.OnSoloGameStarted
 {
     public class OnSoloGameStartedMessageBuilder
     {
@@ -12,7 +12,7 @@ namespace LeagueActivityBot.Notifications.MessageBuilders
 
             if (!string.IsNullOrEmpty(notification.Summoner.RealName))
             {
-                sb.Append($" (as {notification.Summoner.Name}");
+                sb.Append($" (as {notification.Summoner.Name})");
             }
             
             return sb.ToString();

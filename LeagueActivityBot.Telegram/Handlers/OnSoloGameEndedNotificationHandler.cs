@@ -1,8 +1,8 @@
 ﻿using LeagueActivityBot.Notifications;
-using LeagueActivityBot.Notifications.MessageBuilders;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using LeagueActivityBot.Notifications.OnSoloGameEnded;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 

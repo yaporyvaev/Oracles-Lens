@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using LeagueActivityBot.Helpers;
-using LeagueActivityBot.Notifications.MessageBuilders;
+using LeagueActivityBot.Notifications.OnSoloGameEnded;
 using LeagueActivityBot.Repository;
 using LeagueActivityBot.Services;
 using Microsoft.Extensions.DependencyInjection;

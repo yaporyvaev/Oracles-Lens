@@ -1,7 +1,7 @@
 ﻿using LeagueActivityBot.Entities;
 using MediatR;
 
-namespace LeagueActivityBot.Notifications
+namespace LeagueActivityBot.Notifications.OnSoloGameStarted
 {
     public class OnSoloGameStartedNotification : INotification
     {

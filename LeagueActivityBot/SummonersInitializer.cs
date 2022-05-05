@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
+using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,37 +16,28 @@ namespace LeagueActivityBot
             using var scope = serviceProvider.CreateScope();
             var riotClient = scope.ServiceProvider.GetService<IRiotClient>();
             var repository = scope.ServiceProvider.GetService<IRepository<Summoner>>();
-            var botOptions = scope.ServiceProvider.GetService<BotOptions>();
             var logger = scope.ServiceProvider.GetService<ILogger<SummonersInitializer>>();
 
-            foreach (var name in botOptions.SummonerNames)
+            var summoners = repository.GetAll().ToList();
+            
+            foreach (var summoner in summoners)
             {
                 try
                 {
-                    var summoner = await riotClient.GetSummonerInfoByName(name);
-                    var entity = repository.GetAll().FirstOrDefault(s => s.Name == name);
+                    var leagueInfo = (await riotClient.GetLeagueInfo(summoner.SummonerId))
+                        .FirstOrDefault(l => l.QueueType == QueueType.RankedSolo);
 
-                    if (entity == null)
+                    if (leagueInfo != null)
                     {
-                        await repository.Add(new Summoner
-                        {
-                            Name = name,
-                            AccountId = summoner.AccountId,
-                            SummonerId = summoner.Id,
-                            Puuid = summoner.Puuid,
-                        });
-                        
-                        continue;
+                        summoner.LeaguePoints = leagueInfo.LeaguePoints;
+                        summoner.Tier = leagueInfo.GetTierIntegerRepresentation();
+                        summoner.Rank = leagueInfo.GetRankIntegerRepresentation();
+                        await repository.Update(summoner);
                     }
-
-                    entity.AccountId = summoner.AccountId;
-                    entity.SummonerId = summoner.Id;
-                    entity.Puuid = summoner.Puuid;
-                    await repository.Update(entity);
                 }
                 catch(Exception e)
                 {
-                    logger.LogError($"Summoner {name} initialization failed", e);
+                    logger.LogError($"Summoner {summoner.Name} initialization failed", e);
                 }
             }
         }

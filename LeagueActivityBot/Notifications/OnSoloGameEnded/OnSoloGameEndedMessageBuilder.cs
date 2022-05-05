@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
 
-namespace LeagueActivityBot.Notifications.MessageBuilders
+namespace LeagueActivityBot.Notifications.OnSoloGameEnded
 {
     public class OnSoloGameEndedMessageBuilder
     {

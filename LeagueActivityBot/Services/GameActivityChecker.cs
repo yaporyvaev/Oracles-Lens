@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using LeagueActivityBot.Constants;
 using LeagueActivityBot.Models;
+using LeagueActivityBot.Notifications.OnSoloGameEnded;
+using LeagueActivityBot.Notifications.OnSoloGameStarted;
 
 namespace LeagueActivityBot.Services
 {
