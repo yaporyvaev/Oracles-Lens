@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Contracts
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.BackgroundJobs", "LeagueActivityBot.BackgroundJobs\LeagueActivityBot.BackgroundJobs.csproj", "{AF17BBAF-FF83-44A6-94EF-77BCE62ABF62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Notification", "LeagueActivityBot.Notification\LeagueActivityBot.Notification.csproj", "{8C7F09F3-AD47-4DCC-98D6-97C864711129}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Telegram", "LeagueActivityBot.Telegram\LeagueActivityBot.Telegram.csproj", "{8C7F09F3-AD47-4DCC-98D6-97C864711129}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Database", "LeagueActivityBot.Database\LeagueActivityBot.Database.csproj", "{AA8C4B2F-E386-4B6E-84EC-1177BE7D85CF}"
 EndProject

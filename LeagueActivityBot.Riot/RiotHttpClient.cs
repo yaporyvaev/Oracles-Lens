@@ -31,6 +31,11 @@ namespace LeagueActivityBot.Riot
                 return JsonConvert.DeserializeObject<SummonerInfo>(responseContent);
             }
 
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            
             throw new ClientException(
                 $"Получение результата на запрос информации об аккаунте. Код: {response.StatusCode}, сообщение: {responseContent}");
         }

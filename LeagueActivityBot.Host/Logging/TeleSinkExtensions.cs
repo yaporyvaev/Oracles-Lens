@@ -1,4 +1,4 @@
-using LeagueActivityBot.Notification;
+using LeagueActivityBot.Telegram;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Events;

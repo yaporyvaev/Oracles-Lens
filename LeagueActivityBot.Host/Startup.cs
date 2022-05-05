@@ -3,7 +3,7 @@ using System.Reflection;
 using LeagueActivityBot.BackgroundJobs;
 using LeagueActivityBot.Controllers;
 using LeagueActivityBot.Database;
-using LeagueActivityBot.Notification;
+using LeagueActivityBot.Telegram;
 using LeagueActivityBot.Riot;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -50,7 +50,7 @@ namespace LeagueActivityBot.Host
             });
 
             services.AddMediatR(
-                Assembly.GetAssembly(typeof(Notification.Entry)), 
+                Assembly.GetAssembly(typeof(Telegram.Entry)), 
                 Assembly.GetAssembly(typeof(Entry)),
                 Assembly.GetAssembly(typeof(BackgroundJobs.Entry)));
 

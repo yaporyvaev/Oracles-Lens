@@ -1,10 +1,14 @@
 ﻿using System;
 using JetBrains.Annotations;
-using LeagueActivityBot.Notification.Handlers;
+using LeagueActivityBot.Telegram.BotCommands;
+using LeagueActivityBot.Telegram.BotCommands.AddSummoner;
+using LeagueActivityBot.Telegram.BotCommands.Cancel;
+using LeagueActivityBot.Telegram.BotCommands.RemoveSummoner;
+using LeagueActivityBot.Telegram.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 
-namespace LeagueActivityBot.Notification
+namespace LeagueActivityBot.Telegram
 {
     public static class Entry
     {
@@ -25,6 +29,15 @@ namespace LeagueActivityBot.Notification
             serviceCollection.AddSingleton(settings);
             serviceCollection.AddHostedService<ChannelMessageHandler>();
             serviceCollection.AddTransient(_ => new TelegramBotClient(settings.TelegramBotApiKey));
+
+            serviceCollection.AddSingleton<CommandStateStore>();
+            serviceCollection.AddTransient<CommandFactory>();
+            
+            serviceCollection.AddTransient<AddSummonerCommand>();
+            serviceCollection.AddTransient<RemoveSummonerCommand>();
+            serviceCollection.AddTransient<CancelCommand>();
+            
+            serviceCollection.AddTransient<CommandHandler>();
 
             return serviceCollection;
         }

@@ -3,36 +3,42 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using LeagueActivityBot.Telegram.BotCommands;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace LeagueActivityBot.Notification.Handlers
+namespace LeagueActivityBot.Telegram.Handlers
 {
     public class ChannelMessageHandler : IHostedService
     {
         private readonly TelegramBotClient _tgClient;
+        private readonly CommandHandler _commandHandler;
         private readonly NotificationOptions _options;
         private readonly ILogger<ChannelMessageHandler> _logger;
-        private DateTime _lastStasMessage = DateTime.MinValue;
         private CancellationTokenSource _cts;
-
+        
+        private string _botUserName;
+        
         public ChannelMessageHandler(
             NotificationOptions options,
             ILogger<ChannelMessageHandler> logger,
-            TelegramBotClient tgClient)
+            TelegramBotClient tgClient,
+            CommandHandler commandHandler)
         {
             _options = options;
             _logger = logger;
             _tgClient = tgClient;
+            _commandHandler = commandHandler;
         }
 
         #region IHostedService
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _cts = new CancellationTokenSource();
+            _botUserName = _tgClient.GetMeAsync().GetAwaiter().GetResult().Username;
 
             _tgClient.StartReceiving(
                 HandleUpdateAsync,
@@ -51,17 +57,14 @@ namespace LeagueActivityBot.Notification.Handlers
         }
         #endregion
 
-        private async Task HandleUpdateAsync(ITelegramBotClient bot, Update message, CancellationToken ct)
+        private async Task HandleUpdateAsync(ITelegramBotClient bot, Update update, CancellationToken ct)
         {
-            if (ShouldGreetStas(message))
+            if (update.Message.Text.StartsWith($"@{_botUserName}"))
             {
-                _lastStasMessage = DateTime.UtcNow;
-                await bot.SendTextMessageAsync(new ChatId(_options.TelegramChatId), "О, Стас пришёл (:", cancellationToken: ct);
+                await _commandHandler.Handle(update);
             }
         }
-
-        private bool ShouldGreetStas(Update message) => message.Message.From.Id == 501536687 && DateTime.UtcNow.AddHours(-3) > _lastStasMessage;
-
+        
         private Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             var errorMessage = exception switch

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace LeagueActivityBot.Notification.Handlers
+namespace LeagueActivityBot.Telegram.Handlers
 {
     public class OnSoloGameStartedNotificationHandler : INotificationHandler<OnSoloGameStartedNotification>
     {

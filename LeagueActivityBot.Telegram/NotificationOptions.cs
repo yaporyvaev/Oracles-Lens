@@ -1,4 +1,4 @@
-﻿namespace LeagueActivityBot.Notification
+﻿namespace LeagueActivityBot.Telegram
 {
     public class NotificationOptions
     {

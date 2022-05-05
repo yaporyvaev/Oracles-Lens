@@ -40,5 +40,11 @@ namespace LeagueActivityBot.Database.Repositories
             _appDbContext.Entry(entity).State = EntityState.Modified;
             await _appDbContext.SaveChangesAsync();
         }
+
+        public async Task Remove(T entity)
+        {
+            _dbSet.Remove(entity);
+            await _appDbContext.SaveChangesAsync();
+        }
     }
 }

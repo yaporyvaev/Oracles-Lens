@@ -9,5 +9,6 @@ namespace LeagueActivityBot.Abstractions
         IQueryable<T> GetAll();
         Task<T> Add(T entity);
         Task Update(T entity);
+        Task Remove(T entity);
     }
 }
