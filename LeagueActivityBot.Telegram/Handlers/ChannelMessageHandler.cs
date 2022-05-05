@@ -59,6 +59,8 @@ namespace LeagueActivityBot.Telegram.Handlers
 
         private async Task HandleUpdateAsync(ITelegramBotClient bot, Update update, CancellationToken ct)
         {
+            if(string.IsNullOrEmpty(update.Message.Text)) return;
+
             if (update.Message.Text.StartsWith($"@{_botUserName}"))
             {
                 await _commandHandler.Handle(update);

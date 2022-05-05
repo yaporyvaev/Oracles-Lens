@@ -42,8 +42,8 @@ namespace LeagueActivityBot.Telegram.BotCommands
         private async Task HandleBotMessageCommand(Message message)
         {
             var messageSenderId = message.From!.Id;
-            
-            var messagePayload = message.Text!.Split(" ").LastOrDefault();
+
+            var messagePayload = string.Join(" ", message.Text!.Split(" ").Skip(1));//todo refactor this shit
             if (string.IsNullOrEmpty(messagePayload)) return;
 
             string commandType;
