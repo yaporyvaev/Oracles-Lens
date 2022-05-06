@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using LeagueActivityBot.Abstractions;
+using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Telegram.BotCommands.Abstractions;
 using LeagueActivityBot.Telegram.BotCommands.GeneralStates;
@@ -93,6 +94,16 @@ namespace LeagueActivityBot.Telegram.BotCommands.AddSummoner
                 AccountId = summonerInfo.AccountId,
                 Name = summonerName
             };
+            
+            var leagueInfo = (await _riotClient.GetLeagueInfo(summoner.SummonerId))
+                .FirstOrDefault(l => l.QueueType == QueueType.RankedSolo);
+
+            if (leagueInfo != null)
+            {
+                summoner.LeaguePoints = leagueInfo.LeaguePoints;
+                summoner.Tier = leagueInfo.GetTierIntegerRepresentation();
+                summoner.Rank = leagueInfo.GetRankIntegerRepresentation();
+            }
             
             state.UpdateContext(new AddSummonerContext{ Summoner = summoner});
             state.SetState(new AddSummonerNameInNotificationsRequiredState());
