@@ -61,12 +61,13 @@ namespace LeagueActivityBot.Telegram.BotCommands.AddSummoner
 
             if (summoner != null)
             {
-                summoner.Name = context.Summoner.Name;
-                summoner.RealName = context.Summoner.RealName;
-                await repository.Update(summoner);
+                context.Summoner.Id = summoner.Id;
+                await repository.Update(context.Summoner);
             }
-
-            await repository.Add(context.Summoner);
+            else
+            {
+                await repository.Add(context.Summoner);
+            }
             
             _stateStore.Reset(state.CommandOwnerId);
             state.SetState(new FinishCommandHandlingState("Summoner was successfully added"));

@@ -49,8 +49,11 @@ namespace LeagueActivityBot.Telegram.BotCommands
             string commandType;
             if (messagePayload.StartsWith("/")) //Start new command
             {
+                var splitMessage = messagePayload.Split(" ");
+                messagePayload = string.Join(" ", splitMessage.Skip(1));
+                
                 if(messagePayload != BotCommandsTypes.Cancel) _stateStore.Reset(messageSenderId);
-                commandType = messagePayload;
+                commandType = splitMessage.FirstOrDefault();
             }
             else //Process existing command
             {
@@ -68,6 +71,13 @@ namespace LeagueActivityBot.Telegram.BotCommands
 
                 if (state != null)
                 {
+                    if (state.Type == BotCommandsTypes.CreateBinaryAnswerPool)
+                    {
+                        await _tgClient.SendPollAsync(new ChatId(_options.TelegramChatId), state.BuildMessage(),
+                            new[] {"Да", "Нет", "Хз"}, false, PollType.Regular, false);
+                        return;
+                    }
+                    
                     await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), state.BuildMessage());
                 }
             }
