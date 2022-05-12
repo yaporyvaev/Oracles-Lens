@@ -29,11 +29,11 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             _summonersStat = _matchInfo.Info.Participants.First(p => p.SummonerName == notification.Summoner.Name);
             _summoner = notification.Summoner;
             
-            var sb = new StringBuilder($"{GetActor()} {GetAction()} {GetChampion()}, {GetScore()}, {GetDamage()}.\n {await GetRankedStat()}\n {GetPersonal()}");
+            var sb = new StringBuilder($"{GetActor()} {GetAction()} {GetChampion()}, {_summonersStat.GetScore()}, {GetDamage()}.\n {await GetRankedStat()}\n {GetPersonal()}");
             return sb.ToString();
         }
         
-        private string GetActor() => $"{(!string.IsNullOrEmpty(_summoner.RealName) ? _summoner.RealName : _summoner.Name)}";
+        private string GetActor() => $"{_summoner.GetName()}";
         private string GetAction()
         {
             if (_summonersStat.Win) return "победил";
@@ -43,16 +43,9 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             return "проиграл";
         }
         private string GetChampion() => $"за {_summonersStat.ChampionName}";
-        private string GetScore() => $"KDA {_summonersStat.Kills}/{_summonersStat.Deaths}/{_summonersStat.Assists}";
         private string GetDamage()
         {
-            double teamDamage = _matchInfo.Info.Participants
-                .Where(p => p.TeamId == _summonersStat.TeamId)
-                .Sum(p => p.TotalDamageDealtToChampions);
-            var damagePercentage = Math.Round(_summonersStat.TotalDamageDealtToChampions / teamDamage * 100);
-
-            var sb = new StringBuilder($"{_summonersStat.TotalDamageDealtToChampions.ToString($"#,#")} ({damagePercentage}%) урона");
-            return sb.ToString();
+            return _summonersStat.GetDamage(_matchInfo.Info.GetTeamDamage(_summonersStat.TeamId));
         }
         private async Task<string> GetRankedStat()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using LeagueActivityBot.Helpers;
+using LeagueActivityBot.Notifications.OnGameEnded;
 using LeagueActivityBot.Notifications.OnSoloGameEnded;
 using LeagueActivityBot.Repository;
 using LeagueActivityBot.Services;
@@ -26,7 +27,10 @@ namespace LeagueActivityBot
             serviceCollection.AddSingleton<GameInfoInMemoryRepository>();
             serviceCollection.AddTransient<GameParticipantsHelper>();
             serviceCollection.AddTransient<OnSoloGameEndedMessageBuilder>();
+            serviceCollection.AddTransient<OnGameEndedMessageBuilder>();
             serviceCollection.AddTransient<GameActivityChecker>();
+            serviceCollection.AddTransient<StartGameChecker>();
+            serviceCollection.AddTransient<EndGameChecker>();
 
             return serviceCollection;
         }

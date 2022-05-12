@@ -16,12 +16,12 @@ namespace LeagueActivityBot.Telegram
     {
         [UsedImplicitly]
         public static IServiceCollection AddNotifications<TOptions>([NotNull] this IServiceCollection serviceCollection, Action<TOptions> optionsAction)
-            where TOptions : NotificationOptions, new()
+            where TOptions : TelegramOptions, new()
         {
             var options = new TOptions();
             optionsAction?.Invoke(options);
 
-            var settings = new NotificationOptions
+            var settings = new TelegramOptions
             {
                 TelegramBotApiKey = options.TelegramBotApiKey,
                 TelegramChatId = options.TelegramChatId,

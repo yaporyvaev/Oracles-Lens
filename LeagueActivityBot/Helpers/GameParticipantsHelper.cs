@@ -1,21 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
 
 namespace LeagueActivityBot.Helpers
 {
     public class GameParticipantsHelper
     {
-        private readonly IEnumerable<string> _summonerNames;
+        private readonly IEnumerable<Summoner> _summoners;
         
-        public GameParticipantsHelper(IEnumerable<string> summonerNames)
+        public GameParticipantsHelper(IEnumerable<Summoner> summoners)
         {
-            _summonerNames = summonerNames;
+            _summoners = summoners;
         }
 
         public bool IsSoloGame(GameParticipant[] gameParticipants)
         {
-            return _summonerNames.Count(n => gameParticipants.Select(s => s.SummonerName).Contains(n)) == 1;
+            return _summoners.Count(n => gameParticipants.Select(s => s.SummonerName).Contains(n.Name)) == 1;
+        }
+
+        public IEnumerable<Summoner> GetSummonersInGame(GameParticipant[] gameParticipants)
+        {
+            return _summoners.Where(n => gameParticipants.Select(s => s.SummonerName).Contains(n.Name));
         }
     }
 }

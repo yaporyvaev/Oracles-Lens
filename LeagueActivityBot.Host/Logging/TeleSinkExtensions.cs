@@ -17,7 +17,7 @@ namespace LeagueActivityBot.Host.Logging
             LogEventLevel minimumLevel = LogEventLevel.Error)
         {
             var tgClient = (TelegramBotClient)services.GetService(typeof(TelegramBotClient));
-            var notificationOptions = (NotificationOptions)services.GetService(typeof(NotificationOptions));
+            var notificationOptions = (TelegramOptions)services.GetService(typeof(TelegramOptions));
 
             if (tgClient is null) throw new ArgumentNullException(nameof(tgClient));
 

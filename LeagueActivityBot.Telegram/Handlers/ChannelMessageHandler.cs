@@ -16,14 +16,14 @@ namespace LeagueActivityBot.Telegram.Handlers
     {
         private readonly TelegramBotClient _tgClient;
         private readonly CommandHandler _commandHandler;
-        private readonly NotificationOptions _options;
+        private readonly TelegramOptions _options;
         private readonly ILogger<ChannelMessageHandler> _logger;
         private CancellationTokenSource _cts;
         
         private string _botUserName;
         
         public ChannelMessageHandler(
-            NotificationOptions options,
+            TelegramOptions options,
             ILogger<ChannelMessageHandler> logger,
             TelegramBotClient tgClient,
             CommandHandler commandHandler)

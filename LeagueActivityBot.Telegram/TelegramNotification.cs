@@ -6,12 +6,12 @@ using Telegram.Bot.Types;
 
 namespace LeagueActivityBot.Telegram
 {
-    public class StartupNotification
+    public class TelegramNotification
     {
         public static async Task SendOnStartedUpNotification(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
-            var options = scope.ServiceProvider.GetService<NotificationOptions>();
+            var options = scope.ServiceProvider.GetService<TelegramOptions>();
 
             var tgClient = scope.ServiceProvider.GetService<TelegramBotClient>();
             await tgClient.SendTextMessageAsync(new ChatId(options.TelegramLogChatId), "Service started");

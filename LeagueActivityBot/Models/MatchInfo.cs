@@ -1,4 +1,8 @@
-﻿namespace LeagueActivityBot.Models
+﻿using System;
+using System.Linq;
+using System.Text;
+
+namespace LeagueActivityBot.Models
 {
     public class MatchInfo
     {
@@ -9,6 +13,15 @@
     {
         public MatchParticipant[] Participants { get; set; }
         public int QueueId { get; set; }
+
+        public double GetTeamDamage(int teamId)
+        {
+            double teamDamage = Participants
+                .Where(p => p.TeamId == teamId)
+                .Sum(p => p.TotalDamageDealtToChampions);
+
+            return teamDamage;
+        }
     }
 
     public class MatchParticipant
@@ -27,6 +40,29 @@
         public bool Win { get; set; }
         public bool GameEndedInEarlySurrender { get; set; }
         public bool GameEndedInSurrender { get; set; }
+
+        public double Kda
+        {
+            get
+            {
+                var divider = Deaths == 0 ? 1 : Deaths;
+                return (double)(Kills + Assists) / divider;
+            }
+        }
+
+        public string GetScore()
+        {
+            return $"KDA {Kills}/{Deaths}/{Assists}";
+        }
+        
+        public string GetDamage(double teamDamage)
+        {
+            var damagePercentage = Math.Round(TotalDamageDealtToChampions / teamDamage * 100);
+
+            var sb = new StringBuilder($"{TotalDamageDealtToChampions.ToString($"#,#")} ({damagePercentage}%) урона");
+            return sb.ToString();
+        }
+        
         
     }
 }

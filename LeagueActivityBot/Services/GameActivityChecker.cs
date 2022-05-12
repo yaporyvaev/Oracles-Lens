@@ -1,7 +1,6 @@
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Helpers;
-using LeagueActivityBot.Notifications;
 using LeagueActivityBot.Repository;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -42,7 +41,7 @@ namespace LeagueActivityBot.Services
         public async Task Check()
         {
             var summoners = _summonerRepository.GetAll().ToList();
-            var gameParticipantsHelper = new GameParticipantsHelper(summoners.Select(s => s.Name));
+            var gameParticipantsHelper = new GameParticipantsHelper(summoners);
 
             var tasks = new List<Task>(summoners.Count);
             foreach (var summoner in summoners)

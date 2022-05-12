@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Net.Http;
 using JetBrains.Annotations;
 using LeagueActivityBot.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace LeagueActivityBot.Riot
 {
@@ -26,11 +29,20 @@ namespace LeagueActivityBot.Riot
             serviceCollection.AddSingleton(settings);
 
             serviceCollection.AddHttpClient<IRiotClient, RiotHttpClient>(client =>
-            {
-                client.BaseAddress = new Uri(options.BaseUrl);
-            });
+                {
+                    client.BaseAddress = new Uri(options.BaseUrl);
+                })
+                .AddPolicyHandler(GetRetryPolicy());
             
             return serviceCollection;
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
         }
     }
 }

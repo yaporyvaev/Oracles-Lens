@@ -12,5 +12,10 @@ namespace LeagueActivityBot.Entities
         public int Tier { get; set; }
         public int Rank { get; set; }       
         public int LeaguePoints { get; set; }
+
+        public string GetName()
+        {
+            return !string.IsNullOrEmpty(RealName) ? RealName : Name;
+        }
     }
 }

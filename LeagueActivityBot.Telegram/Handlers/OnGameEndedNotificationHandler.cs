@@ -1,30 +1,27 @@
-﻿using LeagueActivityBot.Notifications;
-using MediatR;
+﻿using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using LeagueActivityBot.Notifications.OnSoloGameEnded;
+using LeagueActivityBot.Notifications.OnGameEnded;
+using LeagueActivityBot.Notifications.OnGameStarted;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace LeagueActivityBot.Telegram.Handlers
 {
-    public class OnSoloGameEndedNotificationHandler : INotificationHandler<OnSoloGameEndedNotification>
+    public class OnGameEndedNotificationHandler : INotificationHandler<OnGameEndedNotification>
     {
         private readonly TelegramOptions _options;
-        private readonly OnSoloGameEndedMessageBuilder _messageBuilder;
         private readonly TelegramBotClient _tgClient;
+        private readonly OnGameEndedMessageBuilder _messageBuilder;
 
-        public OnSoloGameEndedNotificationHandler(
-            TelegramOptions options,
-            OnSoloGameEndedMessageBuilder onSoloGameEndedMessageBuilder,
-            TelegramBotClient tgClient)
+        public OnGameEndedNotificationHandler(TelegramOptions options, TelegramBotClient tgClient, OnGameEndedMessageBuilder messageBuilder)
         {
             _options = options;
-            _messageBuilder = onSoloGameEndedMessageBuilder;
             _tgClient = tgClient;
+            _messageBuilder = messageBuilder;
         }
 
-        public async Task Handle(OnSoloGameEndedNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(OnGameEndedNotification notification, CancellationToken cancellationToken)
         {
             var message = await _messageBuilder.Build(notification);
 

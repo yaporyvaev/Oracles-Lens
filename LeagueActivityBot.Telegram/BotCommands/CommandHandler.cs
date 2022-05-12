@@ -13,14 +13,14 @@ namespace LeagueActivityBot.Telegram.BotCommands
     {
         private readonly CommandStateStore _stateStore;
         private readonly TelegramBotClient _tgClient;
-        private readonly NotificationOptions _options;
+        private readonly TelegramOptions _options;
         private readonly CommandFactory _commandFactory;
         private readonly ILogger<CommandHandler> _logger;
 
         public CommandHandler(
             CommandStateStore stateStore, 
             TelegramBotClient tgClient, 
-            NotificationOptions options, 
+            TelegramOptions options, 
             CommandFactory commandFactory,
             ILogger<CommandHandler> logger)
         {
