@@ -36,13 +36,13 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
         private string GetActor() => $"{_summoner.GetName()}";
         private string GetAction()
         {
-            if (_summonersStat.Win) return "победил";
-            if (_summonersStat.GameEndedInEarlySurrender) return "написал фф на 15))))00";
-            if (_summonersStat.GameEndedInSurrender) return "сдался";
+            if (_summonersStat.Win) return "has no one to share the joy of victory";
+            if (_summonersStat.GameEndedInEarlySurrender) return "tilted and gave up";
+            if (_summonersStat.GameEndedInSurrender) return "decided to save 1 minute and gave up";
                 
-            return "проиграл";
+            return "lost";
         }
-        private string GetChampion() => $"за {_summonersStat.ChampionName}";
+        private string GetChampion() => $"by {_summonersStat.ChampionName}. Shame on you, douchebag!";
         private string GetDamage()
         {
             return _summonersStat.GetDamage(_matchInfo.Info.GetTeamDamage(_summonersStat.TeamId));
@@ -61,16 +61,16 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
                 if (currentLeague.LeaguePoints != _summoner.LeaguePoints)
                 {
                     if (_summonersStat.Win) sb.Append("+");
-                    sb.Append($"{currentLeague.LeaguePoints - _summoner.LeaguePoints} LP. ");
+                    sb.Append($"{currentLeague.LeaguePoints - _summoner.LeaguePoints} LP.");
                 }
 
-                sb.Append($"Текущий ранг {currentLeague.Tier} {currentLeague.Rank}, {currentLeague.LeaguePoints} LP"); 
+                sb.Append($"Current rank {currentLeague.Tier} {currentLeague.Rank}, {currentLeague.LeaguePoints} LP"); 
             }
             else
             {
                 sb.Append(_summonersStat.Win
-                    ? $"Наш мальчик поднялся, теперь он {currentLeague.Tier} {currentLeague.Rank}!"
-                    : $"Даунранкед до {currentLeague.Tier} {currentLeague.Rank} =(");
+                    ? $"is a good boy, now he's {currentLeague.Tier} {currentLeague.Rank}. Great job!"
+                    : $"demoted to {currentLeague.Tier} {currentLeague.Rank} for shamefully defeat. Looser!");
             }
 
             sb.Append(".");
@@ -79,7 +79,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
         
         private string GetPersonal()
         {
-            if (!_summonersStat.Win && _summonersStat.SummonerName == "AidenGrimes") return "Но все равно молодец!";
+            if (!_summonersStat.Win && _summonersStat.SummonerName == "AidenGrimes") return "but still just a pretty guy!";
             
             return string.Empty;
         }
