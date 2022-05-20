@@ -67,10 +67,14 @@ namespace LeagueActivityBot.Host
             
             app.UseRouting();
             app.UseHealthChecks("/health");
+            app.UseStaticFiles();
             
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

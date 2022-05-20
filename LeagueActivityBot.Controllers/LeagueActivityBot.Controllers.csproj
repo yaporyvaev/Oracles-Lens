@@ -11,6 +11,7 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\LeagueActivityBot.Contracts\LeagueActivityBot.Contracts.csproj" />
+      <ProjectReference Include="..\LeagueActivityBot.Telegram\LeagueActivityBot.Telegram.csproj" />
       <ProjectReference Include="..\LeagueActivityBot\LeagueActivityBot.csproj" />
     </ItemGroup>
 

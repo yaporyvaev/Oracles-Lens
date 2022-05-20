@@ -7,6 +7,7 @@ using LeagueActivityBot.Telegram.BotCommands.CreatePool;
 using LeagueActivityBot.Telegram.BotCommands.GetSummoners;
 using LeagueActivityBot.Telegram.BotCommands.RemoveSummoner;
 using LeagueActivityBot.Telegram.Handlers;
+using LeagueActivityBot.Telegram.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 
@@ -40,6 +41,8 @@ namespace LeagueActivityBot.Telegram
             serviceCollection.AddTransient<CancelCommand>();
             serviceCollection.AddTransient<GetSummonersCommand>();
             serviceCollection.AddTransient<CreateBinaryAnswerPool>();
+            
+            serviceCollection.AddTransient<ImageService>();
             
             serviceCollection.AddTransient<CommandHandler>();
 
