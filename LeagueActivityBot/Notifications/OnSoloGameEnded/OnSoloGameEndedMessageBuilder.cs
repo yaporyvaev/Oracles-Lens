@@ -42,7 +42,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
                 
             return "lost";
         }
-        private string GetChampion() => $"by {_summonersStat.ChampionName}. Shame on you, douchebag!";
+        private string GetChampion() => $"as {_summonersStat.ChampionName}. Shame on you, douchebag!"; //douchebag - мудак, чмо (перевод с английского/американского)
         private string GetDamage()
         {
             return _summonersStat.GetDamage(_matchInfo.Info.GetTeamDamage(_summonersStat.TeamId));
@@ -61,7 +61,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
                 if (currentLeague.LeaguePoints != _summoner.LeaguePoints)
                 {
                     if (_summonersStat.Win) sb.Append("+");
-                    sb.Append($"{currentLeague.LeaguePoints - _summoner.LeaguePoints} LP.");
+                    sb.Append($"{currentLeague.LeaguePoints - _summoner.LeaguePoints} LP. ");
                 }
 
                 sb.Append($"Current rank {currentLeague.Tier} {currentLeague.Rank}, {currentLeague.LeaguePoints} LP"); 
@@ -69,7 +69,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             else
             {
                 sb.Append(_summonersStat.Win
-                    ? $"is a good boy, now he's {currentLeague.Tier} {currentLeague.Rank}. Great job!"
+                    ? $"is a good boy, he's {currentLeague.Tier} {currentLeague.Rank} now. Great job!"
                     : $"demoted to {currentLeague.Tier} {currentLeague.Rank} for shamefully defeat. Looser!");
             }
 
