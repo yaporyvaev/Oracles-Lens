@@ -46,6 +46,7 @@ namespace LeagueActivityBot.ImageGeneration
             var chromeOptions = new ChromeOptions();
             double dpi = 3.0;
             chromeOptions.AddArguments("headless");
+            chromeOptions.AddArguments("--no-sandbox");
             chromeOptions.AddArguments($"--force-device-scale-factor={dpi}");
 
             using var driver = new ChromeDriver(chromeOptions);
