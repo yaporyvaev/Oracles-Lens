@@ -50,7 +50,7 @@ namespace LeagueActivityBot.ImageGeneration
 
             using var driver = new ChromeDriver(chromeOptions);
 
-            driver.Navigate().GoToUrl("https://localhost:44339/");
+            driver.Navigate().GoToUrl("http://localhost:5000/");
 
             var summaryElement = driver.FindElement(By.Id("match-summary"));
             var avatar = summaryElement.FindElement(By.ClassName("avatar"));
