@@ -2,6 +2,7 @@
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using LeagueActivityBot.Exceptions;
 using LeagueActivityBot.Notifications.OnSoloGameEnded;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -30,7 +31,11 @@ namespace LeagueActivityBot.Telegram.Handlers
 
             if (!string.IsNullOrEmpty(message))
             {
-                await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), message, cancellationToken: cancellationToken, disableNotification: true);
+                var respondMessage = await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), message, cancellationToken: cancellationToken, disableNotification: true);
+                if (respondMessage.MessageId == 0)
+                {
+                    throw new ClientException("ID NOL'");
+                }
             }
         }
     }

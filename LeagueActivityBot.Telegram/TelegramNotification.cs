@@ -14,7 +14,7 @@ namespace LeagueActivityBot.Telegram
             var options = scope.ServiceProvider.GetService<TelegramOptions>();
 
             var tgClient = scope.ServiceProvider.GetService<TelegramBotClient>();
-            await tgClient.SendTextMessageAsync(new ChatId(options.TelegramLogChatId), "Service started");
+            var message = await tgClient.SendTextMessageAsync(new ChatId(options.TelegramLogChatId), "Service started");
         }
     }
 }
