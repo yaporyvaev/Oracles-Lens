@@ -1,10 +1,12 @@
 using System;
 using System.Reflection;
+using AutoMapper;
 using LeagueActivityBot.BackgroundJobs;
 using LeagueActivityBot.Controllers;
 using LeagueActivityBot.Database;
 using LeagueActivityBot.Telegram;
 using LeagueActivityBot.Riot;
+using LeagueActivityBot.Riot.Configuration;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,7 +33,13 @@ namespace LeagueActivityBot.Host
                 options.UseNpgsql(Configuration["App:DbConnectionString"]);
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
+            
+            services.AddSingleton(new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new RiotMappingProfile());
 
+            }).CreateMapper());
+            
             services.AddMemoryCache();
             services.AddHealthChecks();
             services.AddRiot<RiotClientOptions>(options => Configuration.GetSection("App:Riot").Bind(options));

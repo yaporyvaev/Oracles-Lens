@@ -1,9 +1,11 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AutoMapper;
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Exceptions;
 using LeagueActivityBot.Models;
+using LeagueActivityBot.Riot.Models.Clash;
 using Newtonsoft.Json;
 
 namespace LeagueActivityBot.Riot
@@ -12,11 +14,13 @@ namespace LeagueActivityBot.Riot
     {
         private readonly HttpClient _httpClient;
         private readonly RiotClientOptions _setting;
+        private readonly IMapper _mapper;
 
-        public RiotHttpClient(HttpClient httpClient, RiotClientOptions setting)
+        public RiotHttpClient(HttpClient httpClient, RiotClientOptions setting, IMapper mapper)
         {
             _httpClient = httpClient;
             _setting = setting;
+            _mapper = mapper;
 
             _httpClient.DefaultRequestHeaders.Add("X-Riot-Token", setting.ApiKey);
         }
@@ -96,6 +100,21 @@ namespace LeagueActivityBot.Riot
             
             throw new ClientException(
                 $"Получение результата на запрос информации о лиге. Код: {response.StatusCode}, сообщение: {responseContent}");
+        }
+        
+        public async Task<ClashInfo[]> GetClashSchedule()
+        {
+            var response = await _httpClient.GetAsync("lol/clash/v1/tournaments");
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseModel = JsonConvert.DeserializeObject<ClashInfoResponseModel[]>(responseContent);
+                return _mapper.Map<ClashInfo[]>(responseModel);
+            }
+            
+            throw new ClientException(
+                $"Получение результата на запрос информации о расписаеии турниров. Код: {response.StatusCode}, сообщение: {responseContent}");
         }
     }
 }

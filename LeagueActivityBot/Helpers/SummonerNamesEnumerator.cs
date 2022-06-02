@@ -1,7 +1,7 @@
 using System.Text;
 using LeagueActivityBot.Entities;
 
-namespace LeagueActivityBot.Utils
+namespace LeagueActivityBot.Helpers
 {
     public static class SummonerNamesEnumerator
     {
@@ -14,7 +14,7 @@ namespace LeagueActivityBot.Utils
                 
                 namesStingBuilder.Append(summoner.GetName());
                 
-                if (i <= summoners.Length - 2)
+                if (i == summoners.Length - 2)
                 {
                     namesStingBuilder.Append(" и ");
                     continue;
