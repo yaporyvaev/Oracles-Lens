@@ -95,7 +95,7 @@ namespace LeagueActivityBot.Services
         private async Task UpdateLeagueInfo(Summoner summoner)
         {
             var leagueInfo = (await _riotClient.GetLeagueInfo(summoner.SummonerId))
-                .FirstOrDefault(l => l.QueueType == QueueType.RankedSolo);
+                .FirstOrDefault(l => l.QueueType == QueueTypeConstants.RankedSolo);
 
             if (leagueInfo != null)
             {

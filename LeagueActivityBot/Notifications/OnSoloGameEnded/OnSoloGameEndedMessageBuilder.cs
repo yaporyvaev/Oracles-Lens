@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,30 +28,37 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             _summonersStat = _matchInfo.Info.Participants.First(p => p.SummonerName == notification.Summoner.Name);
             _summoner = notification.Summoner;
             
-            var sb = new StringBuilder($"{GetActor()} {GetAction()} {GetChampion()}, {_summonersStat.GetScore()}, {GetDamage()}.\n {await GetRankedStat()}\n {GetPersonal()}");
+            var sb = new StringBuilder($"<b><i>{_summoner.Name}</i></b> {GetAction()} {GetChampion()}.\n{_summonersStat.GetScore()}, {GetDamage()}.");
+
+            if (_matchInfo.Info.QueueId != (int)QueueType.ARAM)
+            {
+                sb.Append($" {_summonersStat.GetCreepScore()}, {_summonersStat.GetVisionScore()}.");
+            }
+            
+            if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo)
+            {
+                sb.Append($"\n{GetRankedStat()}.");
+            }
+            
             return sb.ToString();
         }
         
-        private string GetActor() => $"{_summoner.GetName()}";
         private string GetAction()
         {
-            if (_summonersStat.Win) return "победил";
-            if (_summonersStat.GameEndedInEarlySurrender) return "написал фф на 15))))00";
-            if (_summonersStat.GameEndedInSurrender) return "сдался";
+            if (_summonersStat.Win) return "won";
+            if (_summonersStat.GameEndedInEarlySurrender) return "FFed 15";
+            if (_summonersStat.GameEndedInSurrender) return "surrendered";
                 
-            return "проиграл";
+            return "lost";
         }
-        private string GetChampion() => $"за {_summonersStat.ChampionName}";
-        private string GetDamage()
-        {
-            return _summonersStat.GetDamage(_matchInfo.Info.GetTeamDamage(_summonersStat.TeamId));
-        }
+        private string GetChampion() => $"on {_summonersStat.ChampionName}";
+
+        private string GetDamage() => _summonersStat.GetDamage(_matchInfo.Info.GetTeamDamage(_summonersStat.TeamId));
+
         private async Task<string> GetRankedStat()
         {
-            if (_matchInfo.Info.QueueId != 420) return string.Empty;
-            
             var currentLeague = (await _riotClient.GetLeagueInfo(_summoner.SummonerId)).FirstOrDefault(l =>
-                l.QueueType == QueueType.RankedSolo);
+                l.QueueType == QueueTypeConstants.RankedSolo);
             if (currentLeague == null) return string.Empty;
                 
             var sb = new StringBuilder();
@@ -64,24 +70,16 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
                     sb.Append($"{currentLeague.LeaguePoints - _summoner.LeaguePoints} LP. ");
                 }
 
-                sb.Append($"Текущий ранг {currentLeague.Tier} {currentLeague.Rank}, {currentLeague.LeaguePoints} LP"); 
+                sb.Append($"Current rank is {currentLeague.Tier} {currentLeague.Rank}, {currentLeague.LeaguePoints} LP."); 
             }
             else
             {
                 sb.Append(_summonersStat.Win
-                    ? $"Наш мальчик поднялся, теперь он {currentLeague.Tier} {currentLeague.Rank}!"
-                    : $"Даунранкед до {currentLeague.Tier} {currentLeague.Rank} =(");
+                    ? $"Promoted to {currentLeague.Tier} {currentLeague.Rank}!"
+                    : $"Demoted to {currentLeague.Tier} {currentLeague.Rank}.");
             }
 
-            sb.Append(".");
             return sb.ToString();
-        }
-        
-        private string GetPersonal()
-        {
-            if (!_summonersStat.Win && _summonersStat.SummonerName == "AidenGrimes") return "Но все равно молодец!";
-            
-            return string.Empty;
         }
     }
 }

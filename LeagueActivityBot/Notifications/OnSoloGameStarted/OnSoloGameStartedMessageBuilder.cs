@@ -7,9 +7,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameStarted
     {
         public string Build(OnSoloGameStartedNotification notification)
         {
-            var sb = new StringBuilder($"{notification.Summoner.GetName()} крыса, начал играть {QueueType.GetQueueTypeById(notification.QueueTypeId)}");
-
-            return sb.ToString();
+            return $"{notification.Summoner.Name} started {QueueTypeConstants.GetQueueTypeById(notification.QueueTypeId)}.";
         } 
     }
 }

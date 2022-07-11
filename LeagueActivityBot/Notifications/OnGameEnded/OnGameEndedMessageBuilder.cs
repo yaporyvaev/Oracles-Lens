@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
+using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
 
@@ -25,7 +26,7 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
             if (_matchInfo == null) return string.Empty;
             _summoners = notification.Summoners;
             
-            var sb = new StringBuilder($"Друзья {GetAction()}\n{GetStats()}");
+            var sb = new StringBuilder($"Team {GetAction()}\n\n{GetStats()}");
             return sb.ToString();
         }
 
@@ -39,7 +40,14 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
             foreach (var summoner in _summoners)
             {
                 var stat = _matchInfo.Info.Participants.First(p => p.SummonerName == summoner.Name);
-                sb.Append($"{summoner.GetName()} за {stat.ChampionName}. {stat.GetScore()}, {stat.GetDamage(stat.TeamId == 100? team1Damage : team2Damage)}.\n");
+                sb.Append($"<b><i>{summoner.Name}</i></b> on {stat.ChampionName}.\n{stat.GetScore()}, {stat.GetDamage(stat.TeamId == 100? team1Damage : team2Damage)}.");
+                
+                if (_matchInfo.Info.QueueId != (int)QueueType.ARAM)
+                {
+                    sb.Append($" {stat.GetCreepScore()}, {stat.GetVisionScore()}.");
+                }
+                
+                sb.Append("\n\n");
             }
 
             return sb.ToString();
@@ -50,11 +58,11 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
             var summonerName = _summoners.First().Name;
             var summonersStat = _matchInfo.Info.Participants.First(p => p.SummonerName == summonerName);
 
-            if (summonersStat.Win) return "победили!";
-            if (summonersStat.GameEndedInEarlySurrender) return "написали фф на 15))))00";
-            if (summonersStat.GameEndedInSurrender) return "сдались.";
+            if (summonersStat.Win) return "won!";
+            if (summonersStat.GameEndedInEarlySurrender) return "FFed 15.";
+            if (summonersStat.GameEndedInSurrender) return "surrendered.";
                 
-            return "проиграли :(";
+            return "lost.";
         }
     }
 }

@@ -44,23 +44,7 @@ namespace LeagueActivityBot.Telegram.BotCommands
             var messageSenderId = message.From!.Id;
 
             var messagePayload = string.Join(" ", message.Text!.Split(" ").Skip(1));//todo refactor this shit
-            if (string.IsNullOrEmpty(messagePayload)) return;
-
-            string commandType;
-            if (messagePayload.StartsWith("/")) //Start new command
-            {
-                var splitMessage = messagePayload.Split(" ");
-                messagePayload = string.Join(" ", splitMessage.Skip(1));
-                
-                if(messagePayload != BotCommandsTypes.Cancel) _stateStore.Reset(messageSenderId);
-                commandType = splitMessage.FirstOrDefault();
-            }
-            else //Process existing command
-            {
-                var currentCommandState = _stateStore.Get(messageSenderId);
-                if (currentCommandState == null) return;
-                commandType = currentCommandState.Type;
-            }
+            var commandType = message.Text.Split("@").FirstOrDefault();
 
             var command = _commandFactory.Create(commandType);
             if(command == null) return;
@@ -68,16 +52,9 @@ namespace LeagueActivityBot.Telegram.BotCommands
             try
             {
                 var state = await command.Handle(messageSenderId, messagePayload);
-
+                
                 if (state != null)
                 {
-                    if (state.Type == BotCommandsTypes.CreateBinaryAnswerPool)
-                    {
-                        await _tgClient.SendPollAsync(new ChatId(_options.TelegramChatId), state.BuildMessage(),
-                            new[] {"Да", "Нет", "Хз"}, false, PollType.Regular, false);
-                        return;
-                    }
-                    
                     await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), state.BuildMessage());
                 }
             }

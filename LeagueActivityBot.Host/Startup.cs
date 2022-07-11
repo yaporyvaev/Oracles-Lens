@@ -48,7 +48,7 @@ namespace LeagueActivityBot.Host
             {
                 options.SummonerNames = Configuration["App:SummonerNames"].Split(";");
             });
-
+            
             services.AddBackgroundJobs();
             services.AddNotifications<TelegramOptions>(options =>
             {

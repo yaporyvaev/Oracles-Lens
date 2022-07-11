@@ -26,9 +26,10 @@ namespace LeagueActivityBot
             
             serviceCollection.AddSingleton<GameInfoInMemoryRepository>();
             serviceCollection.AddTransient<GameParticipantsHelper>();
+            
             serviceCollection.AddTransient<OnSoloGameEndedMessageBuilder>();
             serviceCollection.AddTransient<OnGameEndedMessageBuilder>();
-            serviceCollection.AddTransient<GameActivityChecker>();
+            
             serviceCollection.AddTransient<StartGameChecker>();
             serviceCollection.AddTransient<EndGameChecker>();
 

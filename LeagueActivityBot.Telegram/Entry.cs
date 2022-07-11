@@ -3,11 +3,9 @@ using JetBrains.Annotations;
 using LeagueActivityBot.Telegram.BotCommands;
 using LeagueActivityBot.Telegram.BotCommands.AddSummoner;
 using LeagueActivityBot.Telegram.BotCommands.Cancel;
-using LeagueActivityBot.Telegram.BotCommands.CreatePool;
 using LeagueActivityBot.Telegram.BotCommands.GetSummoners;
 using LeagueActivityBot.Telegram.BotCommands.RemoveSummoner;
 using LeagueActivityBot.Telegram.Handlers;
-using LeagueActivityBot.Telegram.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 
@@ -32,7 +30,6 @@ namespace LeagueActivityBot.Telegram
             serviceCollection.AddSingleton(settings);
             serviceCollection.AddHostedService<ChannelMessageHandler>();
             serviceCollection.AddTransient(_ => new TelegramBotClient(settings.TelegramBotApiKey));
-
             serviceCollection.AddSingleton<CommandStateStore>();
             serviceCollection.AddTransient<CommandFactory>();
             
@@ -40,9 +37,6 @@ namespace LeagueActivityBot.Telegram
             serviceCollection.AddTransient<RemoveSummonerCommand>();
             serviceCollection.AddTransient<CancelCommand>();
             serviceCollection.AddTransient<GetSummonersCommand>();
-            serviceCollection.AddTransient<CreateBinaryAnswerPool>();
-            
-            serviceCollection.AddTransient<ImageService>();
             
             serviceCollection.AddTransient<CommandHandler>();
 

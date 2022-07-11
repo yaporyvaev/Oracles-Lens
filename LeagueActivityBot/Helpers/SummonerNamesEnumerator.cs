@@ -12,11 +12,11 @@ namespace LeagueActivityBot.Helpers
             {
                 var summoner = summoners[i];
                 
-                namesStingBuilder.Append(summoner.GetName());
+                namesStingBuilder.Append(summoner.Name);
                 
                 if (i == summoners.Length - 2)
                 {
-                    namesStingBuilder.Append(" и ");
+                    namesStingBuilder.Append(" and ");
                     continue;
                 }
                 

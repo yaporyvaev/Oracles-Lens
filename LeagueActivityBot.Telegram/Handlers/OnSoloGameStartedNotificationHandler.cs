@@ -1,8 +1,6 @@
-﻿using LeagueActivityBot.Notifications;
-using MediatR;
+﻿using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using LeagueActivityBot.Exceptions;
 using LeagueActivityBot.Notifications.OnSoloGameStarted;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -25,11 +23,7 @@ namespace LeagueActivityBot.Telegram.Handlers
             var messageBuilder = new OnSoloGameStartedMessageBuilder();
             var message = messageBuilder.Build(notification);
 
-            var respondMessage = await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), message, cancellationToken: cancellationToken, disableNotification: true);
-            if (respondMessage.MessageId == 0)
-            {
-                throw new ClientException("ID NOL'");
-            }
+            await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), message, disableNotification: true);
         }
     }
 }

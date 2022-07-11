@@ -31,64 +31,22 @@ namespace LeagueActivityBot.Telegram.BotCommands.AddSummoner
             var state = _stateStore.Get(commandOwnerId);
             if (state == null)
             {
-                return CreateNewState(commandOwnerId);
+                state = CreateNewState(commandOwnerId);
             }
 
             return state.State switch
             {
                 SummonerNameRequiredState _ => await SetSummonerInfo(state, payload),
-                AddSummonerNameInNotificationsRequiredState _ => SetSummonerName(state, payload),
-                ActionConfirmRequiredState _ => await ConfirmAction(state, payload),
                 _ => throw new InvalidOperationException()
             };
         }
-
-        private async Task<CommandState> ConfirmAction(CommandState state, string payload)
-        {
-            if (!string.Equals(payload, "yes", StringComparison.InvariantCultureIgnoreCase))
-            {
-                _stateStore.Reset(state.CommandOwnerId);
-                state.SetState(new FinishCommandHandlingState("Command was canceled"));
-                return state;
-            }
-            
-            using var serviceScope = _serviceProvider.CreateScope();
-            var repository = serviceScope.ServiceProvider.GetService<IRepository<Summoner>>();
-
-            var context = state.Context as AddSummonerContext;
-            var summoner = repository.GetAll()
-                .FirstOrDefault(s => s.SummonerId == context.Summoner.SummonerId);
-
-            if (summoner != null)
-            {
-                context.Summoner.Id = summoner.Id;
-                await repository.Update(context.Summoner);
-            }
-            else
-            {
-                await repository.Add(context.Summoner);
-            }
-            
-            _stateStore.Reset(state.CommandOwnerId);
-            state.SetState(new FinishCommandHandlingState("Summoner was successfully added"));
-            return state;
-        }
-
-        private CommandState SetSummonerName(CommandState state, string payload)
-        {
-            var context = state.Context as AddSummonerContext;
-            context!.Summoner.RealName = payload;
-            
-            state.SetState(new ActionConfirmRequiredState($"Do you really want to add {context.Summoner.Name} as {context.Summoner.RealName}? (yes/no)"));
-            return state;
-        }
-
+        
         private async Task<CommandState> SetSummonerInfo(CommandState state, string summonerName)
         {
             var summonerInfo = await _riotClient.GetSummonerInfoByName(summonerName);
-            if (summonerInfo == null) throw new BotCommandException($"Summoner {summonerName} not found. Try again.");
+            if (summonerInfo == null) throw new BotCommandException($"Summoner {summonerName} not found. Operation was canceled.");
 
-            var summoner = new Summoner
+            var summonerDto = new Summoner
             {
                 SummonerId = summonerInfo.Id,
                 Puuid = summonerInfo.Puuid,
@@ -96,20 +54,33 @@ namespace LeagueActivityBot.Telegram.BotCommands.AddSummoner
                 Name = summonerName
             };
             
-            var leagueInfo = (await _riotClient.GetLeagueInfo(summoner.SummonerId))
-                .FirstOrDefault(l => l.QueueType == QueueType.RankedSolo);
+            var leagueInfo = (await _riotClient.GetLeagueInfo(summonerDto.SummonerId))
+                .FirstOrDefault(l => l.QueueType == QueueTypeConstants.RankedSolo);
 
             if (leagueInfo != null)
             {
-                summoner.LeaguePoints = leagueInfo.LeaguePoints;
-                summoner.Tier = leagueInfo.GetTierIntegerRepresentation();
-                summoner.Rank = leagueInfo.GetRankIntegerRepresentation();
+                summonerDto.LeaguePoints = leagueInfo.LeaguePoints;
+                summonerDto.Tier = leagueInfo.GetTierIntegerRepresentation();
+                summonerDto.Rank = leagueInfo.GetRankIntegerRepresentation();
             }
             
-            state.UpdateContext(new AddSummonerContext{ Summoner = summoner});
-            state.SetState(new AddSummonerNameInNotificationsRequiredState());
+            using var serviceScope = _serviceProvider.CreateScope();
+            var repository = serviceScope.ServiceProvider.GetService<IRepository<Summoner>>();
+            var summonerEntity = repository.GetAll()
+                .FirstOrDefault(s => s.SummonerId == summonerDto.SummonerId);
+
+            if (summonerEntity != null)
+            {
+                summonerDto.Id = summonerEntity.Id;
+                await repository.Update(summonerDto);
+            }
+            else
+            {
+                await repository.Add(summonerDto);
+            }
             
-            _stateStore.Update(state);
+            _stateStore.Reset(state.CommandOwnerId);
+            state.SetState(new FinishCommandHandlingState("Summoner was successfully added."));
             return state;
         }
 

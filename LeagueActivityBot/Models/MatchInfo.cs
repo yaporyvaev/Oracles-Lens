@@ -40,7 +40,14 @@ namespace LeagueActivityBot.Models
         public bool Win { get; set; }
         public bool GameEndedInEarlySurrender { get; set; }
         public bool GameEndedInSurrender { get; set; }
+        
+        public int TotalMinionsKilled { get; set; }
+        
+        public int VisionScore { get; set; }
 
+        public string GetCreepScore() => $"{TotalMinionsKilled} CS";
+        public string GetVisionScore() => $"{VisionScore} VS";
+        
         public double Kda
         {
             get
@@ -58,9 +65,7 @@ namespace LeagueActivityBot.Models
         public string GetDamage(double teamDamage)
         {
             var damagePercentage = Math.Round(TotalDamageDealtToChampions / teamDamage * 100);
-
-            var sb = new StringBuilder($"{TotalDamageDealtToChampions.ToString($"#,#")} ({damagePercentage}%) урона");
-            return sb.ToString();
+            return $"{TotalDamageDealtToChampions.ToString($"#,#")} ({damagePercentage}%) dmg";
         }
         
         

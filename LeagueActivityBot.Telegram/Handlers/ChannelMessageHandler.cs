@@ -1,12 +1,13 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using LeagueActivityBot.Telegram.BotCommands;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
-using Telegram.Bot.Extensions.Polling;
+using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -16,19 +17,16 @@ namespace LeagueActivityBot.Telegram.Handlers
     {
         private readonly TelegramBotClient _tgClient;
         private readonly CommandHandler _commandHandler;
-        private readonly TelegramOptions _options;
         private readonly ILogger<ChannelMessageHandler> _logger;
         private CancellationTokenSource _cts;
         
         private string _botUserName;
         
         public ChannelMessageHandler(
-            TelegramOptions options,
             ILogger<ChannelMessageHandler> logger,
             TelegramBotClient tgClient,
             CommandHandler commandHandler)
         {
-            _options = options;
             _logger = logger;
             _tgClient = tgClient;
             _commandHandler = commandHandler;
@@ -45,7 +43,7 @@ namespace LeagueActivityBot.Telegram.Handlers
                 HandleErrorAsync,
                 new ReceiverOptions { AllowedUpdates = new[] { UpdateType.Message }, Offset = -1 },
                 _cts.Token);
-
+            
             return Task.CompletedTask;
         }
 
@@ -61,7 +59,7 @@ namespace LeagueActivityBot.Telegram.Handlers
         {
             if(string.IsNullOrEmpty(update.Message.Text)) return;
 
-            if (update.Message.Text.StartsWith($"@{_botUserName}"))
+            if (Regex.IsMatch(update.Message.Text, $"\\/\\w*@{_botUserName}"))
             {
                 await _commandHandler.Handle(update);
             }

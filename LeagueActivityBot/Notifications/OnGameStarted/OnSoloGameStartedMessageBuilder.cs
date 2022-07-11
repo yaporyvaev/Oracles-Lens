@@ -9,9 +9,7 @@ namespace LeagueActivityBot.Notifications.OnGameStarted
         public string Build(OnGameStartedNotification notification)
         {
             var names = SummonerNamesEnumerator.EnumerateSummoners(notification.Summoners);
-
-            var result = $"{names} начали играть {QueueType.GetQueueTypeById(notification.QueueTypeId)}";
-            return result;
+            return $"{names} started {QueueTypeConstants.GetQueueTypeById(notification.QueueTypeId)}";
         } 
     }
 }

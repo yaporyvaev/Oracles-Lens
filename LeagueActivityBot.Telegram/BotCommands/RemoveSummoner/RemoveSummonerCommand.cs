@@ -25,38 +25,17 @@ namespace LeagueActivityBot.Telegram.BotCommands.RemoveSummoner
             var state = _stateStore.Get(commandOwnerId);
             if (state == null)
             {
-                return CreateNewState(commandOwnerId);
+                state =  CreateNewState(commandOwnerId);
             }
 
             return state.State switch
             {
-                SummonerNameRequiredState _ => ValidateAndSetContext(state, payload),
-                ActionConfirmRequiredState _ => await ConfirmAction(state, payload),
+                SummonerNameRequiredState _ => await ValidateAndSetContext(state, payload),
                 _ => throw new InvalidOperationException()
             };
         }
-
-        private async Task<CommandState> ConfirmAction(CommandState state, string payload)
-        {
-            if (!string.Equals(payload, "yes", StringComparison.InvariantCultureIgnoreCase))
-            {
-                _stateStore.Reset(state.CommandOwnerId);
-                state.SetState(new FinishCommandHandlingState("Command was canceled"));
-                return state;
-            }
-            
-            using var serviceScope = _serviceProvider.CreateScope();
-            var repository = serviceScope.ServiceProvider.GetService<IRepository<Summoner>>();
-            
-            var context = state.Context as RemoveSummonerContext;
-            await repository.Remove(context!.Summoner);
-            
-            _stateStore.Reset(state.CommandOwnerId);
-            state.SetState(new FinishCommandHandlingState("Summoner was successfully removed"));
-            return state;
-        }
-
-        private CommandState ValidateAndSetContext(CommandState state, string payload)
+        
+        private async Task<CommandState> ValidateAndSetContext(CommandState state, string payload)
         {
             using var serviceScope = _serviceProvider.CreateScope();
             var repository = serviceScope.ServiceProvider.GetService<IRepository<Summoner>>();
@@ -67,16 +46,14 @@ namespace LeagueActivityBot.Telegram.BotCommands.RemoveSummoner
             if (summoner == null)
             {
                 _stateStore.Reset(state.CommandOwnerId);
-                state.SetState(new FinishCommandHandlingState("Summoner not found. Command was canceled"));
+                state.SetState(new FinishCommandHandlingState("Summoner not found. Command was canceled."));
                 return state;
             }
             
-            state.UpdateContext(new RemoveSummonerContext
-            {
-                Summoner = summoner
-            });
+            await repository.Remove(summoner);
             
-            state.SetState(new ActionConfirmRequiredState($"Do you really want to remove {summoner.Name}? (yes/no)"));
+            _stateStore.Reset(state.CommandOwnerId);
+            state.SetState(new FinishCommandHandlingState("Summoner was successfully removed"));
             return state;
         }
 

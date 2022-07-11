@@ -8,14 +8,8 @@ namespace LeagueActivityBot.Entities
         public string AccountId { get; set; }
         public string Puuid { get; set; }
         public string Name { get; set; }
-        public string RealName { get; set; }
         public int Tier { get; set; }
         public int Rank { get; set; }       
         public int LeaguePoints { get; set; }
-
-        public string GetName()
-        {
-            return !string.IsNullOrEmpty(RealName) ? RealName : Name;
-        }
     }
 }

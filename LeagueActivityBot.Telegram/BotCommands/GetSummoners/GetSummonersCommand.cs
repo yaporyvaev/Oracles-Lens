@@ -35,10 +35,6 @@ namespace LeagueActivityBot.Telegram.BotCommands.GetSummoners
             foreach (var summoner in summoners)
             {
                 sb.Append($"{counter}. {summoner.Name}");
-                if (!string.IsNullOrEmpty(summoner.RealName))
-                {
-                    sb.Append($" as {summoner.RealName}");
-                }
 
                 if (summoner.Rank != 0 && summoner.Tier != 0)
                 {

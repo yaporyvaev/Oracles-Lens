@@ -10,13 +10,6 @@ namespace LeagueActivityBot.BackgroundJobs
             services.AddQuartz(q =>  
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();
-
-                // var gameActivityCheckerJobKey = new JobKey("GameActivityCheckerJob");
-                // q.AddJob<GameActivityCheckerJob>(opts => opts.WithIdentity(gameActivityCheckerJobKey));
-                // q.AddTrigger(opts => opts
-                //     .ForJob(gameActivityCheckerJobKey)
-                //     .WithIdentity("GameActivityCheckerJob-trigger")
-                //     .WithCronSchedule("0/30 * * ? * *"));
                 
                 var startGameCheckerJobKey = new JobKey("StartGameCheckerJob");
                 q.AddJob<StartGameCheckerJob>(opts => opts.WithIdentity(startGameCheckerJobKey));

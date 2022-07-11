@@ -10,7 +10,6 @@ namespace LeagueActivityBot.Database.Configurations
         {
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
-            builder.Property(x => x.RealName).IsRequired(false).HasMaxLength(50);
             builder.Property(x => x.Puuid).IsRequired().HasMaxLength(200);
             builder.Property(x => x.SummonerId).IsRequired().HasMaxLength(100);
             builder.Property(x => x.AccountId).IsRequired().HasMaxLength(100);

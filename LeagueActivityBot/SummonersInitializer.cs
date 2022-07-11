@@ -25,7 +25,7 @@ namespace LeagueActivityBot
                 try
                 {
                     var leagueInfo = (await riotClient.GetLeagueInfo(summoner.SummonerId))
-                        .FirstOrDefault(l => l.QueueType == QueueType.RankedSolo);
+                        .FirstOrDefault(l => l.QueueType == QueueTypeConstants.RankedSolo);
 
                     if (leagueInfo != null)
                     {

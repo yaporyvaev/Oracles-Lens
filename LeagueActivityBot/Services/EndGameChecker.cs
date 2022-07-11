@@ -43,7 +43,12 @@ namespace LeagueActivityBot.Services
                 var summoner = _summonerRepository.GetAll().FirstOrDefault(s => s.Name == participantName);
                 
                 var currentGameInfo = await _riotClient.GetCurrentGameInfo(summoner!.SummonerId);
-                if(currentGameInfo.IsInGameNow) continue;
+
+                if (currentGameInfo.IsInGameNow)
+                {
+                    if(game.GameId == currentGameInfo.GameId)
+                        continue;
+                }
 
                 var summoners = _summonerRepository.GetAll().Where(s => participants.Contains(s.Name)).ToArray();
                 if (summoners.Length > 1)
