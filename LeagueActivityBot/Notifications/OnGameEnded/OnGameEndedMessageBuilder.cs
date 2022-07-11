@@ -60,7 +60,7 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
 
             if (summonersStat.Win) return "won!";
             if (summonersStat.GameEndedInEarlySurrender) return "FFed 15.";
-            if (summonersStat.GameEndedInSurrender) return "surrendered.";
+            if (summonersStat.GameEndedInSurrender) return "FFed.";
                 
             return "lost.";
         }

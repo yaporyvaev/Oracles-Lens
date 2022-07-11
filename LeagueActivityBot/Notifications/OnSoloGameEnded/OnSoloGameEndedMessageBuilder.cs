@@ -37,7 +37,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             
             if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo)
             {
-                sb.Append($"\n{GetRankedStat()}.");
+                sb.Append($"\n{await GetRankedStat()}");
             }
             
             return sb.ToString();
@@ -47,7 +47,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
         {
             if (_summonersStat.Win) return "won";
             if (_summonersStat.GameEndedInEarlySurrender) return "FFed 15";
-            if (_summonersStat.GameEndedInSurrender) return "surrendered";
+            if (_summonersStat.GameEndedInSurrender) return "FFed";
                 
             return "lost";
         }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LeagueActivityBot.Notifications.OnSoloGameEnded;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace LeagueActivityBot.Telegram.Handlers
 {
@@ -29,7 +30,7 @@ namespace LeagueActivityBot.Telegram.Handlers
 
             if (!string.IsNullOrEmpty(message))
             {
-                await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), message, disableNotification: true);
+                await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), message, disableNotification: true, parseMode:ParseMode.Html);
             }
         }
     }
