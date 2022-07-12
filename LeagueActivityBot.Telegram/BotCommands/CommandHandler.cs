@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using LeagueActivityBot.Telegram.Exceptions;
+using LeagueActivityBot.Telegram.Extensions;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -55,17 +56,17 @@ namespace LeagueActivityBot.Telegram.BotCommands
                 
                 if (state != null)
                 {
-                    await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), state.BuildMessage());
+                    await _tgClient.SendTextMessage(_options.TelegramChatId, state.BuildMessage());
                 }
             }
             catch (BotCommandException commandException)
             {
-                await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), commandException.Message);
+                await _tgClient.SendTextMessage(_options.TelegramChatId, commandException.Message);
             }
             catch (Exception exception)
             {
                 _logger.LogError(exception, "Command handling failed");
-                await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), "Command handling failed. It was canceled.");
+                await _tgClient.SendTextMessage(_options.TelegramChatId, "Command handling failed. It was canceled.");
                 _stateStore.Reset(messageSenderId);
             }
         }

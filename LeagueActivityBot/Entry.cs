@@ -3,7 +3,6 @@ using JetBrains.Annotations;
 using LeagueActivityBot.Helpers;
 using LeagueActivityBot.Notifications.OnGameEnded;
 using LeagueActivityBot.Notifications.OnSoloGameEnded;
-using LeagueActivityBot.Repository;
 using LeagueActivityBot.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,7 +23,6 @@ namespace LeagueActivityBot
             };
             serviceCollection.AddSingleton(settings);
             
-            serviceCollection.AddSingleton<GameInfoInMemoryRepository>();
             serviceCollection.AddTransient<GameParticipantsHelper>();
             
             serviceCollection.AddTransient<OnSoloGameEndedMessageBuilder>();

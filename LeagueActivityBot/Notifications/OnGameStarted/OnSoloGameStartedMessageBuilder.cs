@@ -1,6 +1,5 @@
 using LeagueActivityBot.Constants;
 using LeagueActivityBot.Helpers;
-using LeagueActivityBot.Utils;
 
 namespace LeagueActivityBot.Notifications.OnGameStarted
 {

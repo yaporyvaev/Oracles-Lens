@@ -2,9 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using LeagueActivityBot.Notifications.OnGameStarted;
+using LeagueActivityBot.Telegram.Extensions;
 using Telegram.Bot;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace LeagueActivityBot.Telegram.Handlers
 {
@@ -24,7 +23,7 @@ namespace LeagueActivityBot.Telegram.Handlers
             var messageBuilder = new OnGameStartedMessageBuilder();
             var message = messageBuilder.Build(notification);
 
-            await _tgClient.SendTextMessageAsync(new ChatId(_options.TelegramChatId), message, disableNotification: true, parseMode:ParseMode.Html);
+            await _tgClient.SendTextMessage(_options.TelegramChatId, message);
         }
     }
 }

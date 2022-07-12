@@ -11,8 +11,8 @@ namespace LeagueActivityBot.Helpers
             for (var i = 0; i < summoners.Length; i++)
             {
                 var summoner = summoners[i];
-                
-                namesStingBuilder.Append(summoner.Name);
+
+                namesStingBuilder.Append($"<b><i>{summoner.Name}</i></b>");
                 
                 if (i == summoners.Length - 2)
                 {
