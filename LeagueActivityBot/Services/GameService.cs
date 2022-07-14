@@ -58,6 +58,7 @@ namespace LeagueActivityBot.Services
             game.IsProcessed = true;
             game.GameStartTime = matchInfo.Info.GameStartTime;
             game.GameDurationInSeconds = matchInfo.Info.GameDurationInSeconds;
+            game.GameEnded = true;
             
             await _gameInfoRepository.Update(game);
         }
