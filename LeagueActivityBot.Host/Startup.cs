@@ -50,7 +50,7 @@ namespace LeagueActivityBot.Host
                 options.SummonerNames = Configuration["App:SummonerNames"].Split(";");
             });
             
-            //services.AddBackgroundJobs();
+            services.AddBackgroundJobs();
             services.AddNotifications<TelegramOptions>(options =>
             {
                 options.TelegramBotApiKey = Configuration["App:Telegram:ApiKey"];
@@ -73,9 +73,6 @@ namespace LeagueActivityBot.Host
             MigrationsRunner.ApplyMigrations(logger, serviceProvider, "LeagueActivityBot.Host").Wait();
             SummonersInitializer.Initialize(serviceProvider).Wait();
             TelegramNotification.SendNotification(serviceProvider,"Service started").Wait();
-            
-            GameParticipantsMigration.Run(serviceProvider).Wait();
-            TelegramNotification.SendNotification(serviceProvider,"Migration done").Wait();
 
             app.UseRouting();
             app.UseHealthChecks("/health");
