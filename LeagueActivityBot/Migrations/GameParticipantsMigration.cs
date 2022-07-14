@@ -56,7 +56,7 @@ namespace LeagueActivityBot.Migrations
 
                 await gameInfoRepository.Update(game);
                 
-                await Task.Delay(500);
+                await Task.Delay(1500);
             }
         }
     }
