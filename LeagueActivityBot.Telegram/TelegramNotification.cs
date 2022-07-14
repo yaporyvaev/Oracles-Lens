@@ -8,13 +8,13 @@ namespace LeagueActivityBot.Telegram
 {
     public class TelegramNotification
     {
-        public static async Task SendOnStartedUpNotification(IServiceProvider serviceProvider)
+        public static async Task SendNotification(IServiceProvider serviceProvider, string message)
         {
             using var scope = serviceProvider.CreateScope();
             var options = scope.ServiceProvider.GetService<TelegramOptions>();
 
             var tgClient = scope.ServiceProvider.GetService<TelegramBotClient>();
-            await tgClient.SendTextMessageAsync(new ChatId(options.TelegramLogChatId), "Service started");
+            await tgClient.SendTextMessageAsync(new ChatId(options.TelegramLogChatId), message);
         }
     }
 }

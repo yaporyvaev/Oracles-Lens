@@ -6,7 +6,7 @@ namespace LeagueActivityBot.Abstractions
     public interface IRiotClient
     {
         Task<SummonerInfo> GetSummonerInfoByName(string summonerName);
-        Task<CurrentGameInfo> GetCurrentGameInfo(string summonerId);
+        Task<SpectatorGameInfo> GetCurrentGameInfo(string summonerId);
         Task<MatchInfo> GetMatchInfo(long gameId);
         Task<LeagueInfo[]> GetLeagueInfo(string summonerId);
         Task<ClashInfo[]> GetClashSchedule();

@@ -30,6 +30,8 @@ namespace LeagueActivityBot
             
             serviceCollection.AddTransient<StartGameChecker>();
             serviceCollection.AddTransient<EndGameChecker>();
+            serviceCollection.AddTransient<GameService>();
+            serviceCollection.AddTransient<StatisticService>();
 
             return serviceCollection;
         }

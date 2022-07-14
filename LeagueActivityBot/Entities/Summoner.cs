@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using LeagueActivityBot.Abstractions;
 
 namespace LeagueActivityBot.Entities
@@ -11,5 +12,6 @@ namespace LeagueActivityBot.Entities
         public int Tier { get; set; }
         public int Rank { get; set; }       
         public int LeaguePoints { get; set; }
+        public IList<GameParticipant> GameParticipants { get; set; }
     }
 }

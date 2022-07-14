@@ -44,14 +44,14 @@ namespace LeagueActivityBot.Riot
                 $"Получение результата на запрос информации об аккаунте. Код: {response.StatusCode}, сообщение: {responseContent}");
         }
 
-        public async Task<CurrentGameInfo> GetCurrentGameInfo(string summonerId)
+        public async Task<SpectatorGameInfo> GetCurrentGameInfo(string summonerId)
         {
             var response = await _httpClient.GetAsync($"{_setting.SpectatorApiResource}/{summonerId}");
             var responseContent = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                var result = JsonConvert.DeserializeObject<CurrentGameInfo>(responseContent);
+                var result = JsonConvert.DeserializeObject<SpectatorGameInfo>(responseContent);
                 if (result != null) result.IsInGameNow = true;
 
                 return result;
@@ -59,7 +59,7 @@ namespace LeagueActivityBot.Riot
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                return new CurrentGameInfo
+                return new SpectatorGameInfo
                 {
                     IsInGameNow = false
                 };

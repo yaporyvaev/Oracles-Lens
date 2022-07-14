@@ -36,7 +36,6 @@ namespace LeagueActivityBot.Database.Repositories
 
         public async Task Update(T entity)
         {
-            _dbSet.Attach(entity);
             _appDbContext.Entry(entity).State = EntityState.Modified;
             await _appDbContext.SaveChangesAsync();
         }

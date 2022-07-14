@@ -1,16 +1,19 @@
+using System.Collections.Generic;
 using LeagueActivityBot.Entities;
+using LeagueActivityBot.Models;
 using MediatR;
 
 namespace LeagueActivityBot.Notifications.OnGameEnded
 {
     public class OnGameEndedNotification : INotification
     {
-        public Summoner[] Summoners { get; }
-        public long GameId { get; }
+        public IEnumerable<Summoner> Summoners { get; }
         
-        public OnGameEndedNotification(Summoner[] summoners, long gameId)
+        public MatchInfo MatchInfo { get; }
+        
+        public OnGameEndedNotification(IEnumerable<Summoner> summoners, MatchInfo matchInfo)
         {
-            GameId = gameId;
+            MatchInfo = matchInfo;
             Summoners = summoners;
         }
     }

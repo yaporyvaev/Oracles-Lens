@@ -14,14 +14,9 @@ namespace LeagueActivityBot.Helpers
             _summoners = summoners;
         }
 
-        public bool IsSoloGame(GameParticipant[] gameParticipants)
+        public IEnumerable<Summoner> GetSummonersInGame(SpectatorGameParticipant[] gameParticipants)
         {
-            return _summoners.Count(n => gameParticipants.Select(s => s.SummonerName).Contains(n.Name)) == 1;
-        }
-
-        public IEnumerable<Summoner> GetSummonersInGame(GameParticipant[] gameParticipants)
-        {
-            return _summoners.Where(n => gameParticipants.Select(s => s.SummonerName).Contains(n.Name));
+            return _summoners.Where(n => gameParticipants.Select(s => s.SummonerId).Contains(n.SummonerId));
         }
     }
 }

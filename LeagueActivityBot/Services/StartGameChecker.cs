@@ -11,7 +11,6 @@ using LeagueActivityBot.Notifications.OnSoloGameStarted;
 using LeagueActivityBot.Utils;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace LeagueActivityBot.Services
 {
@@ -62,12 +61,9 @@ namespace LeagueActivityBot.Services
                     var gameInfo = new GameInfo
                     {
                         GameId = currentGameInfo.GameId,
-                        IsProcessed = false,
                         QueueId = currentGameInfo.GameQueueConfigId,
-                        GameStartTime = DateTimeOffset.FromUnixTimeMilliseconds(currentGameInfo.GameStartTime)
-                            .LocalDateTime,
-                        SummonerNamesJson = JsonConvert.SerializeObject(gameParticipants.Select(p => p.Name))
                     };
+                    gameInfo.GameParticipants = gameParticipants.Select(s => new GameParticipant {SummonerId = s.Id, GameInfo = gameInfo}).ToList();
 
                     await _gameInfoRepository.Add(gameInfo);
 

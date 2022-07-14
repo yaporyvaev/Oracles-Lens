@@ -4,6 +4,7 @@ using AutoMapper;
 using LeagueActivityBot.BackgroundJobs;
 using LeagueActivityBot.Controllers;
 using LeagueActivityBot.Database;
+using LeagueActivityBot.Migrations;
 using LeagueActivityBot.Telegram;
 using LeagueActivityBot.Riot;
 using LeagueActivityBot.Riot.Configuration;
@@ -30,8 +31,8 @@ namespace LeagueActivityBot.Host
         {
             services.AddPostgreSqlStorage(options =>
             {
-                options.UseNpgsql(Configuration["App:DbConnectionString"]);
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                options.UseNpgsql(Configuration["App:DbConnectionString"]);
             });
             
             services.AddSingleton(new MapperConfiguration(mc =>
@@ -49,7 +50,7 @@ namespace LeagueActivityBot.Host
                 options.SummonerNames = Configuration["App:SummonerNames"].Split(";");
             });
             
-            services.AddBackgroundJobs();
+            //services.AddBackgroundJobs();
             services.AddNotifications<TelegramOptions>(options =>
             {
                 options.TelegramBotApiKey = Configuration["App:Telegram:ApiKey"];
@@ -71,8 +72,11 @@ namespace LeagueActivityBot.Host
         {
             MigrationsRunner.ApplyMigrations(logger, serviceProvider, "LeagueActivityBot.Host").Wait();
             SummonersInitializer.Initialize(serviceProvider).Wait();
-            TelegramNotification.SendOnStartedUpNotification(serviceProvider).Wait();
+            TelegramNotification.SendNotification(serviceProvider,"Service started").Wait();
             
+            GameParticipantsMigration.Run(serviceProvider).Wait();
+            TelegramNotification.SendNotification(serviceProvider,"Migration done").Wait();
+
             app.UseRouting();
             app.UseHealthChecks("/health");
             app.UseStaticFiles();

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
+using Newtonsoft.Json;
 
 namespace LeagueActivityBot.Models
 {
@@ -13,6 +13,11 @@ namespace LeagueActivityBot.Models
     {
         public MatchParticipant[] Participants { get; set; }
         public int QueueId { get; set; }
+        public long GameStartTimestamp { get; set;}
+        public DateTime GameStartTime => DateTimeOffset.FromUnixTimeMilliseconds(GameStartTimestamp).LocalDateTime;
+        
+        [JsonProperty(PropertyName = "gameDuration")]
+        public long GameDurationInSeconds { get; set;}
 
         public double GetTeamDamage(int teamId)
         {
@@ -36,18 +41,21 @@ namespace LeagueActivityBot.Models
         public string SummonerName { get; set; }
         
         public string ChampionName { get; set; }
+        public int ChampionId { get; set; }
         public int TeamId { get; set; }
         public bool Win { get; set; }
         public bool GameEndedInEarlySurrender { get; set; }
         public bool GameEndedInSurrender { get; set; }
+        public bool FirstBloodKill { get; set; }
         
         public int TotalMinionsKilled { get; set; }
         
         public int VisionScore { get; set; }
+        public int PentaKills { get; set; }
+        public int DetectorWardsPlaced { get; set; }
 
         public string GetCreepScore() => $"{TotalMinionsKilled} CS";
         public string GetVisionScore() => $"{VisionScore} VS";
-        
         public double Kda
         {
             get
@@ -56,18 +64,14 @@ namespace LeagueActivityBot.Models
                 return (double)(Kills + Assists) / divider;
             }
         }
-
         public string GetScore()
         {
             return $"KDA {Kills}/{Deaths}/{Assists}";
         }
-        
         public string GetDamage(double teamDamage)
         {
             var damagePercentage = Math.Round(TotalDamageDealtToChampions / teamDamage * 100);
             return $"{TotalDamageDealtToChampions.ToString($"#,#")} ({damagePercentage}%) dmg";
         }
-        
-        
     }
 }

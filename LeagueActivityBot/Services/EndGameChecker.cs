@@ -1,11 +1,12 @@
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Notifications.OnGameEnded;
 using LeagueActivityBot.Notifications.OnSoloGameEnded;
 using MediatR;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace LeagueActivityBot.Services
@@ -13,36 +14,30 @@ namespace LeagueActivityBot.Services
     public class EndGameChecker
     {
         private readonly IRepository<GameInfo> _gameInfoRepository;
-        private readonly IRepository<Summoner> _summonerRepository;
         private readonly IRiotClient _riotClient;
-        private readonly ILogger<EndGameChecker> _logger;
-        private readonly IMediator _mediator;
+        private readonly GameService _gameService;
 
         public EndGameChecker(
             IRepository<GameInfo> gameInfoRepository, 
-            IMediator mediator,
-            IRiotClient riotClient, 
-            ILogger<EndGameChecker> logger, 
-            IRepository<Summoner> summonerRepository)
+            IRiotClient riotClient, GameService gameService)
         {
             _gameInfoRepository = gameInfoRepository;
-            _mediator = mediator;
             _riotClient = riotClient;
-            _logger = logger;
-            _summonerRepository = summonerRepository;
+            _gameService = gameService;
         }
 
         public async Task Check()
         {
-            var games = _gameInfoRepository.GetAll().Where(g => !g.IsProcessed).ToList();
+            var games = await _gameInfoRepository.GetAll()
+                .Include(g => g.GameParticipants)
+                .ThenInclude(p => p.Summoner)
+                .Where(g => !g.IsProcessed)
+                .ToListAsync();
 
             foreach (var game in games)
             {
-                var participants = JsonConvert.DeserializeObject<string[]>(game.SummonerNamesJson);
-                var participantName = participants!.First();
-                var summoner = _summonerRepository.GetAll().FirstOrDefault(s => s.Name == participantName);
-                
-                var currentGameInfo = await _riotClient.GetCurrentGameInfo(summoner!.SummonerId);
+                var summoners = game.GameParticipants.Select(p => p.Summoner);
+                var currentGameInfo = await _riotClient.GetCurrentGameInfo(summoners!.First()!.SummonerId);
 
                 if (currentGameInfo.IsInGameNow)
                 {
@@ -50,18 +45,7 @@ namespace LeagueActivityBot.Services
                         continue;
                 }
 
-                var summoners = _summonerRepository.GetAll().Where(s => participants.Contains(s.Name)).ToArray();
-                if (summoners.Length > 1)
-                {
-                    await _mediator.Publish(new OnGameEndedNotification(summoners, game.GameId));
-                }
-                else
-                {
-                    await _mediator.Publish(new OnSoloGameEndedNotification(summoners.First(), game.GameId));
-                }
-
-                game.IsProcessed = true;
-                await _gameInfoRepository.Update(game);
+                await _gameService.ProcessEndGame(game);
             }
         }
     }

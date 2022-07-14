@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using LeagueActivityBot.Telegram.BotCommands;
 using LeagueActivityBot.Telegram.BotCommands.AddSummoner;
 using LeagueActivityBot.Telegram.BotCommands.Cancel;
+using LeagueActivityBot.Telegram.BotCommands.GetStatistic;
 using LeagueActivityBot.Telegram.BotCommands.GetSummoners;
 using LeagueActivityBot.Telegram.BotCommands.RemoveSummoner;
 using LeagueActivityBot.Telegram.Handlers;
@@ -37,6 +38,7 @@ namespace LeagueActivityBot.Telegram
             serviceCollection.AddTransient<RemoveSummonerCommand>();
             serviceCollection.AddTransient<CancelCommand>();
             serviceCollection.AddTransient<GetSummonersCommand>();
+            serviceCollection.AddTransient<GetStatisticCommand>();
             
             serviceCollection.AddTransient<CommandHandler>();
 

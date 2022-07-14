@@ -1,4 +1,5 @@
 ﻿using LeagueActivityBot.Entities;
+using LeagueActivityBot.Models;
 using MediatR;
 
 namespace LeagueActivityBot.Notifications.OnSoloGameEnded
@@ -6,12 +7,12 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
     public class OnSoloGameEndedNotification : INotification
     {
         public Summoner Summoner { get; }
-        public long GameId { get; }
+        public MatchInfo MatchInfo { get; }
         
-        public OnSoloGameEndedNotification(Summoner summoner, long gameId)
+        public OnSoloGameEndedNotification(Summoner summoner, MatchInfo matchInfo)
         {
             Summoner = summoner;
-            GameId = gameId;
+            MatchInfo = matchInfo;
         }
     }
 }

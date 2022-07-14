@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using LeagueActivityBot.Abstractions;
 
 namespace LeagueActivityBot.Entities
@@ -7,8 +8,10 @@ namespace LeagueActivityBot.Entities
     {
         public long GameId { get; set; }
         public long QueueId { get; set; }
-        public DateTime GameStartTime { get; set; }
-        public string SummonerNamesJson { get; set; }
+        public DateTime? GameStartTime { get; set; }
+        public long? GameDurationInSeconds { get; set; }
+        public bool GameEnded { get; set; }
         public bool IsProcessed { get; set; }
+        public IList<GameParticipant> GameParticipants { get; set; }
     }
 }

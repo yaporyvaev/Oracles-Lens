@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
@@ -11,20 +8,14 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
 {
     public class OnGameEndedMessageBuilder
     {
-        private readonly IRiotClient _riotClient;
         private MatchInfo _matchInfo;
         private Summoner[] _summoners;
-
-        public OnGameEndedMessageBuilder(IRiotClient riotClient)
+        
+        public string Build(OnGameEndedNotification notification)
         {
-            _riotClient = riotClient;
-        }
-
-        public async Task<string> Build(OnGameEndedNotification notification)
-        {
-            _matchInfo = await _riotClient.GetMatchInfo(notification.GameId);
+            _matchInfo = notification.MatchInfo;
             if (_matchInfo == null) return string.Empty;
-            _summoners = notification.Summoners;
+            _summoners = notification.Summoners.ToArray();
             
             var sb = new StringBuilder($"Team {GetAction()}\n\n{GetStats()}");
             return sb.ToString();

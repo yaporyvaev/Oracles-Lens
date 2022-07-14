@@ -22,7 +22,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
 
         public async Task<string> Build(OnSoloGameEndedNotification notification)
         {
-            _matchInfo = await _riotClient.GetMatchInfo(notification.GameId);
+            _matchInfo = notification.MatchInfo;
             if (_matchInfo == null) return string.Empty;
             
             _summonersStat = _matchInfo.Info.Participants.First(p => p.SummonerName == notification.Summoner.Name);
