@@ -16,6 +16,7 @@ namespace LeagueActivityBot.Migrations
             var riotClient = scope.ServiceProvider.GetService<IRiotClient>();
             var summonerRepository = scope.ServiceProvider.GetService<IRepository<Summoner>>();
             var gameInfoRepository = scope.ServiceProvider.GetService<IRepository<GameInfo>>();
+            var gameParticipantRepository = scope.ServiceProvider.GetService<IRepository<GameParticipant>>();
             
             var games = gameInfoRepository.GetAll().ToArray();
             var summonerIds = summonerRepository.GetAll().Select(s => s.SummonerId);
@@ -47,7 +48,8 @@ namespace LeagueActivityBot.Migrations
                         DetectorWardsPlaced = matchParticipant.DetectorWardsPlaced,
                         FirstBloodKill = matchParticipant.FirstBloodKill
                     };
-                    game.GameParticipants.Add(participant);
+                    
+                    await gameParticipantRepository.Add(participant);
                 }
                 
                 game.GameEnded = true;

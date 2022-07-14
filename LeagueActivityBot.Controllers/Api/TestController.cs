@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LeagueActivityBot.Controllers.Api
 {
@@ -8,7 +9,7 @@ namespace LeagueActivityBot.Controllers.Api
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok();
+            return Ok(DateTime.Now.Date);
         }
     }
 }
