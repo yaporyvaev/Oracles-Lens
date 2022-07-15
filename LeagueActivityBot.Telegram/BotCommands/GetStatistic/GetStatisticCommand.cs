@@ -24,8 +24,11 @@ namespace LeagueActivityBot.Telegram.BotCommands.GetStatistic
         {
             using var serviceScope = _serviceProvider.CreateScope();
             var statisticService = serviceScope.ServiceProvider.GetService<StatisticService>();
+
+            int.TryParse(payload, out var days);
+            if (days != 0) days -= 1;
             
-            var statistics = (await statisticService.GetDailyStatistic()).ToArray();
+            var statistics = (await statisticService.GetStatistic(days)).ToArray();
             var sb = new StringBuilder();
 
             if (statistics.Any())
@@ -39,7 +42,7 @@ namespace LeagueActivityBot.Telegram.BotCommands.GetStatistic
             }
             else
             {
-                sb.Append("There is no statistic for current day.");
+                sb.Append("New day, new wins!");
             }
 
             return new CommandState(BotCommandsTypes.GetStatistic, commandOwnerId, new FinishCommandHandlingState(sb.ToString()));
