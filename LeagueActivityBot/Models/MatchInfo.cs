@@ -53,9 +53,15 @@ namespace LeagueActivityBot.Models
         public int VisionScore { get; set; }
         public int PentaKills { get; set; }
         public int DetectorWardsPlaced { get; set; }
+        public int TotalDamageTaken {get; set; }
+        public int TotalHeal {get; set; }
 
         public string GetCreepScore() => $"{TotalMinionsKilled} CS";
         public string GetVisionScore() => $"{VisionScore} VS";
+        public string GetDamageTakenScore() => $"{TotalDamageTaken} DMG TAKEN";
+        public string GetHealScore() => $"{TotalDamageTaken} HEAL";
+
+
         public double Kda
         {
             get

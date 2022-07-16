@@ -35,7 +35,7 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
                 
                 if (_matchInfo.Info.QueueId != (int)QueueType.ARAM)
                 {
-                    sb.Append($" {stat.GetCreepScore()}, {stat.GetVisionScore()}.");
+                    sb.Append($" {stat.GetCreepScore()}, {stat.GetVisionScore()}, {stat.GetDamageTakenScore()}, {stat.GetHealScore()}.");
                 }
                 
                 sb.Append("\n\n");
