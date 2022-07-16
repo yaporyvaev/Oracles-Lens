@@ -17,7 +17,7 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
             if (_matchInfo == null) return string.Empty;
             _summoners = notification.Summoners.ToArray();
             
-            var sb = new StringBuilder($"Team {GetAction()} {_matchInfo.Info.GetMatchDuration()}\n\n{GetStats()}");
+            var sb = new StringBuilder($"Team {GetAction()}\n\n{GetStats()}");
             return sb.ToString();
         }
 

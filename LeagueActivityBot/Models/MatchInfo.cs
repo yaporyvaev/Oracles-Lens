@@ -65,8 +65,8 @@ namespace LeagueActivityBot.Models
 
         public string GetCreepScore() => $"{TotalMinionsKilled + NeutralMinionsKilled} CS";
         public string GetVisionScore() => $"{VisionScore} VS";
-        public string GetDamageTakenScore() => $"{TotalDamageTaken:# #} dmg taken";
-        public string GetHealScore() => $"{TotalHeal:# #} healed";
+        public string GetDamageTakenScore() => $"{TotalDamageTaken:#,#} dmg taken";
+        public string GetHealScore() => $"{TotalHeal:#,#} healed";
 
         public double Kda
         {
@@ -83,7 +83,7 @@ namespace LeagueActivityBot.Models
         public string GetDamage(double teamDamage)
         {
             var damagePercentage = Math.Round(TotalDamageDealtToChampions / teamDamage * 100);
-            return $"{TotalDamageDealtToChampions:# #} ({damagePercentage}%) dmg";
+            return $"{TotalDamageDealtToChampions:#,#} ({damagePercentage}%) dmg";
         }
     }
 }
