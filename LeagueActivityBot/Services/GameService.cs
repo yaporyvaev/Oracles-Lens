@@ -5,6 +5,7 @@ using LeagueActivityBot.Entities;
 using LeagueActivityBot.Notifications.OnGameEnded;
 using LeagueActivityBot.Notifications.OnSoloGameEnded;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace LeagueActivityBot.Services
 {
@@ -14,19 +15,26 @@ namespace LeagueActivityBot.Services
         private readonly IRepository<GameParticipant> _gameParticipantRepository;
         private readonly IRiotClient _riotClient;
         private readonly IMediator _mediator;
-
-        public GameService(IRepository<GameInfo> gameInfoRepository, IRiotClient riotClient, IMediator mediator, IRepository<GameParticipant> gameParticipantRepository)
+        private readonly ILogger<GameService> _logger;
+        
+        public GameService(IRepository<GameInfo> gameInfoRepository, IRiotClient riotClient, IMediator mediator, IRepository<GameParticipant> gameParticipantRepository, ILogger<GameService> logger)
         {
             _gameInfoRepository = gameInfoRepository;
             _riotClient = riotClient;
             _mediator = mediator;
             _gameParticipantRepository = gameParticipantRepository;
+            _logger = logger;
         }
 
         public async Task ProcessEndGame(GameInfo game)
         {
             var summoners = game.GameParticipants.Select(p => p.Summoner).ToArray();
             var matchInfo = await _riotClient.GetMatchInfo(game.GameId);
+
+            if (matchInfo == null)
+            {
+                _logger.LogError($"matchInfo is null {game.GameId}");
+            }
             
             if (summoners.Length > 1)
             {
@@ -39,7 +47,13 @@ namespace LeagueActivityBot.Services
             
             foreach (var participant in game.GameParticipants)
             {
-                var matchParticipant = matchInfo.Info.Participants.First(p => p.SummonerId == participant.Summoner.SummonerId);
+                var matchParticipant = matchInfo.Info.Participants.FirstOrDefault(p => p.SummonerId == participant.Summoner.SummonerId);
+                
+                if (matchParticipant == null)
+                {
+                    _logger.LogError($"participant is null {participant.Summoner.SummonerId}");
+                }
+                
                 participant.Assists = matchParticipant.Assists;
                 participant.Deaths = matchParticipant.Deaths;
                 participant.Kills = matchParticipant.Kills;
