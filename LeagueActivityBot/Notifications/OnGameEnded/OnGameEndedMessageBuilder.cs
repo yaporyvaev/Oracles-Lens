@@ -17,7 +17,7 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
             if (_matchInfo == null) return string.Empty;
             _summoners = notification.Summoners.ToArray();
             
-            var sb = new StringBuilder($"Team {GetAction()}\n\n{GetStats()}");
+            var sb = new StringBuilder($"Team {GetAction()} {_matchInfo.Info.GetMatchDuration()}\n\n{GetStats()}");
             return sb.ToString();
         }
 
@@ -31,13 +31,15 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
             foreach (var summoner in _summoners)
             {
                 var stat = _matchInfo.Info.Participants.First(p => p.SummonerName == summoner.Name);
-                sb.Append($"<b><i>{summoner.Name}</i></b> on {stat.ChampionName}.\n{stat.GetScore()}, {stat.GetDamage(stat.TeamId == 100? team1Damage : team2Damage)}\n{stat.GetDamageTakenScore()}, {stat.GetHealScore()}");
+                sb.Append($"<b><i>{summoner.Name}</i></b> on {stat.ChampionName}.\n{stat.GetScore()}, {stat.GetDamage(stat.TeamId == 100? team1Damage : team2Damage)}.");
                 
                 if (_matchInfo.Info.QueueId != (int)QueueType.ARAM)
                 {
-                    sb.Append($"\n{stat.GetCreepScore()}, {stat.GetVisionScore()}.");
+                    sb.Append($" {stat.GetCreepScore()}, {stat.GetVisionScore()}.");
                 }
                 
+                sb.Append($"\n{stat.GetDamageTakenScore()}, {stat.GetHealScore()}.");
+
                 sb.Append("\n\n");
             }
 

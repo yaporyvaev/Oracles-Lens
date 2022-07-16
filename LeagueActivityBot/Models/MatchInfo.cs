@@ -27,6 +27,12 @@ namespace LeagueActivityBot.Models
 
             return teamDamage;
         }
+
+        public string GetMatchDuration()
+        {
+            var timeSpan = TimeSpan.FromSeconds(GameDurationInSeconds);
+            return $"Duration {timeSpan:mm\\:ss}.";
+        }
     }
 
     public class MatchParticipant
@@ -59,8 +65,8 @@ namespace LeagueActivityBot.Models
 
         public string GetCreepScore() => $"{TotalMinionsKilled + NeutralMinionsKilled} CS";
         public string GetVisionScore() => $"{VisionScore} VS";
-        public string GetDamageTakenScore() => $"{TotalDamageTaken.ToString($"#,#")} dmg taken";
-        public string GetHealScore() => $"{TotalHeal.ToString($"#,#")} healed";
+        public string GetDamageTakenScore() => $"{TotalDamageTaken:# #} dmg taken";
+        public string GetHealScore() => $"{TotalHeal:# #} healed";
 
         public double Kda
         {
@@ -77,7 +83,7 @@ namespace LeagueActivityBot.Models
         public string GetDamage(double teamDamage)
         {
             var damagePercentage = Math.Round(TotalDamageDealtToChampions / teamDamage * 100);
-            return $"{TotalDamageDealtToChampions.ToString($"#,#")} ({damagePercentage}%) dmg";
+            return $"{TotalDamageDealtToChampions:# #} ({damagePercentage}%) dmg";
         }
     }
 }

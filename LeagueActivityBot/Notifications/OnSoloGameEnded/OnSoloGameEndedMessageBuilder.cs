@@ -28,13 +28,15 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             _summonersStat = _matchInfo.Info.Participants.First(p => p.SummonerName == notification.Summoner.Name);
             _summoner = notification.Summoner;
             
-            var sb = new StringBuilder($"<b><i>{_summoner.Name}</i></b> {GetAction()} {GetChampion()}.\n{_summonersStat.GetScore()}, {GetDamage()}\n{_summonersStat.GetDamageTakenScore()}, {_summonersStat.GetHealScore()}");
+            var sb = new StringBuilder($"<b><i>{_summoner.Name}</i></b> {GetAction()} {GetChampion()}. {_matchInfo.Info.GetMatchDuration()}\n{_summonersStat.GetScore()}, {GetDamage()}.");
 
             if (_matchInfo.Info.QueueId != (int)QueueType.ARAM)
             {
                 sb.Append($"\n{_summonersStat.GetCreepScore()}, {_summonersStat.GetVisionScore()}.");
             }
             
+            sb.Append($"\n{_summonersStat.GetDamageTakenScore()}, {_summonersStat.GetHealScore()}.");
+
             if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo)
             {
                 sb.Append($"\n{await GetRankedStat()}");
