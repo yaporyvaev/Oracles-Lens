@@ -59,8 +59,8 @@ namespace LeagueActivityBot.Models
 
         public string GetCreepScore() => $"{TotalMinionsKilled + NeutralMinionsKilled} CS";
         public string GetVisionScore() => $"{VisionScore} VS";
-        public string GetDamageTakenScore() => $"{TotalDamageTaken.ToString($"#,#")} DMG TAKEN";
-        public string GetHealScore() => $"{TotalHeal.ToString($"#,#")} HEAL";
+        public string GetDamageTakenScore() => $"{TotalDamageTaken.ToString($"#,#")} dmg taken";
+        public string GetHealScore() => $"{TotalHeal.ToString($"#,#")} healed";
 
         public double Kda
         {

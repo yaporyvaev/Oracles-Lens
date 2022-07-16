@@ -31,11 +31,11 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
             foreach (var summoner in _summoners)
             {
                 var stat = _matchInfo.Info.Participants.First(p => p.SummonerName == summoner.Name);
-                sb.Append($"<b><i>{summoner.Name}</i></b> on {stat.ChampionName}.\n{stat.GetScore()}, {stat.GetDamage(stat.TeamId == 100? team1Damage : team2Damage)}.");
+                sb.Append($"<b><i>{summoner.Name}</i></b> on {stat.ChampionName}.\n{stat.GetScore()}, {stat.GetDamage(stat.TeamId == 100? team1Damage : team2Damage)}\n{stat.GetDamageTakenScore()}, {stat.GetHealScore()}");
                 
                 if (_matchInfo.Info.QueueId != (int)QueueType.ARAM)
                 {
-                    sb.Append($" {stat.GetCreepScore()}, {stat.GetVisionScore()}\n {stat.GetDamageTakenScore()}, {stat.GetHealScore()}.");
+                    sb.Append($"\n{stat.GetCreepScore()}, {stat.GetVisionScore()}.");
                 }
                 
                 sb.Append("\n\n");
