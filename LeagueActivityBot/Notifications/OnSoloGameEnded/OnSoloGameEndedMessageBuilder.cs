@@ -32,7 +32,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
 
             if (_matchInfo.Info.QueueId != (int)QueueType.ARAM)
             {
-                sb.Append($" {_summonersStat.GetCreepScore()}, {_summonersStat.GetVisionScore()}, {_summonersStat.GetDamageTakenScore()}, {_summonersStat.GetHealScore()}.");
+                sb.Append($" {_summonersStat.GetCreepScore()}, {_summonersStat.GetVisionScore()}\n {_summonersStat.GetDamageTakenScore()}, {_summonersStat.GetHealScore()}.");
             }
             
             if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo)
