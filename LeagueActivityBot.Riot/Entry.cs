@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using JetBrains.Annotations;
 using LeagueActivityBot.Abstractions;
@@ -41,7 +42,7 @@ namespace LeagueActivityBot.Riot
         {
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.TooManyRequests || msg.StatusCode == HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
         }
     }

@@ -30,11 +30,6 @@ namespace LeagueActivityBot.Services
         {
             var summoners = game.GameParticipants.Select(p => p.Summoner).ToArray();
             var matchInfo = await _riotClient.GetMatchInfo(game.GameId);
-
-            if (matchInfo == null)
-            {
-                _logger.LogError($"matchInfo is null {game.GameId}");
-            }
             
             if (summoners.Length > 1)
             {
@@ -47,13 +42,7 @@ namespace LeagueActivityBot.Services
             
             foreach (var participant in game.GameParticipants)
             {
-                var matchParticipant = matchInfo.Info.Participants.FirstOrDefault(p => p.SummonerId == participant.Summoner.SummonerId);
-                
-                if (matchParticipant == null)
-                {
-                    _logger.LogError($"participant is null {participant.Summoner.SummonerId}");
-                }
-                
+                var matchParticipant = matchInfo.Info.Participants.First(p => p.SummonerId == participant.Summoner.SummonerId);
                 participant.Assists = matchParticipant.Assists;
                 participant.Deaths = matchParticipant.Deaths;
                 participant.Kills = matchParticipant.Kills;
