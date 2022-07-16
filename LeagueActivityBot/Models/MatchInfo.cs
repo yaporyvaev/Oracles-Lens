@@ -49,12 +49,13 @@ namespace LeagueActivityBot.Models
         public bool FirstBloodKill { get; set; }
         
         public int TotalMinionsKilled { get; set; }
+        public int NeutralMinionsKilled { get; set; }
         
         public int VisionScore { get; set; }
         public int PentaKills { get; set; }
         public int DetectorWardsPlaced { get; set; }
 
-        public string GetCreepScore() => $"{TotalMinionsKilled} CS";
+        public string GetCreepScore() => $"{TotalMinionsKilled + NeutralMinionsKilled} CS";
         public string GetVisionScore() => $"{VisionScore} VS";
         public double Kda
         {
