@@ -24,6 +24,13 @@ namespace LeagueActivityBot.BackgroundJobs
                     .ForJob(endGameCheckerJobKey)
                     .WithIdentity("endGameCheckerJob-trigger")
                     .WithCronSchedule("1 * * ? * *"));
+                
+                var clashScheduleCheckerJobKey = new JobKey("ClashScheduleCheckerJob");
+                q.AddJob<ClashScheduleCheckerJob>(opts => opts.WithIdentity(clashScheduleCheckerJobKey));
+                q.AddTrigger(opts => opts
+                    .ForJob(clashScheduleCheckerJobKey)
+                    .WithIdentity("clashScheduleCheckerJob-trigger")
+                    .WithCronSchedule("0 20 * * *"));
             });
             
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

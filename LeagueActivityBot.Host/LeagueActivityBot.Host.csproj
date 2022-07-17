@@ -7,6 +7,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LeagueActivityBot.BackgroundJobs\LeagueActivityBot.BackgroundJobs.csproj" />
+      <ProjectReference Include="..\LeagueActivityBot.Calendar\LeagueActivityBot.Calendar.csproj" />
       <ProjectReference Include="..\LeagueActivityBot.Controllers\LeagueActivityBot.Controllers.csproj" />
       <ProjectReference Include="..\LeagueActivityBot.Database\LeagueActivityBot.Database.csproj" />
       <ProjectReference Include="..\LeagueActivityBot.Telegram\LeagueActivityBot.Telegram.csproj" />

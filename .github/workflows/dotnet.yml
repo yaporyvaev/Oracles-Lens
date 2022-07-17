@@ -26,7 +26,8 @@ jobs:
         App.Telegram.ApiKey: ${{ secrets.APP_TELEGRAM_API_KEY }}
         App.Telegram.ChatId: ${{ secrets.APP_TELEGRAM_CHAT_ID }}
         App.Telegram.LogChatId: ${{ secrets.APP_TELEGRAM_LOGCHAT_ID }}
-        App.SummonerNames: ${{ secrets.APP_SUMMONER_NAMES }}
+        App.Calendar.BaseUrl: ${{ secrets.APP_CALENDAR_BASEURL }}
+        App.Calendar.ApiKey: ${{ secrets.APP_CALENDAR_API_KEY }}
         App.Riot.ApiKey: ${{ secrets.APP_RIOT_APIKEY }}
         Serilog.File.Path: ${{ secrets.LOG_PATH }}
         

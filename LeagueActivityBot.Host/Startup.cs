@@ -2,6 +2,8 @@ using System;
 using System.Reflection;
 using AutoMapper;
 using LeagueActivityBot.BackgroundJobs;
+using LeagueActivityBot.Calendar;
+using LeagueActivityBot.Calendar.Integration;
 using LeagueActivityBot.Controllers;
 using LeagueActivityBot.Database;
 using LeagueActivityBot.Migrations;
@@ -44,6 +46,7 @@ namespace LeagueActivityBot.Host
             services.AddMemoryCache();
             services.AddHealthChecks();
             services.AddRiot<RiotClientOptions>(options => Configuration.GetSection("App:Riot").Bind(options));
+            services.AddCalendar<CalendarClientOptions>(options => Configuration.GetSection("App:Calendar").Bind(options));
 
             services.AddBot<BotOptions>(options =>
             {
@@ -61,7 +64,8 @@ namespace LeagueActivityBot.Host
             services.AddMediatR(
                 Assembly.GetAssembly(typeof(Telegram.Entry)), 
                 Assembly.GetAssembly(typeof(Entry)),
-                Assembly.GetAssembly(typeof(BackgroundJobs.Entry)));
+                Assembly.GetAssembly(typeof(BackgroundJobs.Entry)),
+                Assembly.GetAssembly(typeof(Calendar.Entry)));
 
             services.AddMvc()
                 .AddApi()

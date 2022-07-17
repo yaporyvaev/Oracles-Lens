@@ -17,7 +17,7 @@ namespace LeagueActivityBot.Riot.Configuration
             
             CreateMap<ClashInfoResponseModel, ClashInfo>(MemberList.Destination)
                 .ForMember(d => d.Name, opt =>
-                    opt.MapFrom(s => string.Concat(s.NameKey[0].ToString().ToUpper(), s.NameKey.Substring(1))))
+                    opt.MapFrom(s => string.Concat(s.NameKey[0].ToString().ToUpper(), s.NameKey.Substring(1)).Replace("_", " ")))
                 .ForMember(d => d.SecondaryName, opt =>
                     opt.MapFrom(s => s.NameKeySecondary.Replace("_", " ")));
         }
