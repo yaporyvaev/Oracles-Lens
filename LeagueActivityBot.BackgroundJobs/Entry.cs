@@ -30,7 +30,7 @@ namespace LeagueActivityBot.BackgroundJobs
                 q.AddTrigger(opts => opts
                     .ForJob(clashScheduleCheckerJobKey)
                     .WithIdentity("clashScheduleCheckerJob-trigger")
-                    .WithCronSchedule("0 20 * * *"));
+                    .WithCronSchedule("5 20 * ? * *"));
             });
             
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
