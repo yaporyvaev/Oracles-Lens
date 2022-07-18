@@ -29,7 +29,7 @@ namespace LeagueActivityBot.Calendar
 
             var requestModels = clashInfoDtos.Select(c => new AddEventRequestModel
             {
-                Summary = c.Name,
+                Summary = "Clash",
                 EventId = GenerateSourceId(c),
                 EndDate = c.EndTime,
                 StartDate = c.RegistrationTime
