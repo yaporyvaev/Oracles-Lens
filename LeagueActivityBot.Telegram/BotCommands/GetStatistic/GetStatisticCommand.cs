@@ -27,6 +27,8 @@ namespace LeagueActivityBot.Telegram.BotCommands.GetStatistic
 
             int.TryParse(payload, out var days);
             if (days != 0) days -= 1;
+            if (days < 0) days = 0;
+            if (days > 5000) days = 5000;
             
             var statistics = (await statisticService.GetStatistic(days)).ToArray();
             var sb = new StringBuilder();
