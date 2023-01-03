@@ -1,0 +1,24 @@
+name: Deploy bot
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        # Required, playbook filepath
+        playbook: deploy-bot.yaml.yaml
+        directory: ./ci/
+        # Optional, SSH private key
+        key: ${{secrets.REMOTE_SSH_KEY}}
+        # Optional, literal inventory file contents
+        inventory: |
+          [all]
+          ${{secrets.REMOTE_HOST}}
+        options: |
+          --extra-vars postgres_password=${{secrets.DB_PASSWORD}}
