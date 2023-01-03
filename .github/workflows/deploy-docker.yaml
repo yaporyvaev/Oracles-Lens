@@ -4,7 +4,9 @@ on: [workflow_dispatch]
 
 jobs:
   build:
-
+    defaults:
+      run:
+        working-directory: ./ci/
     runs-on: ubuntu-20.04
 
     steps:
@@ -13,8 +15,6 @@ jobs:
       with:
         # Required, playbook filepath
         playbook: deploy-docker.yml
-        # Optional, directory where playbooks live
-        directory: "./ci/"
         # Optional, SSH private key
         key: ${{secrets.REMOTE_SSH_KEY}}
         # Optional, literal inventory file contents
