@@ -1,0 +1,27 @@
+name: Install postgres
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        # Required, playbook filepath
+        playbook: deploy-postgres.yaml
+        directory: ./ci/
+        # Optional, SSH private key
+        key: ${{secrets.REMOTE_SSH_KEY}}
+        # Optional, literal inventory file contents
+        inventory: |
+          [all]
+          ${{secrets.REMOTE_HOST}}
+        options: |
+          --inventory .hosts
+          --limit group1
+          --extra-vars postgres_password=${{secrets.DB_PASSWORD}}
+          --verbose
