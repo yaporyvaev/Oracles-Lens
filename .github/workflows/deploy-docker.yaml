@@ -14,7 +14,7 @@ jobs:
         # Required, playbook filepath
         playbook: deploy-docker.yml
         # Optional, directory where playbooks live
-        directory: "../../ci/"
+        directory: "/ci/"
         # Optional, SSH private key
         key: ${{secrets.REMOTE_SSH_KEY}}
         # Optional, literal inventory file contents
