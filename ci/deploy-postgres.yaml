@@ -1,0 +1,26 @@
+---
+- name: Deploy postgres
+  vars:
+    - container_name: postgres
+    - image_name: postgres
+    # - ansible_ssh_private_key_file: "../oracle"
+  remote_user: root
+  hosts: all
+  tasks:
+    - name: start container with new version
+      docker_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}"
+        pull: true
+        state: started
+        network_mode: host
+        restart_policy: unless-stopped
+        env:
+          POSTGRES_PASSWORD: "yarickcock"
+
+      register: deploy_db
+
+    - name: prune docker on {{ansible_host}}
+      shell: docker image prune -a --filter "until=72h" --force
+      when:
+        - deploy_db.container.State.Running
