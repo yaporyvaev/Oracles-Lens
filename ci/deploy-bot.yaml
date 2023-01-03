@@ -1,0 +1,47 @@
+---
+- hosts: all
+# - hosts: 213.183.45.30
+  remote_user: root
+  vars:
+    - container_name: oracle-lens
+    - image_name: oracle-lens
+    # - ansible_ssh_private_key_file: "../oracle"
+  tasks:
+    # - name: create build directory
+    #   file:
+    #     path: /root/demo-dockerfile
+    #     state: directory
+    #     owner: root
+    #     group: root
+    #     mode: '0755'
+    # - name: copy Dockerfile
+    #   copy:
+    #     src: ./Dockerfile
+    #     dest: /root/demo-dockerfile/Dockerfile
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+    - name: build container image
+      docker_image:
+        name: "{{ image_name }}"
+        build:
+          path: "../"
+          dockerfile: "../Dockerfile"
+        source: build
+        state: present
+
+    - name: start container with new version
+      docker_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}"
+        pull: true
+        state: started
+        network_mode: host
+        restart_policy: unless-stopped
+      register: deploy_service
+
+    - name: prune docker on {{ansible_host}}
+      shell: docker image prune -a --filter "until=72h" --force
+      when:
+        - deploy_service.container.State.Running
+
