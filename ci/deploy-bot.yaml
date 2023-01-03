@@ -1,13 +1,11 @@
 ---
 - hosts: all
-# - hosts: 213.183.45.30
   remote_user: root
   vars:
     - container_name: oracle-lens
     - image_name: oracle-lens
-    - ansible_ssh_private_key_file: "../oracle"
+    # - ansible_ssh_private_key_file: "../oracle"
   tasks:
-
     - name: build container image
       command: "docker build -t {{image_name}} -f ../Dockerfile ../"
       delegate_to: 127.0.0.1
