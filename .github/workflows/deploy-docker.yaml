@@ -11,7 +11,7 @@ jobs:
       uses: dawidd6/action-ansible-playbook@v2
       with:
         # Required, playbook filepath
-        playbook: ./ci/deploy-docker.yml
+        playbook: ./ci/deploy-docker.yaml
         # Optional, SSH private key
         key: ${{secrets.REMOTE_SSH_KEY}}
         # Optional, literal inventory file contents
