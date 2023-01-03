@@ -21,7 +21,4 @@ jobs:
           [all]
           ${{secrets.REMOTE_HOST}}
         options: |
-          --inventory .hosts
-          --limit group1
           --extra-vars postgres_password=${{secrets.DB_PASSWORD}}
-          --verbose
