@@ -5,58 +5,20 @@
   vars:
     - container_name: oracle-lens
     - image_name: oracle-lens
-    # - ansible_ssh_private_key_file: "../oracle"
+    - ansible_ssh_private_key_file: "../oracle"
   tasks:
-    # - name: create build directory
-    #   file:
-    #     path: /root/demo-dockerfile
-    #     state: directory
-    #     owner: root
-    #     group: root
-    #     mode: '0755'
-    # - name: copy Dockerfile
-    #   copy:
-    #     src: ./Dockerfile
-    #     dest: /root/demo-dockerfile/Dockerfile
-    #     owner: root
-    #     group: root
-    #     mode: '0644'
-      # docker_image:
-      #   name: "{{ image_name }}"
-      #   build:
-      #     path: "../"
-      #     dockerfile: "../Dockerfile"
-      #   source: build
-      #   state: present
 
     - name: build container image
-      docker_image:
-        name: "{{ image_name }}"
-        build:
-          path: "../"
-          dockerfile: "../Dockerfile"
-        source: build
-        state: present
-      # command: "docker build -t {{image_name}} -f ../Dockerfile ../"
+      command: "docker build -t {{image_name}} -f ../Dockerfile ../"
       delegate_to: 127.0.0.1
 
     - name: archive container image as a tarball
-      docker_image:
-        name: "{{ image_name }}"
-        archive_path: "./{{ image_name }}.tar"
-        source: pull
-        state: present
+      command: "docker save -o {{image_name}}.tar {{image_name}}"
       delegate_to: 127.0.0.1
-
-    # - name: fetch archived image
-    #   fetch:
-    #     src: /root/democontainer_v1_0.tar
-    #     dest: ./democontainer_v1_0.tar
-    #     flat: true
 
     - name: copy tarball to host
       copy:
-        src: "./{{ image_name }}.tar"
+        src: "{{ image_name }}.tar"
         dest: "./{{ image_name }}.tar"
 
     - name: load container from tarball
@@ -70,7 +32,6 @@
       docker_container:
         name: "{{ container_name }}"
         image: "{{ image_name }}"
-        pull: true
         state: started
         network_mode: host
         restart_policy: unless-stopped
