@@ -1,4 +1,6 @@
 using System;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Reflection;
 using AutoMapper;
 using LeagueActivityBot.BackgroundJobs;
@@ -6,6 +8,7 @@ using LeagueActivityBot.Calendar;
 using LeagueActivityBot.Calendar.Integration;
 using LeagueActivityBot.Controllers;
 using LeagueActivityBot.Database;
+using LeagueActivityBot.Host.Options;
 using LeagueActivityBot.Migrations;
 using LeagueActivityBot.Telegram;
 using LeagueActivityBot.Riot;
@@ -34,7 +37,19 @@ namespace LeagueActivityBot.Host
             services.AddPostgreSqlStorage(options =>
             {
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                options.UseNpgsql(Configuration["App:DbConnectionString"]);
+
+                var dbOptions = Configuration
+                    .GetSection("App:DbOptions")
+                    .Get<DbOptions>();
+                
+                // Create a new SqlConnectionStringBuilder and
+                // initialize it with a few name/value pairs.
+                var conStrBuilder = new SqlConnectionStringBuilder(dbOptions.ConnectionString)
+                {
+                    UserID = dbOptions.UserName,
+                    Password = dbOptions.Password
+                };
+                options.UseNpgsql(conStrBuilder.ConnectionString);
             });
             
             services.AddSingleton(new MapperConfiguration(mc =>

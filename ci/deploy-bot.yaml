@@ -33,6 +33,9 @@
         state: started
         network_mode: host
         restart_policy: unless-stopped
+        env:
+          App.DbOptions.UserName: "{{ postgres_username }}"
+          App.DbOptions.Password: "{{ postgres_password }}"
       register: deploy_service
 
     - name: prune docker on {{ansible_host}}
