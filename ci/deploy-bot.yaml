@@ -4,7 +4,7 @@
   vars:
     - container_name: oracle-lens
     - image_name: oracle-lens
-    - image_tag: "ver{{ 9999 | random }}"
+    - image_tag: latest
     # - riot_api_key:
     # - calendar_api_key:
     # - calendar_base_url:
@@ -26,6 +26,17 @@
       copy:
         src: "{{ image_name }}.tar"
         dest: "./{{ image_name }}.tar"
+
+    - name: remove container
+      docker_container:
+        name: "{{ container_name }}"
+        state: absent
+
+    - name: Remove image
+      docker_image:
+        state: absent
+        name: "{{ image_name }}:{{ image_tag }}"
+        tag: v1
 
     - name: load container from tarball
       docker_image:
