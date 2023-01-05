@@ -4,6 +4,7 @@
   vars:
     - container_name: oracle-lens
     - image_name: oracle-lens
+    - image_tag: "{{github_sha}}"
     - riot_api_key:
     - calendar_api_key:
     - calendar_base_url:
@@ -14,11 +15,11 @@
     # - ansible_ssh_private_key_file: "../oracle"
   tasks:
     - name: build container image
-      command: "docker build -t {{image_name}} -f ../Dockerfile ../"
+      command: "docker build -t {{image_name}}:{{image_tag}} -f ../Dockerfile ../"
       delegate_to: 127.0.0.1
 
     - name: archive container image as a tarball
-      command: "docker save -o {{image_name}}.tar {{image_name}}"
+      command: "docker save -o {{image_name}}.tar {{image_name}}:{{image_tag}}"
       delegate_to: 127.0.0.1
 
     - name: copy tarball to host
@@ -26,21 +27,17 @@
         src: "{{ image_name }}.tar"
         dest: "./{{ image_name }}.tar"
 
-    - name: remove old image
-      docker_image:
-        state: absent
-        name: "{{image_name}}"
-
     - name: load container from tarball
       docker_image:
         name: "{{ image_name }}"
+        tag: "{{ image_tag}}"
         load_path: "./{{ image_name }}.tar"
         source: load
 
     - name: start container with new version
       docker_container:
         name: "{{ container_name }}"
-        image: "{{ image_name }}"
+        image: "{{ image_name }}:{{ image_tag }}"
         state: started
         network_mode: host
         restart_policy: unless-stopped
