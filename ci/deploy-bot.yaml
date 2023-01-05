@@ -4,7 +4,7 @@
   vars:
     - container_name: oracle-lens
     - image_name: oracle-lens
-    - image_tag: "{{ query('community.general.random_string', upper=false, lower=false, special=false, numbers=false) }}"
+    - image_tag: "{{ query('community.general.random_string', upper=false, lower=false, override_special='0123456789ABCDEF', numbers=false) }}"
     # - riot_api_key:
     # - calendar_api_key:
     # - calendar_base_url:
