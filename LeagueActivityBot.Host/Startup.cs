@@ -34,6 +34,9 @@ namespace LeagueActivityBot.Host
         
         public void ConfigureServices(IServiceCollection services)
         {
+            Console.WriteLine(Configuration["App:Telegram:ChatId"]);
+            Console.WriteLine(Configuration["App:Telegram:LogChatId"]);
+            
             services.AddPostgreSqlStorage(options =>
             {
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
