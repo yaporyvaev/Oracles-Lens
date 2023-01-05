@@ -21,4 +21,4 @@ jobs:
           [all]
           ${{secrets.REMOTE_HOST}}
         options: |
-          --extra-vars "postgres_username=${{secrets.DB_USER}} postgres_password=${{secrets.DB_PASSWORD}}"
+          --extra-vars "postgres_username=${{secrets.DB_USER}} postgres_password=${{secrets.DB_PASSWORD}} riot_api_key=${{secrets.APP_RIOT_APIKEY}} calendar_api_key=${{secrets.APP_CALENDAR_API_KEY}} calendar_base_url=${{secrets.APP_CALENDAR_BASEURL}} telegram_api_key=${{secrets.APP_TELEGRAM_API_KEY}} telegram_chat_id=${{secrets.APP_TELEGRAM_CHAT_ID}} telegram_log_chat_id=${{secrets.APP_TELEGRAM_LOGCHAT_ID}} summoner_names=${{secrets.APP_SUMMONER_NAMES}}"
