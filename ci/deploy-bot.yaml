@@ -5,14 +5,7 @@
     - container_name: oracle-lens
     - image_name: oracle-lens
     - image_tag: latest
-    # - riot_api_key:
-    # - calendar_api_key:
-    # - calendar_base_url:
-    # - telegram_api_key:
-    # - telegram_chat_id:
-    # - telegram_log_chat_id:
-    # - summoner_names:
-    # - ansible_ssh_private_key_file: "../oracle"
+
   tasks:
     - name: build container image
       command: "docker build -t {{image_name}}:{{image_tag}} -f ../Dockerfile ../"
@@ -53,15 +46,15 @@
         network_mode: host
         restart_policy: unless-stopped
         env:
-          App.DbOptions.UserName: "{{ postgres_username }}"
-          App.DbOptions.Password: "{{ postgres_password }}"
-          App.Riot.ApiKey: "{{ riot_api_key }}"
-          App.Calendar.ApiKey: "{{ calendar_api_key }}"
-          App.Calendar.BaseUrl: "{{ calendar_base_url }}"
-          App.Telegram.ApiKey: "{{ telegram_api_key }}"
-          App.Telegram.ChatId: "{{ telegram_chat_id }}"
-          App.Telegram.LogChatId: "{{ telegram_log_chat_id }}"
-          App.SummonerNames: "{{ summoner_names }}"
+          App__DbOptions__UserName: "{{ postgres_username }}"
+          App__DbOptions__Password: "{{ postgres_password }}"
+          App__Riot__ApiKey: "{{ riot_api_key }}"
+          App__Calendar__ApiKey: "{{ calendar_api_key }}"
+          App__Calendar__BaseUrl: "{{ calendar_base_url }}"
+          App__Telegram__ApiKey: "{{ telegram_api_key }}"
+          App__Telegram__ChatId: "{{ telegram_chat_id }}"
+          App__Telegram__LogChatId: "{{ telegram_log_chat_id }}"
+          App__SummonerNames: "{{ summoner_names }}"
       register: deploy_service
 
     - name: prune docker on {{ansible_host}}
