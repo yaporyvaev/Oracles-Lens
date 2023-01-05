@@ -15,6 +15,3 @@ COPY --from=build-env /publish .
 
 
 ENTRYPOINT ["dotnet","LeagueActivityBot.Host.dll"]
-# FROM alpine:latest
-# EXPOSE 8080
-# CMD nc -l -p 8080
