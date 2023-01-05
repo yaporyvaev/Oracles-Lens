@@ -45,6 +45,8 @@
         state: started
         network_mode: host
         restart_policy: unless-stopped
+        log_options:
+          max-size: 10m
         env:
           App__DbOptions__UserName: "{{ postgres_username }}"
           App__DbOptions__Password: "{{ postgres_password }}"
