@@ -26,11 +26,15 @@
         src: "{{ image_name }}.tar"
         dest: "./{{ image_name }}.tar"
 
+    - name: remove old image
+      docker_image:
+        state: absent
+        name: "{{image_name}}"
+
     - name: load container from tarball
       docker_image:
         name: "{{ image_name }}"
         load_path: "./{{ image_name }}.tar"
-        state: present
         source: load
 
     - name: start container with new version
