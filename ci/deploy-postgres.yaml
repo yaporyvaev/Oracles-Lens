@@ -15,6 +15,7 @@
         state: started
         network_mode: host
         restart_policy: unless-stopped
+        log_driver: json-file
         log_options:
           max-size: 10m
         volumes:
