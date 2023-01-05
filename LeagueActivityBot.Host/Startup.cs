@@ -34,8 +34,7 @@ namespace LeagueActivityBot.Host
         
         public void ConfigureServices(IServiceCollection services)
         {
-            Console.WriteLine(Configuration["App:Telegram:ChatId"]);
-            Console.WriteLine(Configuration["App:Telegram:LogChatId"]);
+            
             
             services.AddPostgreSqlStorage(options =>
             {
@@ -44,15 +43,11 @@ namespace LeagueActivityBot.Host
                 var dbOptions = Configuration
                     .GetSection("App:DbOptions")
                     .Get<DbOptions>();
+
+                var connString = dbOptions.ConnectionString.Replace("{userId}", dbOptions.UserName)
+                    .Replace("{userPassword}", dbOptions.Password);
                 
-                // Create a new SqlConnectionStringBuilder and
-                // initialize it with a few name/value pairs.
-                var conStrBuilder = new SqlConnectionStringBuilder(dbOptions.ConnectionString)
-                {
-                    UserID = dbOptions.UserName,
-                    Password = dbOptions.Password
-                };
-                options.UseNpgsql(conStrBuilder.ConnectionString);
+                options.UseNpgsql(connString);
             });
             
             services.AddSingleton(new MapperConfiguration(mc =>
