@@ -4,7 +4,7 @@
   vars:
     - container_name: oracle-lens
     - image_name: oracle-lens
-    - image_tag: "{{ 99999999999 | random }}"
+    - image_tag: "{{ 999999999 | random }}"
     # - riot_api_key:
     # - calendar_api_key:
     # - calendar_base_url:
