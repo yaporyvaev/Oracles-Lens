@@ -21,4 +21,4 @@ jobs:
           [all]
           ${{secrets.REMOTE_HOST}}
         options: |
-          --extra-vars postgres_username=${{secrets.DB_USER}} postgres_password=${{secrets.DB_PASSWORD}}
+          --extra-vars "postgres_username=${{secrets.DB_USER}} postgres_password=${{secrets.DB_PASSWORD}}"
