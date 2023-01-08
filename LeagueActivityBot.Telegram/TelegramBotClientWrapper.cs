@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace LeagueActivityBot.Telegram
 {
@@ -19,25 +17,11 @@ namespace LeagueActivityBot.Telegram
             _tgClient = tgClient;
         }
 
-        public async Task<Message> SendAutoDeletableTextMessageAsync(ChatId chatId,
-            string text,
-            TimeSpan deleteAfter,
-            ParseMode? parseMode = default,
-            IEnumerable<MessageEntity> entities = default,
-            bool? disableWebPagePreview = default,
-            bool? disableNotification = default,
-            bool? protectContent = default,
-            int? replyToMessageId = default,
-            bool? allowSendingWithoutReply = default,
-            IReplyMarkup replyMarkup = default,
-            CancellationToken cancellationToken = default)
+        public async Task<Message> SendAutoDeletableTextMessageAsync(ChatId chatId, string text, TimeSpan deleteAfter, CancellationToken cancellationToken = default)
         {
-            var message = await _tgClient.SendTextMessageAsync(chatId, text, parseMode, entities, disableWebPagePreview,
-                disableNotification, protectContent, replyToMessageId, allowSendingWithoutReply, replyMarkup,
-                cancellationToken);
-
-            BackgroundJob.Schedule<TelegramBotClient>(c => c.DeleteMessageAsync(chatId, message.MessageId, CancellationToken.None),deleteAfter);
-
+            var message = await _tgClient.SendTextMessageAsync(chatId, text, ParseMode.Html, disableWebPagePreview:false, disableNotification:true, cancellationToken:cancellationToken);
+            BackgroundJob.Schedule<MessageDeleteService>(t => t.DeleteMessage(chatId, message.MessageId), deleteAfter);
+            
             return message;
         }
     }

@@ -34,6 +34,7 @@ namespace LeagueActivityBot.Telegram
             serviceCollection.AddTransient<TelegramBotClientWrapper>();
             serviceCollection.AddSingleton<CommandStateStore>();
             serviceCollection.AddTransient<CommandFactory>();
+            serviceCollection.AddTransient<MessageDeleteService>();
             
             serviceCollection.AddTransient<AddSummonerCommand>();
             serviceCollection.AddTransient<RemoveSummonerCommand>();

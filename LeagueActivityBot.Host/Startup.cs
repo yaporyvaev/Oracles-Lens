@@ -86,7 +86,8 @@ namespace LeagueActivityBot.Host
 
             app.UseRouting();
             app.UseHealthChecks("/health");
-            app.UseStaticFiles();
+            app.UseStaticFiles(); 
+            //app.UseBackgroundJobs(); //Uncomment to use hangfire dashboard
             
             app.UseEndpoints(endpoints =>
             {
