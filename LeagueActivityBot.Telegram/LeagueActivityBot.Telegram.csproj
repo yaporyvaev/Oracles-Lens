@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Hangfire.Core" Version="1.7.28" />
       <PackageReference Include="MediatR" Version="9.0.0" />
       <PackageReference Include="Telegram.Bot" Version="18.0.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.24" />

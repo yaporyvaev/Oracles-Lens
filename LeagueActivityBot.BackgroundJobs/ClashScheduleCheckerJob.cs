@@ -1,7 +1,12 @@
+using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Hangfire;
 using JetBrains.Annotations;
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Notifications.OnClashScheduleReceived;
+using LeagueActivityBot.Services;
 using MediatR;
 using Quartz;
 
@@ -12,21 +17,24 @@ namespace LeagueActivityBot.BackgroundJobs
     public class ClashScheduleCheckerJob : IJob
     {
         private readonly IRiotClient _riotClient;
-        private readonly IMediator _mediator;
         
-        public ClashScheduleCheckerJob(IRiotClient riotClient, IMediator mediator)
+        public ClashScheduleCheckerJob(IRiotClient riotClient)
         {
             _riotClient = riotClient;
-            _mediator = mediator;
         }
         
         public async Task Execute(IJobExecutionContext context)
         {
             var clashInfos = await _riotClient.GetClashSchedule();
             
-            if (clashInfos != null)
+            if (clashInfos != null && clashInfos.Any())
             {
-                await _mediator.Publish(new OnClashScheduleReceivedNotification(clashInfos));
+                var clashesToday = ClashService.GetClashesForADay(clashInfos, DateTime.Today).ToArray();
+                if (clashesToday.Any())
+                {
+                    BackgroundJob.Schedule<IMediator>(m => m.Publish(new ClashAnnouncementNotification(clashesToday), CancellationToken.None),
+                        new DateTimeOffset(DateTime.Today, TimeSpan.FromHours(12)));
+                }
             }
         }
     }

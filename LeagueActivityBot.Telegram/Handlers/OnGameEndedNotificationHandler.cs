@@ -1,23 +1,23 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using LeagueActivityBot.Notifications.OnGameEnded;
-using LeagueActivityBot.Telegram.Extensions;
-using Telegram.Bot;
 
 namespace LeagueActivityBot.Telegram.Handlers
 {
     public class OnGameEndedNotificationHandler : INotificationHandler<OnGameEndedNotification>
     {
+        
         private readonly TelegramOptions _options;
-        private readonly TelegramBotClient _tgClient;
+        private readonly TelegramBotClientWrapper _telegramBotClientWrapper;
         private readonly OnGameEndedMessageBuilder _messageBuilder;
 
-        public OnGameEndedNotificationHandler(TelegramOptions options, TelegramBotClient tgClient, OnGameEndedMessageBuilder messageBuilder)
+        public OnGameEndedNotificationHandler(TelegramOptions options,  OnGameEndedMessageBuilder messageBuilder, TelegramBotClientWrapper telegramBotClientWrapper)
         {
             _options = options;
-            _tgClient = tgClient;
             _messageBuilder = messageBuilder;
+            _telegramBotClientWrapper = telegramBotClientWrapper;
         }
 
         public async Task Handle(OnGameEndedNotification notification, CancellationToken cancellationToken)
@@ -26,7 +26,7 @@ namespace LeagueActivityBot.Telegram.Handlers
 
             if (!string.IsNullOrEmpty(message))
             {
-                await _tgClient.SendTextMessage(_options.TelegramChatId, message);
+                await _telegramBotClientWrapper.SendAutoDeletableTextMessageAsync(_options.TelegramChatId, message, TimeSpan.FromHours(1), cancellationToken: cancellationToken);
             }
         }
     }

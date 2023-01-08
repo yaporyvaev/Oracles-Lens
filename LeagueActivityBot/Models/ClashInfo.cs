@@ -7,7 +7,6 @@ namespace LeagueActivityBot.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string SecondaryName { get; set; }
-        
         public ClashSchedule[] Schedule { get; set; }
     }
 

@@ -31,6 +31,7 @@ namespace LeagueActivityBot.Telegram
             serviceCollection.AddSingleton(settings);
             serviceCollection.AddHostedService<ChannelMessageHandler>();
             serviceCollection.AddTransient(_ => new TelegramBotClient(settings.TelegramBotApiKey));
+            serviceCollection.AddTransient<TelegramBotClientWrapper>();
             serviceCollection.AddSingleton<CommandStateStore>();
             serviceCollection.AddTransient<CommandFactory>();
             

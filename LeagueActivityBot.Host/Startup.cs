@@ -1,6 +1,4 @@
 using System;
-using System.Data.Common;
-using System.Data.SqlClient;
 using System.Reflection;
 using AutoMapper;
 using LeagueActivityBot.BackgroundJobs;
@@ -9,7 +7,6 @@ using LeagueActivityBot.Calendar.Integration;
 using LeagueActivityBot.Controllers;
 using LeagueActivityBot.Database;
 using LeagueActivityBot.Host.Options;
-using LeagueActivityBot.Migrations;
 using LeagueActivityBot.Telegram;
 using LeagueActivityBot.Riot;
 using LeagueActivityBot.Riot.Configuration;
@@ -34,20 +31,16 @@ namespace LeagueActivityBot.Host
         
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            var dbOptions = Configuration
+                .GetSection("App:DbOptions")
+                .Get<DbOptions>();
+            var dbConnectionString = dbOptions.ConnectionString.Replace("{userId}", dbOptions.UserName)
+                .Replace("{userPassword}", dbOptions.Password);
             
             services.AddPostgreSqlStorage(options =>
             {
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-
-                var dbOptions = Configuration
-                    .GetSection("App:DbOptions")
-                    .Get<DbOptions>();
-
-                var connString = dbOptions.ConnectionString.Replace("{userId}", dbOptions.UserName)
-                    .Replace("{userPassword}", dbOptions.Password);
-                
-                options.UseNpgsql(connString);
+                options.UseNpgsql(dbConnectionString);
             });
             
             services.AddSingleton(new MapperConfiguration(mc =>
@@ -66,7 +59,7 @@ namespace LeagueActivityBot.Host
                 options.SummonerNames = Configuration["App:SummonerNames"].Split(";");
             });
             
-            services.AddBackgroundJobs();
+            services.AddBackgroundJobs(dbConnectionString);
             services.AddNotifications<TelegramOptions>(options =>
             {
                 options.TelegramBotApiKey = Configuration["App:Telegram:ApiKey"];
