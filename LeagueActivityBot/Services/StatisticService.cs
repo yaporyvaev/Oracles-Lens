@@ -18,6 +18,17 @@ namespace LeagueActivityBot.Services
             _gameInfoRepository = gameInfoRepository;
         }
 
+        public async Task<IEnumerable<SummonerStatistic>> GetStatistic()
+        {
+            var games = await _gameInfoRepository.GetAll()
+                .Include(g => g.GameParticipants)
+                .ThenInclude(p => p.Summoner)
+                .Where(g => g.GameEnded)
+                .ToListAsync();
+
+            return GetStatistic(games);
+        }
+        
         public async Task<IEnumerable<SummonerStatistic>> GetStatistic(int days)
         {
             var games = await _gameInfoRepository.GetAll()
@@ -26,6 +37,11 @@ namespace LeagueActivityBot.Services
                 .Where(g => g.GameEnded && DateTime.Now.Date.AddDays(-days) <= g.GameStartTime)
                 .ToListAsync();
 
+            return GetStatistic(games);
+        }
+
+        private IEnumerable<SummonerStatistic> GetStatistic(List<GameInfo> games)
+        {
             var statisticMap = new Dictionary<string, WinRateStatisticDto>();
             foreach (var game in games)
             {
