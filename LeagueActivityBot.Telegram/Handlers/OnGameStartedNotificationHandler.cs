@@ -6,7 +6,7 @@ using LeagueActivityBot.Notifications.OnGameStarted;
 
 namespace LeagueActivityBot.Telegram.Handlers
 {
-    public class OnGameStartedNotificationHandler : INotificationHandler<OnGameStartedNotification>
+    public class OnGameStartedNotificationHandler : INotificationHandler<OnTeamGameStartedNotification>
     {
         private readonly TelegramOptions _options;
         private readonly TelegramBotClientWrapper _telegramBotClientWrapper;
@@ -17,7 +17,7 @@ namespace LeagueActivityBot.Telegram.Handlers
             _telegramBotClientWrapper = telegramBotClientWrapper;
         }
 
-        public async Task Handle(OnGameStartedNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(OnTeamGameStartedNotification notification, CancellationToken cancellationToken)
         {
             var messageBuilder = new OnGameStartedMessageBuilder();
             var message = messageBuilder.Build(notification);

@@ -6,6 +6,7 @@ namespace LeagueActivityBot.Database
     public class AppDbContext : DbContext
     {
         public DbSet<Summoner> Summoners { get; set; }
+        public DbSet<LeagueInfo> LeagueInfos { get; set; }
         public DbSet<GameInfo> GameInfos { get; set; }
         public DbSet<GameParticipant> GameParticipants { get; set; }
 

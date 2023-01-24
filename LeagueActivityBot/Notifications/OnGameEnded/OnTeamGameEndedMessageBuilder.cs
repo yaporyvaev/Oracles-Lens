@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using LeagueActivityBot.Constants;
@@ -6,16 +7,18 @@ using LeagueActivityBot.Models;
 
 namespace LeagueActivityBot.Notifications.OnGameEnded
 {
-    public class OnGameEndedMessageBuilder
+    public class OnTeamGameEndedMessageBuilder
     {
         private MatchInfo _matchInfo;
         private Summoner[] _summoners;
-        
-        public string Build(OnGameEndedNotification notification)
+        private Dictionary<string, EndGameLeagueDelta> _leagueDeltas;
+
+        public string Build(OnTeamGameEndedNotification notification)
         {
             _matchInfo = notification.MatchInfo;
             if (_matchInfo == null) return string.Empty;
             _summoners = notification.Summoners.ToArray();
+            _leagueDeltas = notification.LeagueDelta;
             
             var sb = new StringBuilder($"Team {GetAction()}\n\n{GetStats()}");
             return sb.ToString();
@@ -38,8 +41,7 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
                     sb.Append($" {stat.GetCreepScore()}, {stat.GetVisionScore()}.");
                 }
                 
-                sb.Append($"\n{stat.GetDamageTakenScore()}, {stat.GetHealScore()}.");
-
+                sb.Append($"\n{BaseEndGameMessageBuilder.GetRankedStat(_leagueDeltas[summoner.SummonerId], stat.Win)}");
                 sb.Append("\n\n");
             }
 

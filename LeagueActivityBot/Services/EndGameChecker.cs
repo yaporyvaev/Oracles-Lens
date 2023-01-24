@@ -1,13 +1,8 @@
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Entities;
-using LeagueActivityBot.Notifications.OnGameEnded;
-using LeagueActivityBot.Notifications.OnSoloGameEnded;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace LeagueActivityBot.Services
 {
@@ -31,6 +26,7 @@ namespace LeagueActivityBot.Services
             var games = await _gameInfoRepository.GetAll()
                 .Include(g => g.GameParticipants)
                 .ThenInclude(p => p.Summoner)
+                .ThenInclude(s => s.LeagueInfos)
                 .Where(g => !g.IsProcessed)
                 .ToListAsync();
 

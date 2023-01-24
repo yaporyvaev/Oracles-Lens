@@ -42,7 +42,7 @@ namespace LeagueActivityBot.Riot
         {
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                .OrResult(msg => msg.StatusCode == HttpStatusCode.TooManyRequests)
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
         }
     }

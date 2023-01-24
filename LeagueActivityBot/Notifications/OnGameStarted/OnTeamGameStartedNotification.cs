@@ -3,13 +3,13 @@ using MediatR;
 
 namespace LeagueActivityBot.Notifications.OnGameStarted
 {
-    public class OnGameStartedNotification : INotification
+    public class OnTeamGameStartedNotification : INotification
     {
         public Summoner[] Summoners { get; }
         public long GameId { get; }
         public long QueueTypeId { get; }
         
-        public OnGameStartedNotification(Summoner[] summoners, long gameId, long queueTypeId)
+        public OnTeamGameStartedNotification(Summoner[] summoners, long gameId, long queueTypeId)
         {
             GameId = gameId;
             QueueTypeId = queueTypeId;

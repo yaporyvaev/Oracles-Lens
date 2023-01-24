@@ -1,5 +1,4 @@
 ﻿using Hangfire;
-using Hangfire.Dashboard;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,15 +39,23 @@ namespace LeagueActivityBot.BackgroundJobs
                     .WithDailyTimeIntervalSchedule(a => a.StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(1, 0))));
                     //.WithDailyTimeIntervalSchedule(a => a.WithInterval(1, IntervalUnit.Minute))); //Debug schedule
             });
-
+            
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
             return services;
         }
         
-        public static void UseBackgroundJobs(this IApplicationBuilder app)
+        public static void UseBackgroundJobsDashboard(this IApplicationBuilder app)
         {
             app.UseHangfireDashboard();
+        }
+        
+        public static void AddBackgroundJobs(this IApplicationBuilder app)
+        {
+            RecurringJob.AddOrUpdate<MatchSyncJob>(
+                "MatchSyncJob",
+                x => x.Sync(),
+                Cron.Daily(4));
         }
     }
 }

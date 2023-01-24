@@ -9,9 +9,8 @@ namespace LeagueActivityBot.Entities
         public string AccountId { get; set; }
         public string Puuid { get; set; }
         public string Name { get; set; }
-        public int Tier { get; set; }
-        public int Rank { get; set; }       
-        public int LeaguePoints { get; set; }
+
         public IList<GameParticipant> GameParticipants { get; set; }
+        public IList<LeagueInfo> LeagueInfos { get; set; }
     }
 }

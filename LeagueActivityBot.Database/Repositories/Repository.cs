@@ -21,9 +21,16 @@ namespace LeagueActivityBot.Database.Repositories
             return await _dbSet.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public IQueryable<T> GetAll()
+        public IQueryable<T> GetAll(bool includeDeleted)
         {
-            return _dbSet.AsQueryable();
+            var query= _dbSet.AsQueryable();
+            
+            if (!includeDeleted)
+            {
+                query = query.Where(e => e.IsDeleted == false);
+            }
+
+            return query;
         }
 
         public async Task<T> Add(T entity)
@@ -41,6 +48,13 @@ namespace LeagueActivityBot.Database.Repositories
         }
 
         public async Task Remove(T entity)
+        {
+            entity.IsDeleted = true;
+            _appDbContext.Entry(entity).State = EntityState.Modified;
+            await _appDbContext.SaveChangesAsync();
+        }
+        
+        public async Task HardRemove(T entity)
         {
             _dbSet.Remove(entity);
             await _appDbContext.SaveChangesAsync();

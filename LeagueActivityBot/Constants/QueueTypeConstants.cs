@@ -3,6 +3,7 @@ namespace LeagueActivityBot.Constants
     public static class QueueTypeConstants
     {
         public const string RankedSolo = "RANKED_SOLO_5x5";
+        public const string RankedFlex = "RANKED_TEAM_5x5";
 
         public static string GetQueueTypeById(long id)
         {

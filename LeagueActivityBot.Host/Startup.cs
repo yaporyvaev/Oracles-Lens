@@ -82,12 +82,22 @@ namespace LeagueActivityBot.Host
         {
             MigrationsRunner.ApplyMigrations(logger, serviceProvider, "LeagueActivityBot.Host").Wait();
             SummonersInitializer.Initialize(serviceProvider).Wait();
-            TelegramNotification.SendNotification(serviceProvider,"Service started").Wait();
+            
+            if (bool.Parse(Configuration["App:Startup:EnableStartupNotification"]))
+            {
+                TelegramNotification.SendNotification(serviceProvider,"Service started").Wait();
+            }
 
             app.UseRouting();
             app.UseHealthChecks("/health");
-            app.UseStaticFiles(); 
-            //app.UseBackgroundJobs(); //Uncomment to use hangfire dashboard
+            app.UseStaticFiles();
+
+            if (bool.Parse(Configuration["App:Hangfire:EnableDashboard"]))
+            {
+                app.UseBackgroundJobsDashboard();
+            }
+
+            app.AddBackgroundJobs();
             
             app.UseEndpoints(endpoints =>
             {

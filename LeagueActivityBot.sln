@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Telegram"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Database", "LeagueActivityBot.Database\LeagueActivityBot.Database.csproj", "{AA8C4B2F-E386-4B6E-84EC-1177BE7D85CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Calendar", "LeagueActivityBot.Calendar\LeagueActivityBot.Calendar.csproj", "{5CDBE62D-10F8-4852-AC45-A84C5ED8203B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,9 +48,5 @@ Global
 		{AA8C4B2F-E386-4B6E-84EC-1177BE7D85CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA8C4B2F-E386-4B6E-84EC-1177BE7D85CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA8C4B2F-E386-4B6E-84EC-1177BE7D85CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5CDBE62D-10F8-4852-AC45-A84C5ED8203B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5CDBE62D-10F8-4852-AC45-A84C5ED8203B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5CDBE62D-10F8-4852-AC45-A84C5ED8203B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5CDBE62D-10F8-4852-AC45-A84C5ED8203B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

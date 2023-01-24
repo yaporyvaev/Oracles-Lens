@@ -5,15 +5,18 @@ using MediatR;
 
 namespace LeagueActivityBot.Notifications.OnGameEnded
 {
-    public class OnGameEndedNotification : INotification
+    public class OnTeamGameEndedNotification : INotification
     {
         public IEnumerable<Summoner> Summoners { get; }
         
         public MatchInfo MatchInfo { get; }
         
-        public OnGameEndedNotification(IEnumerable<Summoner> summoners, MatchInfo matchInfo)
+        public Dictionary<string, EndGameLeagueDelta> LeagueDelta { get; }
+
+        public OnTeamGameEndedNotification(IEnumerable<Summoner> summoners, MatchInfo matchInfo, Dictionary<string, EndGameLeagueDelta> leagueDelta)
         {
             MatchInfo = matchInfo;
+            LeagueDelta = leagueDelta;
             Summoners = summoners;
         }
     }

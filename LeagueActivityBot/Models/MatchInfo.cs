@@ -13,6 +13,8 @@ namespace LeagueActivityBot.Models
     {
         public MatchParticipant[] Participants { get; set; }
         public int QueueId { get; set; }
+        public long GameId { get; set; }
+        public string PlatformId { get; set; }
         public long GameStartTimestamp { get; set;}
         public DateTime GameStartTime => DateTimeOffset.FromUnixTimeMilliseconds(GameStartTimestamp).LocalDateTime;
         
@@ -41,6 +43,7 @@ namespace LeagueActivityBot.Models
         public int Deaths { get; set; }
         public int Assists { get; set; }
         public int TotalDamageDealtToChampions { get; set; }
+        public int TotalDamageShieldedOnTeammates { get; set; }
         
         public string Puuid { get; set; }
         public string SummonerId { get; set; }
@@ -48,21 +51,27 @@ namespace LeagueActivityBot.Models
         
         public string ChampionName { get; set; }
         public int ChampionId { get; set; }
+        public int ChampLevel { get; set; }
         public int TeamId { get; set; }
         public bool Win { get; set; }
         public bool GameEndedInEarlySurrender { get; set; }
         public bool GameEndedInSurrender { get; set; }
         public bool FirstBloodKill { get; set; }
+        public bool FirstTowerKill { get; set; }
         
         public int TotalMinionsKilled { get; set; }
         public int NeutralMinionsKilled { get; set; }
         
         public int VisionScore { get; set; }
+        public int TimeCCingOthers { get; set; }
         public int PentaKills { get; set; }
+        public int KillingSprees { get; set; }
         public int DetectorWardsPlaced { get; set; }
         public int TotalDamageTaken {get; set; }
         public int TotalHeal {get; set; }
+        public int DamageSelfMitigated { get; set; }
 
+        
         public string GetCreepScore() => $"{TotalMinionsKilled + NeutralMinionsKilled} CS";
         public string GetVisionScore() => $"{VisionScore} VS";
         public string GetDamageTakenScore() => $"{TotalDamageTaken:#,#} dmg taken";

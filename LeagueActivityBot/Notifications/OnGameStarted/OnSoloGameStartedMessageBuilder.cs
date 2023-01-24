@@ -5,7 +5,7 @@ namespace LeagueActivityBot.Notifications.OnGameStarted
 {
     public class OnGameStartedMessageBuilder
     {
-        public string Build(OnGameStartedNotification notification)
+        public string Build(OnTeamGameStartedNotification notification)
         {
             var names = SummonerNamesEnumerator.EnumerateSummoners(notification.Summoners);
             return $"{names} started {QueueTypeConstants.GetQueueTypeById(notification.QueueTypeId)}";

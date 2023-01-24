@@ -26,12 +26,13 @@ namespace LeagueActivityBot
             serviceCollection.AddTransient<GameParticipantsHelper>();
             
             serviceCollection.AddTransient<OnSoloGameEndedMessageBuilder>();
-            serviceCollection.AddTransient<OnGameEndedMessageBuilder>();
+            serviceCollection.AddTransient<OnTeamGameEndedMessageBuilder>();
             
             serviceCollection.AddTransient<StartGameChecker>();
             serviceCollection.AddTransient<EndGameChecker>();
             serviceCollection.AddTransient<GameService>();
             serviceCollection.AddTransient<StatisticService>();
+            serviceCollection.AddTransient<LeagueService>();
 
             return serviceCollection;
         }

@@ -8,7 +8,6 @@ namespace LeagueActivityBot.Database.Configurations
     {
         public void Configure(EntityTypeBuilder<GameParticipant> builder)
         {
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Win).IsRequired(false);
             builder.Property(x => x.Assists).IsRequired(false);
             builder.Property(x => x.Deaths).IsRequired(false);

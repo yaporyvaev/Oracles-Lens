@@ -24,7 +24,7 @@ namespace LeagueActivityBot.Telegram.Handlers
 
         public async Task Handle(OnSoloGameEndedNotification notification, CancellationToken cancellationToken)
         {
-            var message = await _messageBuilder.Build(notification);
+            var message = _messageBuilder.Build(notification);
 
             if (!string.IsNullOrEmpty(message))
             {

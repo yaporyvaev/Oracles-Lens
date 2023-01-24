@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
-using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
+using LeagueActivityBot.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -14,26 +15,19 @@ namespace LeagueActivityBot
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
-            var riotClient = scope.ServiceProvider.GetService<IRiotClient>();
             var repository = scope.ServiceProvider.GetService<IRepository<Summoner>>();
+            var leagueService = scope.ServiceProvider.GetService<LeagueService>();
             var logger = scope.ServiceProvider.GetService<ILogger<SummonersInitializer>>();
 
-            var summoners = repository.GetAll().ToList();
+            var summoners = repository.GetAll()
+                .Include(s => s.LeagueInfos)
+                .ToList();
             
             foreach (var summoner in summoners)
             {
                 try
                 {
-                    var leagueInfo = (await riotClient.GetLeagueInfo(summoner.SummonerId))
-                        .FirstOrDefault(l => l.QueueType == QueueTypeConstants.RankedSolo);
-
-                    if (leagueInfo != null)
-                    {
-                        summoner.LeaguePoints = leagueInfo.LeaguePoints;
-                        summoner.Tier = leagueInfo.GetTierIntegerRepresentation();
-                        summoner.Rank = leagueInfo.GetRankIntegerRepresentation();
-                        await repository.Update(summoner);
-                    }
+                    await leagueService.UpdateLeague(summoner);
                 }
                 catch(Exception e)
                 {

@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using LeagueActivityBot.Abstractions;
-using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
+using LeagueActivityBot.Services;
 using LeagueActivityBot.Telegram.BotCommands.Abstractions;
 using LeagueActivityBot.Telegram.BotCommands.GeneralStates;
 using LeagueActivityBot.Telegram.Exceptions;
@@ -19,7 +19,7 @@ namespace LeagueActivityBot.Telegram.BotCommands.AddSummoner
         private readonly IServiceProvider _serviceProvider;
         private readonly IRiotClient _riotClient;
 
-        public AddSummonerCommand(CommandStateStore stateStore, IRiotClient riotClient, IServiceProvider serviceProvider )
+        public AddSummonerCommand(CommandStateStore stateStore, IRiotClient riotClient, IServiceProvider serviceProvider)
         {
             _stateStore = stateStore;
             _riotClient = riotClient;
@@ -43,6 +43,8 @@ namespace LeagueActivityBot.Telegram.BotCommands.AddSummoner
         
         private async Task<CommandState> SetSummonerInfo(CommandState state, string summonerName)
         {
+            if(string.IsNullOrEmpty(summonerName)) throw new BotCommandException("Invalid summoner name. Operation was canceled.");
+            
             var summonerInfo = await _riotClient.GetSummonerInfoByName(summonerName);
             if (summonerInfo == null) throw new BotCommandException($"Summoner {summonerName} not found. Operation was canceled.");
 
@@ -54,20 +56,10 @@ namespace LeagueActivityBot.Telegram.BotCommands.AddSummoner
                 Name = summonerName
             };
             
-            var leagueInfo = (await _riotClient.GetLeagueInfo(summonerDto.SummonerId))
-                .FirstOrDefault(l => l.QueueType == QueueTypeConstants.RankedSolo);
-
-            if (leagueInfo != null)
-            {
-                summonerDto.LeaguePoints = leagueInfo.LeaguePoints;
-                summonerDto.Tier = leagueInfo.GetTierIntegerRepresentation();
-                summonerDto.Rank = leagueInfo.GetRankIntegerRepresentation();
-            }
-            
             using var serviceScope = _serviceProvider.CreateScope();
             var repository = serviceScope.ServiceProvider.GetService<IRepository<Summoner>>();
-            var summonerEntity = repository.GetAll()
-                .FirstOrDefault(s => s.SummonerId == summonerDto.SummonerId);
+            var summonerEntity = repository.GetAll(true)
+                .FirstOrDefault(s => s.Puuid == summonerDto.Puuid);
 
             if (summonerEntity != null)
             {
@@ -76,9 +68,12 @@ namespace LeagueActivityBot.Telegram.BotCommands.AddSummoner
             }
             else
             {
-                await repository.Add(summonerDto);
+                summonerEntity = await repository.Add(summonerDto);
             }
-            
+
+            var leagueService = serviceScope.ServiceProvider.GetService<LeagueService>();
+            await leagueService.UpdateLeague(summonerEntity);
+                
             _stateStore.Reset(state.CommandOwnerId);
             state.SetState(new FinishCommandHandlingState("Summoner was successfully added."));
             return state;

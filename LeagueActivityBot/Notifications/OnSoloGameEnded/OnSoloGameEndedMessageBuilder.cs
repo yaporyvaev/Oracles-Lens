@@ -1,7 +1,5 @@
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
@@ -10,17 +8,11 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
 {
     public class OnSoloGameEndedMessageBuilder
     {
-        private readonly IRiotClient _riotClient;
         private MatchInfo _matchInfo;
         private Summoner _summoner;
         private MatchParticipant _summonersStat;
-        
-        public OnSoloGameEndedMessageBuilder(IRiotClient riotClient)
-        {
-            _riotClient = riotClient;
-        }
 
-        public async Task<string> Build(OnSoloGameEndedNotification notification)
+        public string Build(OnSoloGameEndedNotification notification)
         {
             _matchInfo = notification.MatchInfo;
             if (_matchInfo == null) return string.Empty;
@@ -39,7 +31,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
 
             if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo)
             {
-                sb.Append($"\n{await GetRankedStat()}");
+                sb.Append($"\n{BaseEndGameMessageBuilder.GetRankedStat(notification.LeagueDelta, _summonersStat.Win)}");
             }
             
             return sb.ToString();
@@ -56,32 +48,5 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
         private string GetChampion() => $"on {_summonersStat.ChampionName}";
 
         private string GetDamage() => _summonersStat.GetDamage(_matchInfo.Info.GetTeamDamage(_summonersStat.TeamId));
-
-        private async Task<string> GetRankedStat()
-        {
-            var currentLeague = (await _riotClient.GetLeagueInfo(_summoner.SummonerId)).FirstOrDefault(l =>
-                l.QueueType == QueueTypeConstants.RankedSolo);
-            if (currentLeague == null) return string.Empty;
-                
-            var sb = new StringBuilder();
-            if (currentLeague.GetTierIntegerRepresentation() == _summoner.Tier && currentLeague.GetRankIntegerRepresentation() == _summoner.Rank)
-            {
-                if (currentLeague.LeaguePoints != _summoner.LeaguePoints)
-                {
-                    if (_summonersStat.Win) sb.Append("+");
-                    sb.Append($"{currentLeague.LeaguePoints - _summoner.LeaguePoints} LP. ");
-                }
-
-                sb.Append($"Current rank is {currentLeague.Tier} {currentLeague.Rank}, {currentLeague.LeaguePoints} LP."); 
-            }
-            else
-            {
-                sb.Append(_summonersStat.Win
-                    ? $"Promoted to {currentLeague.Tier} {currentLeague.Rank}!"
-                    : $"Demoted to {currentLeague.Tier} {currentLeague.Rank}.");
-            }
-
-            return sb.ToString();
-        }
     }
 }

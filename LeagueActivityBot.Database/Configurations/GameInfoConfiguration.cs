@@ -8,8 +8,6 @@ namespace LeagueActivityBot.Database.Configurations
     {
         public void Configure(EntityTypeBuilder<GameInfo> builder)
         {
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            
             builder.Property(x => x.GameId).IsRequired();
             builder.Property(x => x.QueueId).IsRequired();
             
