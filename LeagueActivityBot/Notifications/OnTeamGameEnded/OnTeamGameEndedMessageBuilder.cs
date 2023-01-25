@@ -22,7 +22,7 @@ namespace LeagueActivityBot.Notifications.OnTeamGameEnded
             _leagueDeltas = notification.LeagueDelta;
 
             var matchResult = BaseEndGameMessageBuilder.GetMatchResult(_matchInfo.Info.Participants.First(p => p.SummonerName == _summoners.First().Name));
-            var sb = new StringBuilder($"Team {matchResult}\n\n{GetStats()}");
+            var sb = new StringBuilder($"Team {matchResult} {QueueTypeConstants.GetQueueTypeById(notification.MatchInfo.Info.QueueId)}\n\n{GetStats()}");
             return sb.ToString();
         }
 

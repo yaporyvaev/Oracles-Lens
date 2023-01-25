@@ -21,7 +21,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             _summoner = notification.Summoner;
 
             var matchResult = BaseEndGameMessageBuilder.GetMatchResult(_summonersStat);
-            var sb = new StringBuilder($"<b><i>{_summoner.Name}</i></b> {matchResult} {GetChampion()}.\n{_summonersStat.GetScore()}, {GetDamage()}.");
+            var sb = new StringBuilder($"<b><i>{_summoner.Name}</i></b> {matchResult} {QueueTypeConstants.GetQueueTypeById(notification.MatchInfo.Info.QueueId)} {GetChampion()}.\n{_summonersStat.GetScore()}, {GetDamage()}.");
 
             if (_matchInfo.Info.QueueId != (int)QueueType.ARAM)
             {
