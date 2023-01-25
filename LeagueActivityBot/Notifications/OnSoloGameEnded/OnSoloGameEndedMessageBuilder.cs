@@ -28,7 +28,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
                 sb.Append($" {_summonersStat.GetCreepScore()}, {_summonersStat.GetVisionScore()}.");
             }
             
-            if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo)
+            if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo || _matchInfo.Info.QueueId == (int)QueueType.RankedFlex)
             {
                 sb.Append($"\n{BaseEndGameMessageBuilder.GetRankedStat(notification.LeagueDelta, _summonersStat.Win)}");
             }

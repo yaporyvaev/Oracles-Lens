@@ -43,7 +43,11 @@ namespace LeagueActivityBot.Notifications.OnTeamGameEnded
                     sb.Append($" {stat.GetCreepScore()}, {stat.GetVisionScore()}.");
                 }
                 
-                sb.Append($"\n{BaseEndGameMessageBuilder.GetRankedStat(_leagueDeltas[summoner.SummonerId], stat.Win)}");
+                if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo || _matchInfo.Info.QueueId == (int)QueueType.RankedFlex)
+                {
+                    sb.Append($"\n{BaseEndGameMessageBuilder.GetRankedStat(_leagueDeltas[summoner.SummonerId], stat.Win)}");
+                }
+                
                 sb.Append("\n\n");
             }
 
