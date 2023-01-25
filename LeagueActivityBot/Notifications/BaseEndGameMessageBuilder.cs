@@ -33,11 +33,11 @@ namespace LeagueActivityBot.Notifications
         
         public static string GetMatchResult(MatchParticipant participant)
         {
-            if (participant.Win) return "won!";
-            if (participant.GameEndedInEarlySurrender) return "FFed 15.";
-            if (participant.GameEndedInSurrender) return "FFed.";
+            if (participant.Win) return "won";
+            if (participant.GameEndedInEarlySurrender) return "FFed 15";
+            if (participant.GameEndedInSurrender) return "FFed";
                 
-            return "lost.";
+            return "lost";
         }
     }
 }
