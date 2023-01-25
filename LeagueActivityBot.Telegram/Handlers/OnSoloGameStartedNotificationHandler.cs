@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LeagueActivityBot.Notifications.OnSoloGameStarted;
 using LeagueActivityBot.Telegram.RecentMessages;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace LeagueActivityBot.Telegram.Handlers
 {
@@ -25,7 +26,7 @@ namespace LeagueActivityBot.Telegram.Handlers
             var messageBuilder = new OnSoloGameStartedMessageBuilder();
             var message = messageBuilder.Build(notification);
 
-            var tgMessage = await _telegramBotClientWrapper.TgClient.SendTextMessageAsync(_options.TelegramChatId, message, cancellationToken: cancellationToken);
+            var tgMessage = await _telegramBotClientWrapper.TgClient.SendTextMessageAsync(_options.TelegramChatId, message, ParseMode.Html, cancellationToken: cancellationToken);
             _recentMessageStore.Save(new RecentGameNotificationMessage(tgMessage.MessageId, notification.GameId));        
         }
     }
