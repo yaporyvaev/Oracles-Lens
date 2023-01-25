@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using LeagueActivityBot.Helpers;
 using LeagueActivityBot.Notifications.OnGameEnded;
 using LeagueActivityBot.Notifications.OnSoloGameEnded;
+using LeagueActivityBot.Notifications.OnTeamGameEnded;
 using LeagueActivityBot.Services;
 using Microsoft.Extensions.DependencyInjection;
 

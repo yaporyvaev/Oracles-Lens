@@ -19,16 +19,15 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             
             _summonersStat = _matchInfo.Info.Participants.First(p => p.SummonerName == notification.Summoner.Name);
             _summoner = notification.Summoner;
-            
-            var sb = new StringBuilder($"<b><i>{_summoner.Name}</i></b> {GetAction()} {GetChampion()}.\n{_summonersStat.GetScore()}, {GetDamage()}.");
+
+            var matchResult = BaseEndGameMessageBuilder.GetMatchResult(_summonersStat);
+            var sb = new StringBuilder($"<b><i>{_summoner.Name}</i></b> {matchResult} {GetChampion()}.\n{_summonersStat.GetScore()}, {GetDamage()}.");
 
             if (_matchInfo.Info.QueueId != (int)QueueType.ARAM)
             {
                 sb.Append($" {_summonersStat.GetCreepScore()}, {_summonersStat.GetVisionScore()}.");
             }
             
-            sb.Append($"\n{_summonersStat.GetDamageTakenScore()}, {_summonersStat.GetHealScore()}.");
-
             if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo)
             {
                 sb.Append($"\n{BaseEndGameMessageBuilder.GetRankedStat(notification.LeagueDelta, _summonersStat.Win)}");
@@ -37,16 +36,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             return sb.ToString();
         }
         
-        private string GetAction()
-        {
-            if (_summonersStat.Win) return "won";
-            if (_summonersStat.GameEndedInEarlySurrender) return "FFed 15";
-            if (_summonersStat.GameEndedInSurrender) return "FFed";
-                
-            return "lost";
-        }
         private string GetChampion() => $"on {_summonersStat.ChampionName}";
-
         private string GetDamage() => _summonersStat.GetDamage(_matchInfo.Info.GetTeamDamage(_summonersStat.TeamId));
     }
 }

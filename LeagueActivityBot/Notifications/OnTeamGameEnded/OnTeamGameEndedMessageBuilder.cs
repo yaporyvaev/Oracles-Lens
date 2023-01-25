@@ -4,8 +4,9 @@ using System.Text;
 using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
+using LeagueActivityBot.Notifications.OnGameEnded;
 
-namespace LeagueActivityBot.Notifications.OnGameEnded
+namespace LeagueActivityBot.Notifications.OnTeamGameEnded
 {
     public class OnTeamGameEndedMessageBuilder
     {
@@ -19,8 +20,9 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
             if (_matchInfo == null) return string.Empty;
             _summoners = notification.Summoners.ToArray();
             _leagueDeltas = notification.LeagueDelta;
-            
-            var sb = new StringBuilder($"Team {GetAction()}\n\n{GetStats()}");
+
+            var matchResult = BaseEndGameMessageBuilder.GetMatchResult(_matchInfo.Info.Participants.First(p => p.SummonerName == _summoners.First().Name));
+            var sb = new StringBuilder($"Team {matchResult}\n\n{GetStats()}");
             return sb.ToString();
         }
 
@@ -46,18 +48,6 @@ namespace LeagueActivityBot.Notifications.OnGameEnded
             }
 
             return sb.ToString();
-        }
-        
-        private string GetAction()
-        {
-            var summonerName = _summoners.First().Name;
-            var summonersStat = _matchInfo.Info.Participants.First(p => p.SummonerName == summonerName);
-
-            if (summonersStat.Win) return "won!";
-            if (summonersStat.GameEndedInEarlySurrender) return "FFed 15.";
-            if (summonersStat.GameEndedInSurrender) return "FFed.";
-                
-            return "lost.";
         }
     }
 }

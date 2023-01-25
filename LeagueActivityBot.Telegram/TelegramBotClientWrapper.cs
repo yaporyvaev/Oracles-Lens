@@ -10,16 +10,16 @@ namespace LeagueActivityBot.Telegram
 {
     public class TelegramBotClientWrapper
     {
-        private readonly TelegramBotClient _tgClient;
+        public readonly TelegramBotClient TgClient;
 
         public TelegramBotClientWrapper(TelegramBotClient tgClient)
         {
-            _tgClient = tgClient;
+            TgClient = tgClient;
         }
 
         public async Task<Message> SendAutoDeletableTextMessageAsync(ChatId chatId, string text, TimeSpan deleteAfter, CancellationToken cancellationToken = default)
         {
-            var message = await _tgClient.SendTextMessageAsync(chatId, text, ParseMode.Html, disableWebPagePreview:false, disableNotification:true, cancellationToken:cancellationToken);
+            var message = await TgClient.SendTextMessageAsync(chatId, text, ParseMode.Html, disableWebPagePreview:false, disableNotification:true, cancellationToken:cancellationToken);
             BackgroundJob.Schedule<MessageDeleteService>(t => t.DeleteMessage(chatId, message.MessageId), deleteAfter);
             
             return message;

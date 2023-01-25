@@ -7,6 +7,7 @@ using LeagueActivityBot.Telegram.BotCommands.GetStatistic;
 using LeagueActivityBot.Telegram.BotCommands.GetSummoners;
 using LeagueActivityBot.Telegram.BotCommands.RemoveSummoner;
 using LeagueActivityBot.Telegram.Handlers;
+using LeagueActivityBot.Telegram.RecentMessages;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 
@@ -35,6 +36,7 @@ namespace LeagueActivityBot.Telegram
             serviceCollection.AddSingleton<CommandStateStore>();
             serviceCollection.AddTransient<CommandFactory>();
             serviceCollection.AddTransient<MessageDeleteService>();
+            serviceCollection.AddTransient<RecentMessageStore>();
             
             serviceCollection.AddTransient<AddSummonerCommand>();
             serviceCollection.AddTransient<RemoveSummonerCommand>();
