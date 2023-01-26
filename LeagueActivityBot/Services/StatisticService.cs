@@ -17,7 +17,7 @@ namespace LeagueActivityBot.Services
         {
             _gameInfoRepository = gameInfoRepository;
         }
-        
+
         /// <summary>
         /// Get games statistics
         /// </summary>
@@ -30,7 +30,11 @@ namespace LeagueActivityBot.Services
                 .Where(g => g.GameEnded);
 
             if (daysCount.HasValue)
-                gamesQuery = gamesQuery.Where(g => DateTime.Now.AddDays(-daysCount.Value) <= g.GameStartTime);
+            {
+                daysCount--;
+                gamesQuery = gamesQuery.Where(g => DateTime.Now.Date.AddDays(-daysCount.Value) <= g.GameStartTime);
+            }
+
 
             var games = await gamesQuery.ToListAsync();
             
