@@ -17,31 +17,23 @@ namespace LeagueActivityBot.Services
         {
             _gameInfoRepository = gameInfoRepository;
         }
-
-        public async Task<IEnumerable<SummonerStatistic>> GetStatistic()
-        {
-            var games = await _gameInfoRepository.GetAll()
-                .Include(g => g.GameParticipants)
-                .ThenInclude(p => p.Summoner)
-                .Where(g => g.GameEnded)
-                .ToListAsync();
-
-            return GetStatistic(games);
-        }
         
-        public async Task<IEnumerable<SummonerStatistic>> GetStatistic(int days)
+        /// <summary>
+        /// Get games statistics
+        /// </summary>
+        /// <param name="daysCount">Statistics for last days count</param>
+        public async Task<IEnumerable<SummonerStatistic>> GetStatistic(int? daysCount = null)
         {
-            var games = await _gameInfoRepository.GetAll()
+            var gamesQuery = _gameInfoRepository.GetAll()
                 .Include(g => g.GameParticipants)
                 .ThenInclude(p => p.Summoner)
-                .Where(g => g.GameEnded && DateTime.Now.Date.AddDays(-days) <= g.GameStartTime)
-                .ToListAsync();
+                .Where(g => g.GameEnded);
 
-            return GetStatistic(games);
-        }
+            if (daysCount.HasValue)
+                gamesQuery = gamesQuery.Where(g => DateTime.Now.AddDays(-daysCount.Value) <= g.GameStartTime);
 
-        private IEnumerable<SummonerStatistic> GetStatistic(List<GameInfo> games)
-        {
+            var games = await gamesQuery.ToListAsync();
+            
             var statisticMap = new Dictionary<string, WinRateStatisticDto>();
             foreach (var game in games)
             {
@@ -70,11 +62,11 @@ namespace LeagueActivityBot.Services
                 Wins = m.Value.Wins
             });
         }
-    }
 
-    public class WinRateStatisticDto
-    {
-        public int Wins { get; set; }
-        public int Loses { get; set; }
+        private struct WinRateStatisticDto
+        {
+            public int Wins { get; set; }
+            public int Loses { get; set; }
+        }
     }
 }

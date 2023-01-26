@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeagueActivityBot.BackgroundJobs
 {
@@ -27,22 +28,32 @@ namespace LeagueActivityBot.BackgroundJobs
         {
             var summoners = _summonerRepository
                 .GetAll()
-                .ToList();
+                .ToArray();
             
-            var allMatchIds = await GetAllMathIds(summoners.Select(s => s.Puuid).ToHashSet());
-            await UpdateMatchInfo(allMatchIds, summoners);
+            var matchIdsMap = await GetAllMathIdsMap(summoners.Select(s => s.Puuid));
+            await UpdateMatchInfo(matchIdsMap, summoners);
         }
 
-        private async Task UpdateMatchInfo(IEnumerable<string> matchIds, IEnumerable<Summoner> summoners)
+        private async Task UpdateMatchInfo(Dictionary<string,int> matchIdsMap, Summoner[] summoners)
         {
-            foreach (var matchId in matchIds)
+            var summonersPuuids = summoners.Select(s => s.Puuid).ToArray();
+            foreach (var matchMap in matchIdsMap)
             {
-                var matchIdNumValue = long.Parse(matchId.Split("_").Last());
-                var gameInfo = _gameInfoRepository.GetAll(true)
-                    .FirstOrDefault(g => g.GameId == matchIdNumValue);
-                if (gameInfo != null) continue;
+                var matchIdNumValue = long.Parse(matchMap.Key.Split("_").Last());
+                var localDbMatchParticipantsPuuids = _gameInfoRepository.GetAll(true)
+                    .Include(g => g.GameParticipants)
+                    .ThenInclude(p => p.Summoner)
+                    .Where(g => g.GameId == matchIdNumValue)
+                    .Select(g => g.GameParticipants.Select(p => p.Summoner.Puuid))
+                    .FirstOrDefault();
+
+                if (localDbMatchParticipantsPuuids != null)
+                {
+                    var summonersInGameCount = localDbMatchParticipantsPuuids.Intersect(summonersPuuids).Count();
+                    if(matchMap.Value == summonersInGameCount) continue;
+                }
                 
-                var matchInfo = await _riotClient.GetMatchInfo(matchId);
+                var matchInfo = await _riotClient.GetMatchInfo(matchMap.Key);
                 if(matchInfo == null) continue;
                 
                 await _gameService.UpdateGameInfo(matchInfo, summoners.ToDictionary(s => s.Puuid, x => x));
@@ -50,11 +61,11 @@ namespace LeagueActivityBot.BackgroundJobs
             }
         }
         
-        private async Task<HashSet<string>> GetAllMathIds(IEnumerable<string> summonerIds)
+        private async Task<Dictionary<string,int>> GetAllMathIdsMap(IEnumerable<string> summonerPuuids)
         {
-            var allMatchIds = new HashSet<string>();
+            var allMatchIdsMap = new Dictionary<string,int>();
             
-            foreach (var summonerId in summonerIds)
+            foreach (var summonerId in summonerPuuids)
             {
                 var skip = 0;
                 const int take = 100;
@@ -65,18 +76,23 @@ namespace LeagueActivityBot.BackgroundJobs
                     matchIds = await _riotClient.GetMatchIds(summonerId, skip, take);
                     foreach (var matchId in matchIds)
                     {
-                        if (!allMatchIds.Contains(matchId))
+                        if (!allMatchIdsMap.ContainsKey(matchId))
                         {
-                            allMatchIds.Add(matchId);
+                            allMatchIdsMap.Add(matchId, 1);
+                        }
+                        else
+                        {
+                            allMatchIdsMap[matchId]++;
                         }
                     }
 
                     skip += take;
                     await Task.Delay(3000); //Rate limit
-                } while (matchIds.Any());
+                //} while (matchIds.Any());
+                } while (false);
             }
             
-            return allMatchIds;
+            return allMatchIdsMap;
         }
     }
 }

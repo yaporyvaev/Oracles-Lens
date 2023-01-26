@@ -83,7 +83,10 @@ namespace LeagueActivityBot.Services
         {
             var gameInfo = _gameInfoRepository.GetAll(true)
                 .FirstOrDefault(g => g.GameId == matchInfo.Info.GameId);
-            if(gameInfo != null) return;
+            if (gameInfo != null)
+            {
+                await _gameInfoRepository.HardRemove(gameInfo);
+            }
 
             gameInfo = new GameInfo
             {

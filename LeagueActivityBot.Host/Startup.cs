@@ -81,7 +81,11 @@ namespace LeagueActivityBot.Host
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, IServiceProvider serviceProvider)
         {
             MigrationsRunner.ApplyMigrations(logger, serviceProvider, "LeagueActivityBot.Host").Wait();
-            SummonersInitializer.Initialize(serviceProvider).Wait();
+            
+            if (bool.Parse(Configuration["App:Startup:EnableSummonersSync"]))
+            {
+                SummonersInitializer.Initialize(serviceProvider).Wait();
+            }
             
             if (bool.Parse(Configuration["App:Startup:EnableStartupNotification"]))
             {
