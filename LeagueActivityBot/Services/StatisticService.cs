@@ -32,10 +32,10 @@ namespace LeagueActivityBot.Services
             if (daysCount.HasValue)
             {
                 daysCount--;
-                gamesQuery = gamesQuery.Where(g => DateTime.Now.Date.AddDays(-daysCount.Value) <= g.GameStartTime);
+                var filterDate = DateTime.Now.Date.AddDays(-daysCount.Value);
+                gamesQuery = gamesQuery.Where(g => g.GameStartTime >= filterDate);
             }
-
-
+            
             var games = await gamesQuery.ToListAsync();
             
             var statisticMap = new Dictionary<string, WinRateStatisticDto>();
