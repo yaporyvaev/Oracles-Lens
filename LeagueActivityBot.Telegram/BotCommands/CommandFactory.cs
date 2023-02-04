@@ -22,9 +22,9 @@ namespace LeagueActivityBot.Telegram.BotCommands
         {
             return commandType switch
             {
-                BotCommandsTypes.AddSummoner => _serviceProvider.GetService<AddSummonerCommand>(),
-                BotCommandsTypes.RemoveSummoner => _serviceProvider.GetService<RemoveSummonerCommand>(),
-                BotCommandsTypes.Cancel => _serviceProvider.GetService<CancelCommand>(),
+                //BotCommandsTypes.AddSummoner => _serviceProvider.GetService<AddSummonerCommand>(),
+                //BotCommandsTypes.RemoveSummoner => _serviceProvider.GetService<RemoveSummonerCommand>(),
+                //BotCommandsTypes.Cancel => _serviceProvider.GetService<CancelCommand>(),
                 BotCommandsTypes.GetSummoners => _serviceProvider.GetService<GetSummonersCommand>(),
                 BotCommandsTypes.GetStatistic => _serviceProvider.GetService<GetStatisticCommand>(),
                 _ => null
