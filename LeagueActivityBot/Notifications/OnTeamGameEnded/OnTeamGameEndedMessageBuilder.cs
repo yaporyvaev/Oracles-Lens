@@ -45,7 +45,8 @@ namespace LeagueActivityBot.Notifications.OnTeamGameEnded
                 
                 if (_matchInfo.Info.QueueId == (int)QueueType.RankedSoloDuo || _matchInfo.Info.QueueId == (int)QueueType.RankedFlex)
                 {
-                    sb.Append($"\n{BaseEndGameMessageBuilder.GetRankedStat(_leagueDeltas[summoner.SummonerId], stat.Win)}");
+                    var rankedStat = BaseEndGameMessageBuilder.GetRankedStat(_leagueDeltas[summoner.SummonerId], stat.Win);
+                    if(!string.IsNullOrEmpty(rankedStat)) sb.Append($"\n{rankedStat}");
                 }
                 
                 sb.Append("\n\n");
