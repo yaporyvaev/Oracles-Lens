@@ -88,8 +88,7 @@ namespace LeagueActivityBot.BackgroundJobs
 
                     skip += take;
                     await Task.Delay(3000); //Rate limit
-                //} while (matchIds.Any());
-                } while (false);
+                } while (matchIds.Any());
             }
             
             return allMatchIdsMap;
