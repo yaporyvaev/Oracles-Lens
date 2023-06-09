@@ -31,16 +31,11 @@ namespace LeagueActivityBot.Host
         
         public void ConfigureServices(IServiceCollection services)
         {
-            var dbOptions = Configuration
-                .GetSection("App:DbOptions")
-                .Get<DbOptions>();
-            var dbConnectionString = dbOptions.ConnectionString.Replace("{userId}", dbOptions.UserName)
-                .Replace("{userPassword}", dbOptions.Password);
-            
+            var dbConnString = Configuration["App:DbConnectionString"];
             services.AddPostgreSqlStorage(options =>
             {
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                options.UseNpgsql(dbConnectionString);
+                options.UseNpgsql(dbConnString);
             });
             
             services.AddSingleton(new MapperConfiguration(mc =>
@@ -59,7 +54,7 @@ namespace LeagueActivityBot.Host
                 options.SummonerNames = Configuration["App:SummonerNames"].Split(";");
             });
             
-            services.AddBackgroundJobs(dbConnectionString);
+            services.AddBackgroundJobs(dbConnString);
             services.AddNotifications<TelegramOptions>(options =>
             {
                 options.TelegramBotApiKey = Configuration["App:Telegram:ApiKey"];
