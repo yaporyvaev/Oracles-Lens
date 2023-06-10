@@ -1,7 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using LeagueActivityBot.Helpers;
-using LeagueActivityBot.Notifications.OnGameEnded;
 using LeagueActivityBot.Notifications.OnSoloGameEnded;
 using LeagueActivityBot.Notifications.OnTeamGameEnded;
 using LeagueActivityBot.Services;
@@ -12,18 +10,8 @@ namespace LeagueActivityBot
     public static class Entry
     {
         [UsedImplicitly]
-        public static IServiceCollection AddBot<TOptions>([NotNull] this IServiceCollection serviceCollection, Action<TOptions> optionsAction)
-            where TOptions : BotOptions, new()
+        public static IServiceCollection AddBot([NotNull] this IServiceCollection serviceCollection) 
         {
-            var options = new TOptions();
-            optionsAction?.Invoke(options);
-
-            var settings = new BotOptions
-            {
-                SummonerNames = options.SummonerNames
-            };
-            serviceCollection.AddSingleton(settings);
-            
             serviceCollection.AddTransient<GameParticipantsHelper>();
             
             serviceCollection.AddTransient<OnSoloGameEndedMessageBuilder>();
@@ -34,6 +22,7 @@ namespace LeagueActivityBot
             serviceCollection.AddTransient<GameService>();
             serviceCollection.AddTransient<StatisticService>();
             serviceCollection.AddTransient<LeagueService>();
+            serviceCollection.AddTransient<SummonerService>();
 
             return serviceCollection;
         }

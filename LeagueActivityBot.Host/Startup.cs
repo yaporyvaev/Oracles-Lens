@@ -1,18 +1,19 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using AutoMapper;
 using LeagueActivityBot.BackgroundJobs;
-using LeagueActivityBot.Calendar;
-using LeagueActivityBot.Calendar.Integration;
 using LeagueActivityBot.Controllers;
 using LeagueActivityBot.Database;
-using LeagueActivityBot.Host.Options;
+using LeagueActivityBot.Host.Filters;
+using LeagueActivityBot.Host.Infrastructure;
 using LeagueActivityBot.Telegram;
 using LeagueActivityBot.Riot;
 using LeagueActivityBot.Riot.Configuration;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,12 +48,7 @@ namespace LeagueActivityBot.Host
             services.AddMemoryCache();
             services.AddHealthChecks();
             services.AddRiot<RiotClientOptions>(options => Configuration.GetSection("App:Riot").Bind(options));
-            services.AddCalendar<CalendarClientOptions>(options => Configuration.GetSection("App:Calendar").Bind(options));
-
-            services.AddBot<BotOptions>(options =>
-            {
-                options.SummonerNames = Configuration["App:SummonerNames"].Split(";");
-            });
+            services.AddBot();
             
             services.AddBackgroundJobs(dbConnString);
             services.AddNotifications<TelegramOptions>(options =>
@@ -68,9 +64,21 @@ namespace LeagueActivityBot.Host
                 Assembly.GetAssembly(typeof(BackgroundJobs.Entry)),
                 Assembly.GetAssembly(typeof(Calendar.Entry)));
 
-            services.AddMvc()
+            services.AddControllers(options =>
+                {
+                    options.Filters.Add<ExceptionFilter>();
+                })
                 .AddApi()
-                .AddControllersAsServices();
+                .AddControllersAsServices()
+                .ConfigureApiBehaviorOptions(o => o.InvalidModelStateResponseFactory = context =>
+                {
+                    return new BadRequestObjectResult(new
+                    {
+                        message = string.Join(" | ", context.ModelState.Values
+                            .SelectMany(v => v.Errors)
+                            .Select(e => e.ErrorMessage))
+                    });
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, IServiceProvider serviceProvider)
@@ -90,7 +98,8 @@ namespace LeagueActivityBot.Host
             app.UseRouting();
             app.UseHealthChecks("/health");
             app.UseStaticFiles();
-
+            app.UseMiddleware<ApiKeyMiddleware>();
+            
             if (bool.Parse(Configuration["App:Hangfire:EnableDashboard"]))
             {
                 app.UseBackgroundJobsDashboard();

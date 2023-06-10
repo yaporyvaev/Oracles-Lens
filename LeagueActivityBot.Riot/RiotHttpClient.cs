@@ -41,7 +41,7 @@ namespace LeagueActivityBot.Riot
                 return null;
             }
             
-            throw new ClientException($"Получение результата на запрос информации об аккаунте. Код: {response.StatusCode}, сообщение: {responseContent}");
+            throw new HttpClientException($"Получение результата на запрос информации об аккаунте. Код: {response.StatusCode}, сообщение: {responseContent}");
         }
 
         public async Task<SpectatorGameInfo> GetCurrentGameInfo(string summonerId)
@@ -65,7 +65,7 @@ namespace LeagueActivityBot.Riot
                 };
             }
 
-            throw new ClientException($"Получение результата на запрос информации о текущем матче. Код: {response.StatusCode}, сообщение: {responseContent}");
+            throw new HttpClientException($"Получение результата на запрос информации о текущем матче. Код: {response.StatusCode}, сообщение: {responseContent}");
         }
         
         public async Task<MatchInfo> GetMatchInfo(long gameId)
@@ -92,7 +92,7 @@ namespace LeagueActivityBot.Riot
                 return new List<string>();
             }
 
-            throw new ClientException($"Получение результата на запрос игр. Код: {response.StatusCode}, сообщение: {responseContent}");        
+            throw new HttpClientException($"Получение результата на запрос игр. Код: {response.StatusCode}, сообщение: {responseContent}");        
         }
 
         public async Task<MatchInfo> GetMatchInfo(string gameId)
@@ -110,7 +110,7 @@ namespace LeagueActivityBot.Riot
                 return null;
             }
 
-            throw new ClientException($"Получение результата на запрос информации об игре. Код: {response.StatusCode}, сообщение: {responseContent}");
+            throw new HttpClientException($"Получение результата на запрос информации об игре. Код: {response.StatusCode}, сообщение: {responseContent}");
         }
         
         public async Task<LeagueInfo[]> GetLeagueInfo(string summonerId)
@@ -123,7 +123,7 @@ namespace LeagueActivityBot.Riot
                 return JsonConvert.DeserializeObject<LeagueInfo[]>(responseContent);
             }
             
-            throw new ClientException($"Получение результата на запрос информации о лиге. Код: {response.StatusCode}, сообщение: {responseContent}");
+            throw new HttpClientException($"Получение результата на запрос информации о лиге. Код: {response.StatusCode}, сообщение: {responseContent}");
         }
         
         public async Task<ClashInfo[]> GetClashSchedule()
@@ -137,7 +137,7 @@ namespace LeagueActivityBot.Riot
                 return _mapper.Map<ClashInfo[]>(responseModel);
             }
             
-            throw new ClientException($"Получение результата на запрос информации о расписаеии турниров. Код: {response.StatusCode}, сообщение: {responseContent}");
+            throw new HttpClientException($"Получение результата на запрос информации о расписаеии турниров. Код: {response.StatusCode}, сообщение: {responseContent}");
         }
     }
 }

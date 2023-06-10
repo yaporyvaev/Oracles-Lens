@@ -17,7 +17,6 @@ namespace LeagueActivityBot.Controllers.Api
         [HttpGet("schedule")]
         public async Task<IActionResult> GetSchedule()
         {
-            //
             var clashInfos = await _riotClient.GetClashSchedule();
             return Ok(clashInfos);
         }

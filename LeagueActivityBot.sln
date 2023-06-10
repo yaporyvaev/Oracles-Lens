@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Telegram"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Database", "LeagueActivityBot.Database\LeagueActivityBot.Database.csproj", "{AA8C4B2F-E386-4B6E-84EC-1177BE7D85CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueActivityBot.Contracts", "LeagueActivityBot.Contracts\LeagueActivityBot.Contracts.csproj", "{4B41049A-A9C6-4AA9-A5CC-13290F24FA55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{AA8C4B2F-E386-4B6E-84EC-1177BE7D85CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA8C4B2F-E386-4B6E-84EC-1177BE7D85CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA8C4B2F-E386-4B6E-84EC-1177BE7D85CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B41049A-A9C6-4AA9-A5CC-13290F24FA55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B41049A-A9C6-4AA9-A5CC-13290F24FA55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B41049A-A9C6-4AA9-A5CC-13290F24FA55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B41049A-A9C6-4AA9-A5CC-13290F24FA55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
