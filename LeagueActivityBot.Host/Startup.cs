@@ -61,8 +61,7 @@ namespace LeagueActivityBot.Host
             services.AddMediatR(
                 Assembly.GetAssembly(typeof(Telegram.Entry)), 
                 Assembly.GetAssembly(typeof(Entry)),
-                Assembly.GetAssembly(typeof(BackgroundJobs.Entry)),
-                Assembly.GetAssembly(typeof(Calendar.Entry)));
+                Assembly.GetAssembly(typeof(BackgroundJobs.Entry)));
 
             services.AddControllers(options =>
                 {
