@@ -1,4 +1,4 @@
-using System.Text;
+using System.Linq;
 
 namespace LeagueActivityBot.Notifications.OnClashScheduleReceived
 {
@@ -6,21 +6,9 @@ namespace LeagueActivityBot.Notifications.OnClashScheduleReceived
     {
         public string Build(ClashAnnouncementNotification notification)
         {
-            var sb = new StringBuilder("There is clash today!");
-            foreach (var clash in notification.ClashInfos)
-            {
-                sb.AppendLine($"{clash.Name} {clash.SecondaryName} at ");
-                
-                var notFirst = false;
-                foreach (var schedule in clash.Schedule)
-                {
-                    if(notFirst) sb.Append(" ,");
-                    sb.Append(schedule.RegistrationTime.ToString("hh:mm"));
-                    notFirst = true;
-                }
-            }
+            var clash = notification.ClashInfos.FirstOrDefault();
 
-            return sb.ToString();
+            return $"<b>There is a clash today!</b>\r\n{clash!.Name} at {clash.Schedule.FirstOrDefault()!.RegistrationTime.ToLocalTime():hh:mm}";
         } 
     }
 }

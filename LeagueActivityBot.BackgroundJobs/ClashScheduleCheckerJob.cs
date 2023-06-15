@@ -32,8 +32,8 @@ namespace LeagueActivityBot.BackgroundJobs
                 var clashesToday = ClashService.GetClashesForADay(clashInfos, DateTime.Today).ToArray();
                 if (clashesToday.Any())
                 {
-                    BackgroundJob.Schedule<IMediator>(m => m.Publish(new ClashAnnouncementNotification(clashesToday), CancellationToken.None),
-                        new DateTimeOffset(DateTime.Today, TimeSpan.FromHours(12)));
+                    BackgroundJob.Schedule<IMediator>(m => m.Publish(new ClashAnnouncementNotification(clashesToday), CancellationToken.None), 
+                        new DateTimeOffset(DateTime.SpecifyKind(DateTime.Today.AddHours(13), DateTimeKind.Local)));
                 }
             }
         }
