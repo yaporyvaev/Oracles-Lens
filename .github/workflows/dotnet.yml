@@ -23,6 +23,7 @@ jobs:
         files: '/home/runner/work/Oracles-Lens/Oracles-Lens/deploy/appsettings.json'
       env:
         App.ApiKey: ${{ secrets.APP_API_KEY }}
+        App.Hangfire.DashboardPassword: ${{ secrets.APP_HANGFIRE_PASSWORD }}
         App.DbConnectionString: ${{ secrets.APP_DB_CONNTECTION_STRING }}
         App.Telegram.ApiKey: ${{ secrets.APP_TELEGRAM_API_KEY }}
         App.Telegram.ChatId: ${{ secrets.APP_TELEGRAM_CHAT_ID }}
