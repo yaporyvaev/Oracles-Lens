@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
+using Hangfire;
+using HangfireBasicAuthenticationFilter;
 using LeagueActivityBot.BackgroundJobs;
 using LeagueActivityBot.Controllers;
 using LeagueActivityBot.Database;
@@ -101,7 +103,17 @@ namespace LeagueActivityBot.Host
             
             if (bool.Parse(Configuration["App:Hangfire:EnableDashboard"]))
             {
-                app.UseBackgroundJobsDashboard();
+                app.UseHangfireDashboard("/hangfire", new DashboardOptions
+                {
+                    Authorization = new []
+                    {
+                        new HangfireCustomBasicAuthenticationFilter
+                        {
+                            User = "admin",
+                            Pass = Configuration["App:Hangfire:DashboardPassword"]
+                        }
+                    }
+                });
             }
 
             app.AddBackgroundJobs();
