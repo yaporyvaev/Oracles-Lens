@@ -36,7 +36,10 @@ namespace LeagueActivityBot.BackgroundJobs
                 q.AddTrigger(opts => opts
                     .ForJob(clashScheduleCheckerJobKey)
                     .WithIdentity("clashScheduleCheckerJob-trigger")
-                    .WithCronSchedule("0 1 * * * *"));
+                    .WithDailyTimeIntervalSchedule(a => 
+                        a.WithIntervalInHours(24)
+                        .OnEveryDay()
+                        .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(1, 0))));
                     //.WithDailyTimeIntervalSchedule(a => a.WithInterval(1, IntervalUnit.Minute))); //Debug schedule
             });
             
