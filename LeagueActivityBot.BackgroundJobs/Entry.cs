@@ -31,12 +31,12 @@ namespace LeagueActivityBot.BackgroundJobs
                     .WithIdentity("endGameCheckerJob-trigger")
                     .WithCronSchedule("1 * * ? * *"));
 
-                var clashScheduleCheckerJobKey = new JobKey("ClashScheduleCheckerJob");
-                q.AddJob<ClashScheduleCheckerJob>(opts => opts.WithIdentity(clashScheduleCheckerJobKey));
-                q.AddTrigger(opts => opts
-                    .ForJob(clashScheduleCheckerJobKey)
-                    .WithIdentity("clashScheduleCheckerJob-trigger")
-                    .WithDailyTimeIntervalSchedule(a => a.StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(1, 0))));
+                // var clashScheduleCheckerJobKey = new JobKey("ClashScheduleCheckerJob");
+                // q.AddJob<ClashScheduleCheckerJob>(opts => opts.WithIdentity(clashScheduleCheckerJobKey));
+                // q.AddTrigger(opts => opts
+                //     .ForJob(clashScheduleCheckerJobKey)
+                //     .WithIdentity("clashScheduleCheckerJob-trigger")
+                //     .WithDailyTimeIntervalSchedule(a => a.StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(1, 0))));
                     //.WithDailyTimeIntervalSchedule(a => a.WithInterval(1, IntervalUnit.Minute))); //Debug schedule
             });
             
