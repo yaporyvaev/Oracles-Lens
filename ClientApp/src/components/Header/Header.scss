@@ -1,6 +1,14 @@
 @import "../../styles/variables.scss";
 .header {
-    color: $main-text-color;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: $theme-text-color;
     padding: 20px;
     font-size: 20px;
+
+    &__duration {
+        font-size: 16px;
+        align-self: flex-end;
+    }
 }

@@ -1,23 +1,32 @@
+import { IParticipant } from "../../types/GameStat";
 import "./Row.scss";
 
-interface IProps {
-  image: string;
-  username: string;
-  kdaStats: string;
-  kdaTotal: string;
-  damage: string;
-}
-
-export const Row = (props: IProps) => {
+export const Row = (props: IParticipant) => {
   return (
     <div className="row">
-      <img src={props.image} className="row__image"></img>
+      <img src={props.avatar} className="row__image"></img>
       <div className="row__username">{props.username}</div>
       <div className="row__kda">
-        <div className="row__kda-stats">{props.kdaStats}</div>
-        <div className="row__kda-total">{props.kdaTotal}</div>
+        <div className="row__kda-stats">{props.kda}</div>
+        <div className="row__kda-total">{props.kdaIndex} KDA</div>
       </div>
-      <div className="row__damage">{props.damage}</div>
+      <div className="row__damage">
+        <div>{props.damage}</div>
+        <div
+          className="row__progress-container"
+          style={
+            { "--value": `${props.damagePercentage}%` } as React.CSSProperties
+          }
+        >
+          <progress
+            value={props.damagePercentage}
+            max="100"
+            className="progress"
+          >
+            {props.damagePercentage}
+          </progress>
+        </div>
+      </div>
     </div>
   );
 };

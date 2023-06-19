@@ -1,49 +1,19 @@
+import { IParticipant } from "../../types/GameStat";
 import { Row } from "../Row/Row";
 import "./ResultTable.scss";
 
-export const ResultTable = () => {
-  const mockResults = [
-    {
-      image: "https://blitz-cdn.blitz.gg/blitz/lol/champion/Seraphine.webp",
-      username: "MOV BX 69",
-      kdaStats: "10/0/20",
-      kdaTotal: "KDA: 500",
-      damage: "200000",
-    },
-    {
-      image: "https://blitz-cdn.blitz.gg/blitz/lol/champion/MissFortune.webp",
-      username: "KARTOSHKA",
-      kdaStats: "10/0/20",
-      kdaTotal: "KDA: 500",
-      damage: "200000",
-    },
-    {
-      image: "https://blitz-cdn.blitz.gg/blitz/lol/champion/MissFortune.webp",
-      username: "KARTOSHKA",
-      kdaStats: "10/0/20",
-      kdaTotal: "KDA: 500",
-      damage: "200000",
-    },
-    {
-      image: "https://blitz-cdn.blitz.gg/blitz/lol/champion/MissFortune.webp",
-      username: "KARTOSHKA",
-      kdaStats: "10/0/20",
-      kdaTotal: "KDA: 500",
-      damage: "200000",
-    },
-    {
-      image: "https://blitz-cdn.blitz.gg/blitz/lol/champion/MissFortune.webp",
-      username: "KARTOSHKA",
-      kdaStats: "10/0/20",
-      kdaTotal: "KDA: 500",
-      damage: "200000",
-    },
-  ];
+interface IProps {
+  participants: Array<IParticipant>;
+}
+
+export const ResultTable = ({ participants }: IProps) => {
   return (
     <section className="result-table">
-      {mockResults.map((result, index) => (
-        <Row key={index} {...result} />
-      ))}
+      {participants &&
+        participants.length !== 0 &&
+        participants.map((participant, index) => (
+          <Row key={index} {...participant} />
+        ))}
     </section>
   );
 };

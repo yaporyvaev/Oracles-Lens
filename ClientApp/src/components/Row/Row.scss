@@ -1,26 +1,36 @@
 @import "../../styles/variables.scss";
 
+progress {
+    opacity: 0;
+}
+
 .row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
+    padding: 10px;
 
     &:nth-child(odd) {
-        background-color: $black;
+        background-color: $theme-bg-color-dark;
     }
 
     &:nth-child(even) {
-        background-color: $light-black;
+        background-color: $theme-bg-color-darkest;
     }
 
     &__image {
-        width: 60px;
+        width: 50px;
         border-radius: 50%;
+        border: 3px solid $theme-link-color;
     }
 
     &__username {
-        color: $main-text-color;
+        font-size: 14px;
+        color: $theme-text-color;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 30%;
     }
 
     &__kda {
@@ -31,6 +41,41 @@
     &__kda-stats,
     &__kda-total,
     &__damage {
-        color: $gray;
+        font-size: 14px;
+        color: $theme-hint-color;
+        text-align: center;
+    }
+
+    &__damage {
+        width: 25%;
+    }
+
+    &__progress-container {
+        position: relative;
+        display: inline-block;
+        background: #fff;
+        height: 5px;
+        border-radius: 5px;
+        overflow: hidden;
+        width: 100%;
+
+        @keyframes growLineProgressBar {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: var(--value);
+            }
+        }
+
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: $theme-link-color;
+            animation: growLineProgressBar 1s 1 forwards;
+        }
     }
 }
