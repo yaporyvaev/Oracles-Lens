@@ -33,7 +33,7 @@ jobs:
     - name: Copy via ssh
       uses: garygrossgarten/github-action-scp@v0.5.3
       with:
-        local: /.
+        local: /home/runner/work/Oracles-Lens/Oracles-Lens/.
         remote: ${{ secrets.REMOTE_CLIENT_APP_TARGET }}
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
