@@ -1,0 +1,36 @@
+@import "../../styles/variables.scss";
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+
+    &:nth-child(odd) {
+        background-color: $black;
+    }
+
+    &:nth-child(even) {
+        background-color: $light-black;
+    }
+
+    &__image {
+        width: 60px;
+        border-radius: 50%;
+    }
+
+    &__username {
+        color: $main-text-color;
+    }
+
+    &__kda {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__kda-stats,
+    &__kda-total,
+    &__damage {
+        color: $gray;
+    }
+}
