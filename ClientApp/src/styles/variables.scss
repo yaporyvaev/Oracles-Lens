@@ -1,6 +1,8 @@
-$main-black: hsl(222.86deg 20% 6.86%);
-$black: hsl(225deg 17.39% 9.02%);
-$light-black: hsl(222.86deg 12.73% 10.78%);
-$main-text-color: hsl(222.86deg 9.59% 85.69%);
-$gray: hsl(222deg 5.15% 61.96%);
-$red: hsl(351.74deg 71.06% 53.92%);
+$theme-bg-color: var(--tg-theme-bg-color);
+$theme-bg-color-dark: color-mix(in srgb, var(--tg-theme-bg-color), #000 5%);
+$theme-bg-color-darkest: color-mix(in srgb, var(--tg-theme-bg-color), #000 15%);
+$theme-text-color: var(--tg-theme-text-color);
+$theme-hint-color: var(--tg-theme-hint-color);
+$theme-link-color: var(--tg-theme-link-color);
+$theme-button-color: var(--tg-theme-button-color);
+$theme-button-text-color: var(--tg-theme-button-text-color);

@@ -1,9 +1,14 @@
+import { IParticipant } from "../../types/GameStat";
 import { ResultTable } from "../ResultTable/ResultTable";
 
-export const Main = () => {
+interface IProps {
+  participants: Array<IParticipant>;
+}
+
+export const Main = ({ participants }: IProps) => {
   return (
     <main>
-      <ResultTable></ResultTable>
+      <ResultTable participants={participants}></ResultTable>
     </main>
   );
 };
