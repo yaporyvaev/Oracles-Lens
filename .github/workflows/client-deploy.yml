@@ -34,7 +34,7 @@ jobs:
       uses: garygrossgarten/github-action-scp@v0.5.3
       with:
         local: /dist
-        remote: ${{ REMOTE_CLIENT_APP_TARGET }}
+        remote: ${{ secrets.REMOTE_CLIENT_APP_TARGET }}
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
