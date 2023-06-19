@@ -66,6 +66,19 @@ namespace LeagueActivityBot.Host
                 Assembly.GetAssembly(typeof(Entry)),
                 Assembly.GetAssembly(typeof(BackgroundJobs.Entry)));
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder
+                            .AllowAnyOrigin() 
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                    });
+            });
+            
             services.AddControllers(options =>
                 {
                     options.Filters.Add<ExceptionFilter>();
@@ -97,6 +110,7 @@ namespace LeagueActivityBot.Host
                 TelegramNotification.SendNotification(serviceProvider,"Service started").Wait();
             }
 
+            app.UseCors("AllowAll");
             app.UseRouting();
             app.UseHealthChecks("/health");
             app.UseStaticFiles();
