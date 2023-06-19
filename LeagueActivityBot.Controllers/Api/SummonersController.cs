@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LeagueActivityBot.Controllers.Api
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/private/[controller]")]
     public class SummonersController : ControllerBase
     {
         private readonly SummonerService _summonerService;
