@@ -29,18 +29,11 @@ jobs:
 
     - name: Build
       run: npm run build
-      
-      # Share artifact inside workflow
-    - name: Share artifact inside workflow
-      uses: actions/upload-artifact@v1
-      with:
-        name: react-github-actions-build
-        path: dist
         
     - name: Copy via ssh
-      uses: actions/download-artifact@v1
+      uses: garygrossgarten/github-action-scp@v0.5.3
       with:
-        name: react-github-actions-build
+        local: /.
         remote: ${{ secrets.REMOTE_CLIENT_APP_TARGET }}
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
