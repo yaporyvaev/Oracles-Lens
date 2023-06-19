@@ -6,6 +6,7 @@ using Hangfire;
 using HangfireBasicAuthenticationFilter;
 using LeagueActivityBot.BackgroundJobs;
 using LeagueActivityBot.Controllers;
+using LeagueActivityBot.Controllers.Configuration;
 using LeagueActivityBot.Database;
 using LeagueActivityBot.Host.Filters;
 using LeagueActivityBot.Host.Infrastructure;
@@ -44,7 +45,7 @@ namespace LeagueActivityBot.Host
             services.AddSingleton(new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new RiotMappingProfile());
-
+                mc.AddProfile(new ControllersMappingProfile());
             }).CreateMapper());
             
             services.AddMemoryCache();

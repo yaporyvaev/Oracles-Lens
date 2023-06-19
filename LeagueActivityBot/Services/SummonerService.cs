@@ -26,6 +26,14 @@ namespace LeagueActivityBot.Services
         public async Task<IEnumerable<Summoner>> GetSummoners()
         {
             var summoners = await _summonerRepository.GetAll()
+                .ToListAsync();
+
+            return summoners;
+        } 
+        
+        public async Task<IEnumerable<Summoner>> GetSummonersWithLeague()
+        {
+            var summoners = await _summonerRepository.GetAll()
                 .Include(s => s.LeagueInfos)
                 .ToListAsync();
 

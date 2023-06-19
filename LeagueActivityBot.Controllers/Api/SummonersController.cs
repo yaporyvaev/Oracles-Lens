@@ -20,7 +20,7 @@ namespace LeagueActivityBot.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> GetSummoners()
         {
-            var summoners = await _summonerService.GetSummoners();
+            var summoners = await _summonerService.GetSummonersWithLeague();
 
             var result = new GetSummonersResponse {Summoners = summoners.Select(s => s.Name).ToArray()};
             return Ok(result);
