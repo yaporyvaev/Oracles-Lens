@@ -1,6 +1,6 @@
 namespace LeagueActivityBot.Riot.Models.Clash
 {
-    public class ClashScheduleResponseModel
+    public class ClashScheduleRiotModel
     {
         public int Id { get; set;}
         public long RegistrationTime { get; set;}

@@ -13,5 +13,7 @@ namespace LeagueActivityBot.Abstractions
         Task<List<string>> GetMatchIds(string summonerPuuid, int skip, int take);
         Task<LeagueInfo[]> GetLeagueInfo(string summonerId);
         Task<ClashInfo[]> GetClashSchedule();
+        Task<string> GetLatestDataApiVersion();
+        Task<IEnumerable<ChampionInfo>> GetChampionsInfo();
     }
 }

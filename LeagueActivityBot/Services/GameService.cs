@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeagueActivityBot.Abstractions;
+using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
-using LeagueActivityBot.Notifications.OnGameEnded;
 using LeagueActivityBot.Notifications.OnSoloGameEnded;
+using LeagueActivityBot.Notifications.OnTeamGameEnded;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LeagueActivityBot.Services
 {
@@ -16,32 +19,47 @@ namespace LeagueActivityBot.Services
         private readonly IRepository<GameParticipant> _gameParticipantRepository;
         private readonly IRiotClient _riotClient;
         private readonly IMediator _mediator;
-        private readonly LeagueService _leagueService;
+        private readonly LeagueService _leagueService;        
+        private readonly IMemoryCache _memoryCache;
 
-        public GameService(IRepository<GameInfo> gameInfoRepository, 
+
+        public GameService(
+            IRepository<GameInfo> gameInfoRepository, 
             IRiotClient riotClient, 
             IMediator mediator, 
             IRepository<GameParticipant> gameParticipantRepository, 
-            LeagueService leagueService)
+            LeagueService leagueService, 
+            IMemoryCache memoryCache)
         {
             _gameInfoRepository = gameInfoRepository;
             _riotClient = riotClient;
             _mediator = mediator;
             _gameParticipantRepository = gameParticipantRepository;
             _leagueService = leagueService;
+            _memoryCache = memoryCache;
         }
-
+        
         public async Task<MatchInfo> GetGameInfo(long gameId)
         {
-            var matchInfo = await _riotClient.GetMatchInfo(gameId);
+            var gameCacheKey = $"game_info_{gameId}";
+            var matchInfo = _memoryCache.Get<MatchInfo>(gameCacheKey);
+
+            if (matchInfo == null)
+            {
+                matchInfo = await _riotClient.GetMatchInfo(gameId);
+                
+                if(matchInfo != null)
+                    _memoryCache.Set(gameCacheKey, matchInfo, TelegramMessageOptions.MessageTimeToLive.Add(TimeSpan.FromMinutes(30)));
+            }
+            
             return matchInfo;
         }
         
         public async Task ProcessEndGame(GameInfo game)
         {
             var summoners = game.GameParticipants.Select(p => p.Summoner).ToArray();
-            var matchInfo = await _riotClient.GetMatchInfo(game.GameId);
-            if (matchInfo == null) return;
+            var gameInfo = await GetGameInfo(game.GameId);
+            if (gameInfo == null) return;
 
             Dictionary<string, EndGameLeagueDelta> leagueDelta = null;
             if (game.IsRankedGame)
@@ -51,16 +69,17 @@ namespace LeagueActivityBot.Services
             
             if (summoners.Length > 1)
             {
-                await _mediator.Publish(new OnTeamGameEndedNotification(summoners, matchInfo, leagueDelta));
+                await _mediator.Publish(new OnTeamGameEndedNotification(summoners, gameInfo, leagueDelta));
             }
             else
             {
-                await _mediator.Publish(new OnSoloGameEndedNotification(summoners.First(), matchInfo, leagueDelta?.FirstOrDefault().Value));
+                await _mediator.Publish(new OnSoloGameEndedNotification(summoners.First(), gameInfo, leagueDelta?.FirstOrDefault().Value));
             }
             
+            //TODO refactor mapping
             foreach (var participant in game.GameParticipants)
             {
-                var matchParticipant = matchInfo.Info.Participants.First(p => p.SummonerId == participant.Summoner.SummonerId);
+                var matchParticipant = gameInfo.Info.Participants.First(p => p.SummonerId == participant.Summoner.SummonerId);
                 participant.Assists = matchParticipant.Assists;
                 participant.Deaths = matchParticipant.Deaths;
                 participant.Kills = matchParticipant.Kills;
@@ -77,8 +96,8 @@ namespace LeagueActivityBot.Services
             }
 
             game.IsProcessed = true;
-            game.GameStartTime = matchInfo.Info.GameStartTime;
-            game.GameDurationInSeconds = matchInfo.Info.GameDurationInSeconds;
+            game.GameStartTime = gameInfo.Info.GameStartTime;
+            game.GameDurationInSeconds = gameInfo.Info.GameDurationInSeconds;
             game.GameEnded = true;
             
             await _gameInfoRepository.Update(game);
@@ -97,7 +116,8 @@ namespace LeagueActivityBot.Services
             {
                 await _gameInfoRepository.HardRemove(gameInfo);
             }
-
+            
+            //TODO refactor mapping
             gameInfo = new GameInfo
             {
                 GameEnded = true,

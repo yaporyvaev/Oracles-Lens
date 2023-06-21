@@ -3,7 +3,7 @@ using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
 using MediatR;
 
-namespace LeagueActivityBot.Notifications.OnGameEnded
+namespace LeagueActivityBot.Notifications.OnTeamGameEnded
 {
     public class OnTeamGameEndedNotification : INotification
     {

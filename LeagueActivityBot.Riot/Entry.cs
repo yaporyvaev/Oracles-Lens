@@ -25,7 +25,8 @@ namespace LeagueActivityBot.Riot
                 SpectatorApiResource = options.SpectatorApiResource,
                 SummonerApiResource = options.SummonerApiResource,
                 LeagueApiResource = options.LeagueApiResource,
-                MatchApiUrl = options.MatchApiUrl
+                MatchApiUrl = options.MatchApiUrl,
+                DataDragonBaseUrl = options.DataDragonBaseUrl
             };
             serviceCollection.AddSingleton(settings);
 

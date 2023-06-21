@@ -8,7 +8,7 @@ namespace LeagueActivityBot.Controllers
     {
         public static IMvcBuilder AddApi(this IMvcBuilder builder)
         {
-            return builder.AddApplicationPart(Assembly.GetAssembly(typeof(TestController)));
+            return builder.AddApplicationPart(Assembly.GetAssembly(typeof(SummonersController)));
         }
     }
 }

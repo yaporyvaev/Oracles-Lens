@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Exceptions;
 using LeagueActivityBot.Models;
 using LeagueActivityBot.Riot.Models.Clash;
+using LeagueActivityBot.Riot.Models.Config;
 using Newtonsoft.Json;
 
 namespace LeagueActivityBot.Riot
@@ -133,11 +135,55 @@ namespace LeagueActivityBot.Riot
 
             if (response.IsSuccessStatusCode)
             {
-                var responseModel = JsonConvert.DeserializeObject<ClashInfoResponseModel[]>(responseContent);
+                var responseModel = JsonConvert.DeserializeObject<ClashInfoRiotResponse[]>(responseContent);
                 return _mapper.Map<ClashInfo[]>(responseModel);
             }
             
-            throw new HttpClientException($"Получение результата на запрос информации о расписаеии турниров. Код: {response.StatusCode}, сообщение: {responseContent}");
+            throw new HttpClientException($"Получение результата на запрос информации о расписании турниров. Код: {response.StatusCode}, сообщение: {responseContent}");
+        }
+
+        private const string DefaultDataApiVersion = "13.12.1"; //Последняя версия на время разработки метода
+        public async Task<string> GetLatestDataApiVersion()
+        {
+            var response = await _httpClient.GetAsync($"{_setting.DataDragonBaseUrl}/api/versions.json");
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseModel = JsonConvert.DeserializeObject<string[]>(responseContent);
+                return responseModel!.FirstOrDefault() ?? DefaultDataApiVersion;
+            }
+            
+            throw new HttpClientException($"Получение результата на запрос информации о версиях API дата-сервиса. Код: {response.StatusCode}, сообщение: {responseContent}");
+        }
+        
+        public async Task<IEnumerable<ChampionInfo>> GetChampionsInfo()
+        {
+            var latestApiVersion = await GetLatestDataApiVersion();
+            var response = await _httpClient.GetAsync($"{_setting.DataDragonBaseUrl}/cdn/{latestApiVersion}/data/en_US/champion.json");
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseModel = JsonConvert.DeserializeObject<GetChampionsInfoRiotApiResponse>(responseContent);
+                var properties = responseModel!.Data.Properties();
+
+                var result = new List<ChampionInfo>();
+                foreach (var prop in properties)
+                {
+                    var championInfo = prop.Value.ToObject(typeof(ChampionInfoRiotModel)) as ChampionInfoRiotModel;
+                    result.Add(new ChampionInfo
+                    {
+                        Id = int.Parse(championInfo!.Key),
+                        Name = championInfo.Name,
+                        IconName = championInfo.Image.Full
+                    });
+                }
+
+                return result;
+            }
+            
+            throw new HttpClientException($"Получение результата на запрос информации о чемпионах. Код: {response.StatusCode}, сообщение: {responseContent}");
         }
     }
 }

@@ -7,7 +7,7 @@
         public string SummonerApiResource { get; set; }
         public string SpectatorApiResource { get; set; }
         public string LeagueApiResource { get; set; }
-        
+        public string DataDragonBaseUrl { get; set; }
         public string MatchApiUrl { get; set; }
     }
 }

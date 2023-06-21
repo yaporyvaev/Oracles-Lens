@@ -12,13 +12,13 @@ namespace LeagueActivityBot.Telegram.Handlers
     {
         private readonly TelegramOptions _options;
         private readonly TelegramBotClientWrapper _telegramBotClientWrapper;
-        private readonly RecentMessageStore _recentMessageStore;
+        private readonly RecentGameNotificationMessageStore _recentGameNotificationMessageStore;
 
-        public OnTeamGameStartedNotificationHandler(TelegramOptions options, TelegramBotClientWrapper telegramBotClientWrapper, RecentMessageStore recentMessageStore)
+        public OnTeamGameStartedNotificationHandler(TelegramOptions options, TelegramBotClientWrapper telegramBotClientWrapper, RecentGameNotificationMessageStore recentGameNotificationMessageStore)
         {
             _options = options;
             _telegramBotClientWrapper = telegramBotClientWrapper;
-            _recentMessageStore = recentMessageStore;
+            _recentGameNotificationMessageStore = recentGameNotificationMessageStore;
         }
 
         public async Task Handle(OnTeamGameStartedNotification notification, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ namespace LeagueActivityBot.Telegram.Handlers
             var message = messageBuilder.Build(notification);
 
             var tgMessage = await _telegramBotClientWrapper.TgClient.SendTextMessageAsync(_options.TelegramChatId, message, ParseMode.Html, cancellationToken: cancellationToken);
-            _recentMessageStore.Save(new RecentGameNotificationMessage(tgMessage.MessageId, notification.GameId));
+            _recentGameNotificationMessageStore.Save(new RecentGameNotificationMessage(tgMessage.MessageId, notification.GameId));
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Text;
 using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
-using LeagueActivityBot.Notifications.OnGameEnded;
 
 namespace LeagueActivityBot.Notifications.OnTeamGameEnded
 {

@@ -23,6 +23,7 @@ namespace LeagueActivityBot
             serviceCollection.AddTransient<StatisticService>();
             serviceCollection.AddTransient<LeagueService>();
             serviceCollection.AddTransient<SummonerService>();
+            serviceCollection.AddTransient<ChampionInfoService>();
 
             return serviceCollection;
         }

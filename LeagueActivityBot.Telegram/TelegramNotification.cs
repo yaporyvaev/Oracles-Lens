@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 
 namespace LeagueActivityBot.Telegram
 {
-    public class TelegramNotification
+    public static class TelegramNotification
     {
         public static async Task SendNotification(IServiceProvider serviceProvider, string text)
         {
