@@ -18,7 +18,11 @@ namespace LeagueActivityBot.Services
         private readonly IMediator _mediator;
         private readonly LeagueService _leagueService;
 
-        public GameService(IRepository<GameInfo> gameInfoRepository, IRiotClient riotClient, IMediator mediator, IRepository<GameParticipant> gameParticipantRepository, LeagueService leagueService)
+        public GameService(IRepository<GameInfo> gameInfoRepository, 
+            IRiotClient riotClient, 
+            IMediator mediator, 
+            IRepository<GameParticipant> gameParticipantRepository, 
+            LeagueService leagueService)
         {
             _gameInfoRepository = gameInfoRepository;
             _riotClient = riotClient;
@@ -27,6 +31,12 @@ namespace LeagueActivityBot.Services
             _leagueService = leagueService;
         }
 
+        public async Task<MatchInfo> GetGameInfo(long gameId)
+        {
+            var matchInfo = await _riotClient.GetMatchInfo(gameId);
+            return matchInfo;
+        }
+        
         public async Task ProcessEndGame(GameInfo game)
         {
             var summoners = game.GameParticipants.Select(p => p.Summoner).ToArray();

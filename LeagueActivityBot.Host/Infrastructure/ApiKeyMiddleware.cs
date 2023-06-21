@@ -27,7 +27,7 @@ namespace LeagueActivityBot.Host.Infrastructure
         [UsedImplicitly]
         public async Task InvokeAsync(HttpContext context)
         {
-            if (!context.Request.Path.StartsWithSegments(new PathString("/api")))
+            if (!context.Request.Path.StartsWithSegments(new PathString("/api/private")))
             {
                 await _next.Invoke(context);
                 return;

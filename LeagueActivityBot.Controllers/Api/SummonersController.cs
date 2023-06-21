@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LeagueActivityBot.Controllers.Api
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/private/[controller]")]
     public class SummonersController : ControllerBase
     {
         private readonly SummonerService _summonerService;
@@ -20,7 +20,7 @@ namespace LeagueActivityBot.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> GetSummoners()
         {
-            var summoners = await _summonerService.GetSummoners();
+            var summoners = await _summonerService.GetSummonersWithLeague();
 
             var result = new GetSummonersResponse {Summoners = summoners.Select(s => s.Name).ToArray()};
             return Ok(result);
