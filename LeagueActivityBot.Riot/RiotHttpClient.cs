@@ -176,7 +176,7 @@ namespace LeagueActivityBot.Riot
                     {
                         Id = int.Parse(championInfo!.Key),
                         Name = championInfo.Name,
-                        IconName = championInfo.Image.Full
+                        IconUrl = $"{_setting.DataDragonBaseUrl}/cdn/{latestApiVersion}/img/champion/{championInfo.Image.Full}"
                     });
                 }
 

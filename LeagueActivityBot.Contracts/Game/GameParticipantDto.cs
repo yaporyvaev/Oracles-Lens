@@ -7,7 +7,7 @@ namespace LeagueActivityBot.Contracts.Game
         public string SummonerName { get; set; }
         
         public string ChampionName { get; set; }
-        public string ChampionIconName { get; set; }
+        public string ChampionIconUrl { get; set; }
         public int ChampionId { get; set; }
         public int ChampLevel { get; set; }
         

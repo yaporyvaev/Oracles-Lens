@@ -19,7 +19,7 @@ namespace LeagueActivityBot.Services
             _memoryCache = memoryCache;
         }
 
-        public async Task<string> GetChampionIconName(int championId)
+        public async Task<string> GetChampionIconUrl(int championId)
         {
             var keyValueChampionsInfo = _memoryCache.Get<Dictionary<int, ChampionInfo>>(GetCacheKey(championId));
 
@@ -31,7 +31,7 @@ namespace LeagueActivityBot.Services
                 _memoryCache.Set(GetCacheKey(championId), keyValueChampionsInfo, TimeSpan.FromHours(2));
             }
 
-            return keyValueChampionsInfo[championId].IconName;
+            return keyValueChampionsInfo[championId].IconUrl;
         }
         
         private static string GetCacheKey(int championKey)
