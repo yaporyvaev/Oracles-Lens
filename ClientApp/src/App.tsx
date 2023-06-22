@@ -1,34 +1,30 @@
-import { useEffect } from "react";
 import { useStore } from "effector-react";
 import "./App.scss";
 import { Header } from "./components/Header/Header";
-import { Main } from "./components/Main/Main";
 import { $gameInfo, $getGameInfoError, getGameInfoFx } from "./models/gameInfo";
+import { Outlet } from "react-router-dom";
+import { Loader } from "./components/Loader/Loader";
+import { ErrorPage } from "./components/ErrorPage/ErrorPage";
 
 function App() {
-  const newWindow = window as any;
-  const tg = newWindow.Telegram.WebApp;
-  const gameId = tg.initDataUnsafe.start_param;
-
   const gameInfo = useStore($gameInfo);
   const getGameInfoError = useStore($getGameInfoError);
-  useEffect(() => {
-    getGameInfoFx(gameId);
-  }, []);
+  const isPending = useStore(getGameInfoFx.pending);
 
   return (
     <>
-      {getGameInfoError ? (
-        <div>{getGameInfoError.message}</div>
+      {isPending ? (
+        <Loader />
+      ) : getGameInfoError ? (
+        <ErrorPage></ErrorPage>
       ) : (
-        gameInfo &&
-        gameId && (
+        gameInfo && (
           <>
             <Header
               title={gameInfo.title}
               duration={gameInfo.duration}
             ></Header>
-            <Main participants={gameInfo.participants}></Main>
+            <Outlet></Outlet>
           </>
         )
       )}

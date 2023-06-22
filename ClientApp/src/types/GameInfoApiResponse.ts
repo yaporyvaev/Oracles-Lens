@@ -2,6 +2,7 @@ export interface IParticipant {
   puuid: string;
   summonerName: string;
   championName: string;
+  championIconUrl: string;
   win: boolean;
   gameEndedInEarlySurrender: boolean;
   gameEndedInSurrender: boolean;
@@ -10,6 +11,34 @@ export interface IParticipant {
   assists: number;
   kda: number;
   totalDamageDealtToChampions: number;
+  summonerId: string;
+  championId: number;
+  champLevel: number;
+  teamId: number;
+  baronKills: number;
+  dragonKills: number;
+  totalDamageShieldedOnTeammates: number;
+  totalDamageTaken: number;
+  totalHeal: number;
+  totalHealsOnTeammates: number;
+  damageSelfMitigated: number;
+  firstBloodKill: boolean;
+  firstTowerKill: boolean;
+  firstTowerAssist: boolean;
+  totalMinionsKilled: number;
+  neutralMinionsKilled: number;
+  visionScore: number;
+  timeCCingOthers: number;
+  pentaKills: number;
+  killingSprees: number;
+  detectorWardsPlaced: number;
+  item0: number;
+  item1: number;
+  item2: number;
+  item3: number;
+  item4: number;
+  item5: number;
+  item6: number;
 }
 
 export enum QueueType {

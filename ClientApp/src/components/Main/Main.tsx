@@ -1,14 +1,32 @@
-import { IParticipant } from "../../types/GameStat";
+import { useStore } from "effector-react";
 import { ResultTable } from "../ResultTable/ResultTable";
+import { $gameInfo } from "../../models/gameInfo";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { backButtonSetted } from "../../models/backButton";
 
-interface IProps {
-  participants: Array<IParticipant>;
-}
+export const Main = () => {
+  const navigate = useNavigate();
+  const gameInfo = useStore($gameInfo);
 
-export const Main = ({ participants }: IProps) => {
+  useEffect(() => {
+    if (
+      gameInfo &&
+      gameInfo.participants &&
+      gameInfo.participants.length === 1
+    ) {
+      const participantId = gameInfo.participants[0].puuid;
+      navigate(`/match/participant/${participantId}`);
+    }
+  }, [gameInfo]);
+
+  useEffect(() => {
+    backButtonSetted(false);
+  }, []);
+
   return (
     <main>
-      <ResultTable participants={participants}></ResultTable>
+      <ResultTable participants={gameInfo.participants}></ResultTable>
     </main>
   );
 };

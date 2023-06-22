@@ -1,0 +1,41 @@
+@import "../../styles/variables.scss";
+
+progress {
+    opacity: 0;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.progress-container {
+    position: relative;
+    display: inline-block;
+    background: $theme-bg-color-darkest;
+    height: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+
+    @keyframes growLineProgressBar {
+        0% {
+            width: 0;
+        }
+        100% {
+            width: var(--value);
+        }
+    }
+
+    &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background: $theme-link-color;
+        animation: growLineProgressBar 1s 1 forwards;
+    }
+}
