@@ -22,6 +22,9 @@ const prepareInfo = (state: IGameInfoApiResponse) => {
   const gameInfo = state.gameInfo;
   const registeredSummoners = state.registeredSummoners;
   const summoners = getSummoners(gameInfo.participants, registeredSummoners);
+  const team = gameInfo.participants.filter((participant) => {
+    return participant.teamId === summoners[0].teamId;
+  });
   return {
     title: `${getQueueType(state.gameInfo.queueId)} | ${getGameStatus(
       summoners[0].win,
@@ -29,7 +32,7 @@ const prepareInfo = (state: IGameInfoApiResponse) => {
       summoners[0].gameEndedInSurrender
     )}`,
     duration: converDuration(gameInfo.gameDurationInSeconds),
-    participants: getParticipants(summoners).sort(
+    participants: getParticipants(summoners, team).sort(
       (a, b) => b.kdaIndex - a.kdaIndex
     ),
   };

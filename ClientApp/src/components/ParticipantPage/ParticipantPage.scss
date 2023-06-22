@@ -1,0 +1,123 @@
+@import "../../styles/variables.scss";
+
+.participant {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    color: $theme-text-color;
+    border-top: 1px solid $theme-bg-color-darkest;
+
+    &__main {
+        width: 100%;
+        display: flex;
+    }
+
+    &__main-stat {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+    }
+
+    &__image {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 3px solid $theme-link-color;
+        margin-right: 20px;
+    }
+
+    &__username {
+        font-size: 28px;
+        color: $theme-text-color;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__achievement {
+        width: 100%;
+        display: flex;
+        font-weight: bold;
+        padding: 10px 0;
+        color: rgb(183, 0, 0);
+    }
+
+    &__achievement-fb {
+        margin-right: 15px;
+    }
+
+    &__stat-wrap {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    &__kda {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    &__kda-stats,
+    &__kda-total,
+    &__kp {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    &__items {
+        width: 100%;
+        margin: 20px 0;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__item {
+        width: 40px;
+        height: 40px;
+        border-radius: 3px;
+
+        &--empty {
+            width: 40px;
+            height: 40px;
+            background-color: $theme-bg-color-darkest;
+        }
+    }
+
+    &__damage {
+        width: 100%;
+        font-size: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+        border-bottom: 1px solid $theme-bg-color-darkest;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        & .value {
+            width: auto;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        & .stats {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: none;
+            padding: 0;
+        }
+
+        & .progress-container {
+            padding: 0;
+        }
+    }
+}

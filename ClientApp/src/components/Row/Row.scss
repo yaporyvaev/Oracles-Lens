@@ -8,14 +8,29 @@ progress {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
 
-    &:nth-child(odd) {
-        background-color: $theme-bg-color-dark;
-    }
+    &__wrapper {
+        padding: 10px;
+        background-color: $theme-bg-color;
+        border-top: 1px solid $theme-hint-color;
+        box-sizing: border-box;
+        cursor: pointer;
 
-    &:nth-child(even) {
-        background-color: $theme-bg-color-darkest;
+        &:last-child {
+            border-bottom: 1px solid $theme-hint-color;
+        }
+
+        &:hover {
+            background-color: color-mix(in srgb, $theme-bg-color-dark, #000 5%);
+        }
+
+        &--duotrio {
+            padding: 15px 10px;
+
+            &:hover {
+                background-color: color-mix(in srgb, $theme-bg-color-dark, #000 5%);
+            }
+        }
     }
 
     &__image {
@@ -40,6 +55,7 @@ progress {
 
     &__kda-stats,
     &__kda-total,
+    &__kp,
     &__damage {
         font-size: 14px;
         color: $theme-hint-color;
@@ -48,34 +64,36 @@ progress {
 
     &__damage {
         width: 25%;
-    }
 
-    &__progress-container {
-        position: relative;
-        display: inline-block;
-        background: #fff;
-        height: 5px;
-        border-radius: 5px;
-        overflow: hidden;
-        width: 100%;
-
-        @keyframes growLineProgressBar {
-            0% {
-                width: 0;
-            }
-            100% {
-                width: var(--value);
-            }
+        & .progress-container {
+            width: 100%;
         }
 
-        &:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            background: $theme-link-color;
-            animation: growLineProgressBar 1s 1 forwards;
+        & .value,
+        .stats {
+            width: 100%;
+        }
+
+        &--duotrio {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+
+            & .value {
+                margin-top: 0;
+            }
+
+            & .stats {
+                display: flex;
+                align-items: center;
+                font-size: 14px;
+                color: $theme-hint-color;
+                margin-top: 0;
+            }
+
+            & .progress-container {
+                width: 40%;
+            }
         }
     }
 }
