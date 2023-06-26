@@ -21,8 +21,10 @@ export const Row = (participant: IParticipant) => {
       }}
     >
       <div className="row">
-        <img src={participant.avatar} className="row__image"></img>
-        <div className="row__username">{participant.username}</div>
+        <div className="row__user">
+          <img src={participant.avatar} className="row__image"></img>
+          <div className="row__username">{participant.username}</div>
+        </div>
         <div className="row__kda">
           <div className="row__kda-stats">{participant.kda}</div>
           <div className="row__kda-total">{participant.kdaIndex} KDA</div>
@@ -39,7 +41,7 @@ export const Row = (participant: IParticipant) => {
         )}
       </div>
       {isDuoTrioGame && (
-        <div>
+        <div className="row__damage-wrapper--duotrio">
           <Progress
             value={participant.damage}
             percentage={participant.damagePercentage}
