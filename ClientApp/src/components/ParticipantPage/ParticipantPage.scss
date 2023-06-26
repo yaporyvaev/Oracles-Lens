@@ -59,6 +59,7 @@
         width: 100%;
         display: flex;
         justify-content: space-around;
+        align-items: center;
         margin-top: 20px;
     }
 
@@ -69,6 +70,11 @@
         text-align: center;
     }
 
+    &__kda-stats {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
     &__items {
         width: 100%;
         margin: 20px 0;
@@ -77,13 +83,13 @@
     }
 
     &__item {
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
         border-radius: 3px;
 
         &--empty {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             background-color: $theme-bg-color-darkest;
         }
     }

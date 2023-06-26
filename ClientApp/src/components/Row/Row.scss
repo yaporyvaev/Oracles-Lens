@@ -33,6 +33,11 @@ progress {
         }
     }
 
+    &__user {
+        display: flex;
+        align-items: center;
+    }
+
     &__image {
         width: 50px;
         border-radius: 50%;
@@ -45,7 +50,7 @@ progress {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        max-width: 30%;
+        margin-left: 15px;
     }
 
     &__kda {
@@ -58,7 +63,7 @@ progress {
     &__kp,
     &__damage {
         font-size: 14px;
-        color: $theme-hint-color;
+        color: $theme-text-color;
         text-align: center;
     }
 
@@ -87,13 +92,20 @@ progress {
                 display: flex;
                 align-items: center;
                 font-size: 14px;
-                color: $theme-hint-color;
+                color: $theme-text-color;
                 margin-top: 0;
             }
 
             & .progress-container {
-                width: 40%;
+                width: 35%;
+                margin-top: 0;
             }
+        }
+    }
+
+    &__damage-wrapper {
+        &--duotrio {
+            margin-top: 15px;
         }
     }
 }
