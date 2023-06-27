@@ -76,20 +76,20 @@
     }
 
     &__items {
-        width: 100%;
+        width: 95%;
         margin: 20px 0;
         display: flex;
         justify-content: space-between;
     }
 
     &__item {
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         border-radius: 3px;
 
         &--empty {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             background-color: $theme-bg-color-darkest;
         }
     }
