@@ -54,7 +54,7 @@ export const ParticipantPage = () => {
               src={`https://blitz-cdn.blitz.gg/blitz/lol/item/${item}.webp`}
             />
           ) : (
-            <div className="participant__item--empty"></div>
+            <div className="participant__item--empty" key={index}></div>
           );
         })}
       </section>

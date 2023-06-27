@@ -74,11 +74,14 @@ const getPercentage = (value: number, mostValue: number) => {
 };
 
 const getKP = (team: Array<IParticipant>, kills: number, assists: number) => {
-  const teamKills = team
-    .map((item) => item.kills)
-    .reduce((prev, next) => prev + next);
-  console.log(teamKills);
-  return Math.round(((kills + assists) / teamKills) * 100);
+  if (kills === 0) {
+    return 0;
+  } else {
+    const teamKills = team
+      .map((item) => item.kills)
+      .reduce((prev, next) => prev + next);
+    return Math.round(((kills + assists) / teamKills) * 100);
+  }
 };
 
 const convertNumber = (numb: number): string => {
