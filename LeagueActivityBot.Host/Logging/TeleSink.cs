@@ -13,7 +13,7 @@ namespace LeagueActivityBot.Host.Logging
 {
     public class TeleSink : IBatchedLogEventSink
     {
-        const int DefaultWriteBufferCapacity = 256;
+        private const int DefaultWriteBufferCapacity = 256;
 
         private readonly LogEventLevel _minimumLevel;
         private readonly TelegramBotClient _tgClient;
@@ -41,7 +41,7 @@ namespace LeagueActivityBot.Host.Logging
             return Task.CompletedTask;
         }
 
-        protected async Task Emit(LogEvent logEvent)
+        private async Task Emit(LogEvent logEvent)
         {
             if (logEvent.Level < _minimumLevel) return;
             if (_chatId == default) return;

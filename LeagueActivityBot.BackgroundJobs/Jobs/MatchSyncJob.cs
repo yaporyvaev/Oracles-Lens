@@ -1,20 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeagueActivityBot.BackgroundJobs
+namespace LeagueActivityBot.BackgroundJobs.Jobs
 {
+    [UsedImplicitly]
     public class MatchSyncJob 
     {
         private readonly IRepository<GameInfo> _gameInfoRepository;
         private readonly IRepository<Summoner> _summonerRepository;
         private readonly IRiotClient _riotClient;
         private readonly GameService _gameService;
-
 
         public MatchSyncJob(IRepository<Summoner> summonerRepository, IRiotClient riotClient, GameService gameService, IRepository<GameInfo> gameInfoRepository)
         {
@@ -30,7 +31,7 @@ namespace LeagueActivityBot.BackgroundJobs
                 .GetAll()
                 .ToArray();
             
-            var matchIdsMap = await GetAllMathIdsMap(summoners.Select(s => s.Puuid));
+            var matchIdsMap = await GetAllMatchIdsMap(summoners.Select(s => s.Puuid));
             await UpdateMatchInfo(matchIdsMap, summoners);
         }
 
@@ -61,7 +62,7 @@ namespace LeagueActivityBot.BackgroundJobs
             }
         }
         
-        private async Task<Dictionary<string,int>> GetAllMathIdsMap(IEnumerable<string> summonerPuuids)
+        private async Task<Dictionary<string,int>> GetAllMatchIdsMap(IEnumerable<string> summonerPuuids)
         {
             var allMatchIdsMap = new Dictionary<string,int>();
             

@@ -2,13 +2,12 @@ using System.Linq;
 
 namespace LeagueActivityBot.Notifications.OnClashScheduleReceived
 {
-    public class ClashAnnouncementMessageBuilder
+    public static class ClashAnnouncementMessageBuilder
     {
-        public string Build(ClashAnnouncementNotification notification)
+        public static string Build(ClashAnnouncementNotification notification)
         {
             var clash = notification.ClashInfos.FirstOrDefault();
-
-            return $"<b>There is a clash today!</b>\r\n{clash!.Name} at {clash.Schedule.FirstOrDefault()!.RegistrationTime.ToLocalTime():hh:mm}";
+            return $"<b>There is a clash today at {clash!.Schedule.FirstOrDefault()!.RegistrationTime.ToLocalTime():HH:mm}!</b>";
         } 
     }
 }

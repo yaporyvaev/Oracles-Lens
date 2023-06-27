@@ -21,13 +21,9 @@ namespace LeagueActivityBot.Host.Logging
 
             if (tgClient is null) throw new ArgumentNullException(nameof(tgClient));
 
-            var teleSink = new TeleSink(
-                    tgClient: tgClient,
-                    formatter: new JsonFormatter(),
-                    chatId: notificationOptions.TelegramLogChatId,
-                    minimumLevel: minimumLevel);
+            var teleSink = new TeleSink(tgClient, new JsonFormatter(), notificationOptions.TelegramLogChatId, minimumLevel);
 
-            return config.Sink(new PeriodicBatchingSink(teleSink, new PeriodicBatchingSinkOptions { }));
+            return config.Sink(new PeriodicBatchingSink(teleSink, new PeriodicBatchingSinkOptions()));
         }
     }
 }

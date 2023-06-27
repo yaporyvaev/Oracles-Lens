@@ -1,19 +1,22 @@
 using System.Linq;
 using System.Text;
+using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
+using MediatR;
 
 namespace LeagueActivityBot.Notifications.OnSoloGameEnded
 {
-    public class OnSoloGameEndedMessageBuilder
+    public class OnSoloGameEndedTextMessageBuilder : INotificationBuilder
     {
         private MatchInfo _matchInfo;
         private Summoner _summoner;
         private MatchParticipant _summonersStat;
 
-        public string Build(OnSoloGameEndedNotification notification)
+        public string Build(INotification baseNotification)
         {
+            var notification = (OnSoloGameEndedNotification)baseNotification;
             _matchInfo = notification.MatchInfo;
             if (_matchInfo == null) return string.Empty;
             

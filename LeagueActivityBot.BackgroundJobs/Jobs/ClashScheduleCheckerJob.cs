@@ -10,7 +10,7 @@ using LeagueActivityBot.Services;
 using MediatR;
 using Quartz;
 
-namespace LeagueActivityBot.BackgroundJobs
+namespace LeagueActivityBot.BackgroundJobs.Jobs
 {
     [DisallowConcurrentExecution]
     [UsedImplicitly]

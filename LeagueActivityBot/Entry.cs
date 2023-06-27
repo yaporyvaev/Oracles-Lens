@@ -14,8 +14,10 @@ namespace LeagueActivityBot
         {
             serviceCollection.AddTransient<GameParticipantsHelper>();
             
-            serviceCollection.AddTransient<OnSoloGameEndedMessageBuilder>();
-            serviceCollection.AddTransient<OnTeamGameEndedMessageBuilder>();
+            serviceCollection.AddTransient<OnSoloGameEndedTextMessageBuilder>();
+            serviceCollection.AddTransient<OnTeamGameEndedTextMessageBuilder>();
+            serviceCollection.AddTransient<OnSoloGameEndedWebAppMessageBuilder>();
+            serviceCollection.AddTransient<OnTeamGameEndedWebAppMessageBuilder>();
             
             serviceCollection.AddTransient<StartGameChecker>();
             serviceCollection.AddTransient<EndGameChecker>();

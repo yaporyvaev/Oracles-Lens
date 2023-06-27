@@ -1,4 +1,3 @@
-using System.Text;
 using LeagueActivityBot.Constants;
 
 namespace LeagueActivityBot.Notifications.OnSoloGameStarted

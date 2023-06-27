@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using Hangfire.PostgreSql;
+using LeagueActivityBot.BackgroundJobs.Jobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -46,11 +47,6 @@ namespace LeagueActivityBot.BackgroundJobs
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
             return services;
-        }
-        
-        public static void UseBackgroundJobsDashboard(this IApplicationBuilder app)
-        {
-            app.UseHangfireDashboard();
         }
         
         public static void AddBackgroundJobs(this IApplicationBuilder app)

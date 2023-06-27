@@ -24,10 +24,4 @@
       <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
       <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="2.3.1" />
     </ItemGroup>
-
-    <ItemGroup>
-      <None Include="wwwroot\style.css">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
 </Project>

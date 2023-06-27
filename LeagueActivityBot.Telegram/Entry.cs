@@ -6,6 +6,7 @@ using LeagueActivityBot.Telegram.BotCommands.Cancel;
 using LeagueActivityBot.Telegram.BotCommands.GetStatistic;
 using LeagueActivityBot.Telegram.BotCommands.GetSummoners;
 using LeagueActivityBot.Telegram.BotCommands.RemoveSummoner;
+using LeagueActivityBot.Telegram.Factories;
 using LeagueActivityBot.Telegram.Handlers;
 using LeagueActivityBot.Telegram.RecentMessages;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,9 @@ namespace LeagueActivityBot.Telegram
             {
                 TelegramBotApiKey = options.TelegramBotApiKey,
                 TelegramChatId = options.TelegramChatId,
-                TelegramLogChatId = options.TelegramLogChatId
+                TelegramLogChatId = options.TelegramLogChatId,
+                WebAppLink = options.WebAppLink,
+                UseWebAppMatchResults = options.UseWebAppMatchResults,
             };
 
             serviceCollection.AddSingleton(settings);
@@ -43,6 +46,9 @@ namespace LeagueActivityBot.Telegram
             serviceCollection.AddTransient<CancelCommand>();
             serviceCollection.AddTransient<GetSummonersCommand>();
             serviceCollection.AddTransient<GetStatisticCommand>();
+            
+            serviceCollection.AddTransient<SoloGameEndedNotificationBuilderFactory>();
+            serviceCollection.AddTransient<TeamGameEndedNotificationBuilderFactory>();
             
             serviceCollection.AddTransient<CommandHandler>();
 

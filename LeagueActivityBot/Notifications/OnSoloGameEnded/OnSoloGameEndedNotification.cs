@@ -9,7 +9,7 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
         public Summoner Summoner { get; }
         public MatchInfo MatchInfo { get; }
         public EndGameLeagueDelta LeagueDelta { get; }
-        
+        public string WebAppUrl { get; set; }
         public OnSoloGameEndedNotification(Summoner summoner, MatchInfo matchInfo, EndGameLeagueDelta leagueDelta)
         {
             Summoner = summoner;

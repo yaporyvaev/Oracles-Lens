@@ -19,8 +19,7 @@ namespace LeagueActivityBot.Telegram.Handlers
 
         public async Task Handle(ClashAnnouncementNotification notification, CancellationToken cancellationToken)
         {
-            var messageBuilder = new ClashAnnouncementMessageBuilder();
-            var message = messageBuilder.Build(notification);
+            var message = ClashAnnouncementMessageBuilder.Build(notification);
             
             await _tgClient.SendTextMessage(_options.TelegramChatId, message);
         }

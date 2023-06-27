@@ -1,20 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Constants;
 using LeagueActivityBot.Entities;
 using LeagueActivityBot.Models;
+using MediatR;
 
 namespace LeagueActivityBot.Notifications.OnTeamGameEnded
 {
-    public class OnTeamGameEndedMessageBuilder
+    public class OnTeamGameEndedTextMessageBuilder : INotificationBuilder
     {
         private MatchInfo _matchInfo;
         private Summoner[] _summoners;
         private Dictionary<string, EndGameLeagueDelta> _leagueDeltas;
 
-        public string Build(OnTeamGameEndedNotification notification)
+        public string Build(INotification baseNotification)
         {
+            var notification = (OnTeamGameEndedNotification)baseNotification;
             _matchInfo = notification.MatchInfo;
             if (_matchInfo == null) return string.Empty;
             _summoners = notification.Summoners.ToArray();

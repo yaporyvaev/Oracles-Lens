@@ -19,9 +19,8 @@ namespace LeagueActivityBot.Services
         private readonly IRepository<GameParticipant> _gameParticipantRepository;
         private readonly IRiotClient _riotClient;
         private readonly IMediator _mediator;
-        private readonly LeagueService _leagueService;        
+        private readonly LeagueService _leagueService;
         private readonly IMemoryCache _memoryCache;
-
 
         public GameService(
             IRepository<GameInfo> gameInfoRepository, 
