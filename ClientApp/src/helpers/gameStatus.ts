@@ -9,5 +9,5 @@ export const getGameStatus = (
     ? "FFed 15"
     : gameEndedInSurrender
     ? "FFed"
-    : "";
+    : "Defeat";
 };
