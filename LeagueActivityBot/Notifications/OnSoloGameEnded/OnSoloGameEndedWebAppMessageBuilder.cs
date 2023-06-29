@@ -21,10 +21,10 @@ namespace LeagueActivityBot.Notifications.OnSoloGameEnded
             var summoner = notification.Summoner;
 
             var matchResult = BaseEndGameMessageBuilder.GetMatchResult(summonersStat);
-            var sb = new StringBuilder(
-                $"<a href=\"{notification.WebAppUrl}?startapp={matchInfo.Info.GameId}&startApp={matchInfo.Info.GameId}\"><b><i>{summoner.Name}</i></b> {matchResult} {QueueTypeConstants.GetQueueTypeById(notification.MatchInfo.Info.QueueId)}</a>");
+            var result = 
+                $"<a href=\"{notification.WebAppUrl}?startapp={matchInfo.Info.GameId}&startApp={matchInfo.Info.GameId}\"><b><i>{summoner.Name}</i></b> {matchResult} {QueueTypeConstants.GetQueueTypeById(notification.MatchInfo.Info.QueueId)}</a>";
             
-            return sb.ToString();
+            return result;
         }
     }
 }

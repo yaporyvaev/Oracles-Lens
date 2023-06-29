@@ -22,10 +22,10 @@ namespace LeagueActivityBot.Telegram.Factories
         {
             if (_options.UseWebAppMatchResults)
             {
-                return _serviceProvider.GetService<OnTeamGameEndedTextMessageBuilder>();
+                return _serviceProvider.GetService<OnTeamGameEndedWebAppMessageBuilder>();
             }
+            return _serviceProvider.GetService<OnTeamGameEndedTextMessageBuilder>();
 
-            return _serviceProvider.GetService<OnTeamGameEndedWebAppMessageBuilder>();
         }
     }
 }
