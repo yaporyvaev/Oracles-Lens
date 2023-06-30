@@ -1,5 +1,11 @@
+@import "../../styles/variables.scss";
+
 .error-page {
     padding: 50px;
     display: flex;
     flex-direction: column;
+
+    & > * {
+        color: $theme-text-color;
+    }
 }

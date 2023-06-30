@@ -18,7 +18,7 @@ export const Main = () => {
       const participantId = gameInfo.participants[0].puuid;
       navigate(`/match/participant/${participantId}`);
     }
-  }, [gameInfo]);
+  }, []);
 
   useEffect(() => {
     backButtonSetted(false);
