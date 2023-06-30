@@ -6,18 +6,15 @@ import { ErrorPage } from "./components/ErrorPage/ErrorPage.tsx";
 import { ParticipantPage } from "./components/ParticipantPage/ParticipantPage.tsx";
 import { Index } from "./components/Index/Index.tsx";
 import { Main } from "./components/Main/Main.tsx";
-import { $gameInfo, getGameInfoFx } from "./models/gameInfo.ts";
+import { $gameInfo, appStarted } from "./models/gameInfo.ts";
 
 export async function matchLoader() {
-  const newWindow = window as any;
-  const tg = newWindow.Telegram.WebApp;
-  const gameId = tg.initDataUnsafe.start_param;
-
-  getGameInfoFx(gameId);
+  appStarted();
   return null;
 }
 
 export async function participantLoader({ params }: any) {
+  appStarted();
   const participant = $gameInfo
     .getState()
     .participants.find((item) => item.puuid === params.id);

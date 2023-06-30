@@ -1,4 +1,4 @@
-import { createEffect, createStore, restore } from "effector";
+import { createEffect, createEvent, createStore, restore } from "effector";
 import { IGameInfoApiResponse } from "../types/GameInfoApiResponse";
 import { getGameInfo } from "../api/gameInfo";
 import { getQueueType } from "../helpers/queueTypeConstants";
@@ -10,6 +10,9 @@ import { converDuration } from "../helpers/gameDurationConverter";
 
 export const $gameInfo = createStore<IGameStat>({} as IGameStat);
 
+export const gameInfoLoadTriggered = createEvent<string>();
+export const appStarted = createEvent();
+
 export const getGameInfoFx = createEffect<
   string,
   IGameInfoApiResponse,
@@ -18,7 +21,15 @@ export const getGameInfoFx = createEffect<
 getGameInfoFx.use(getGameInfo);
 export const $getGameInfoError = restore<Error>(getGameInfoFx.failData, null);
 
-const prepareInfo = (state: IGameInfoApiResponse) => {
+const initialApp = () => {
+  const newWindow = window as any;
+  const tg = newWindow.Telegram.WebApp;
+  const gameId = tg.initDataUnsafe.start_param;
+
+  gameInfoLoadTriggered(gameId);
+};
+
+const prepareInfo = (state: IGameInfoApiResponse): IGameStat => {
   const gameInfo = state.gameInfo;
   const registeredSummoners = state.registeredSummoners;
   const summoners = getSummoners(gameInfo.participants, registeredSummoners);
@@ -26,6 +37,7 @@ const prepareInfo = (state: IGameInfoApiResponse) => {
     return participant.teamId === summoners[0].teamId;
   });
   return {
+    gameId: `${gameInfo.gameId}`,
     title: `${getQueueType(state.gameInfo.queueId)} | ${getGameStatus(
       summoners[0].win,
       summoners[0].gameEndedInEarlySurrender,
@@ -38,4 +50,19 @@ const prepareInfo = (state: IGameInfoApiResponse) => {
   };
 };
 
-$gameInfo.on(getGameInfoFx.doneData, (_, data) => prepareInfo(data));
+$gameInfo
+  .on(gameInfoLoadTriggered, (_, gameId) => {
+    const savedGame = sessionStorage.getItem(gameId);
+    if (savedGame) {
+      return JSON.parse(savedGame);
+    } else {
+      getGameInfoFx(gameId);
+    }
+  })
+  .on(getGameInfoFx.doneData, (_, data) => {
+    const result = prepareInfo(data);
+    sessionStorage.setItem(result.gameId, JSON.stringify(result));
+    return result;
+  });
+
+appStarted.watch(initialApp);

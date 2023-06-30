@@ -20,6 +20,7 @@ export interface IParticipant {
 }
 
 export interface IGameStat {
+  gameId: string;
   title: string;
   duration: string;
   participants: Array<IParticipant>;
