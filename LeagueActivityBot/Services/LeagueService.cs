@@ -129,7 +129,10 @@ namespace LeagueActivityBot.Services
         private async Task RemoveLeague(int summonerId, LeagueType leagueType)
         {
             var league = _leagueInfos.GetAll().FirstOrDefault(l => l.SummonerId == summonerId && l.LeagueType == leagueType);
-            await _leagueInfos.HardRemove(league);
+            if (league != null)
+            {
+                await _leagueInfos.HardRemove(league);
+            }
         }
         
         private async Task UpdateLeague(LeagueInfo leagueInfo, int summonerId)
