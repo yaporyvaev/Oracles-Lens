@@ -16,7 +16,7 @@ namespace LeagueActivityBot.Host
                 .UseDefaultSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseUrls("http://*:5100", "https://*:5101");
+                    webBuilder.UseUrls("http://*:5100");
                     webBuilder.UseStartup<Startup>(); 
                 });
     }
