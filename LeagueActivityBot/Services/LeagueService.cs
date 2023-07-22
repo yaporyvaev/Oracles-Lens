@@ -45,8 +45,8 @@ namespace LeagueActivityBot.Services
             var result = new Dictionary<string, EndGameLeagueDelta>();
             foreach (var summoner in summoners)
             {
-                var leagues = await UpdateLeague(summoner);
-                var currentLeague = leagueType == LeagueType.SoloDuo ? leagues.soloDuoLeague : leagues.flexLeague;
+                var (soloDuoLeague, flexLeague) = await UpdateLeague(summoner);
+                var currentLeague = leagueType == LeagueType.SoloDuo ? soloDuoLeague : flexLeague;
 
                 var delta = new EndGameLeagueDelta
                 {
@@ -55,7 +55,7 @@ namespace LeagueActivityBot.Services
                 };
 
                 var lastLeagueInfo = summoner.LeagueInfos.FirstOrDefault(l => l.LeagueType == leagueType);
-                if (lastLeagueInfo == null)
+                if (lastLeagueInfo is null || currentLeague == null)
                 {
                     delta.IsAnyDelta = false;
                 }
@@ -101,23 +101,37 @@ namespace LeagueActivityBot.Services
                 {
                     await UpdateLeague(soloDuoLeague, summoner.Id);
                 }
+                else
+                {
+                    await RemoveLeague(summoner.Id, LeagueType.SoloDuo);
+                }
                     
                 var flexLeague = GetLeagueInfo(summoner, leagueInfoResponse, LeagueType.Flex);
                 if (flexLeague != null)
                 {
                     await UpdateLeague(soloDuoLeague, summoner.Id);
                 }
+                else
+                {
+                    await RemoveLeague(summoner.Id, LeagueType.Flex);
+                }
                 
                 return (soloDuoLeague, flexLeague);
             }
             catch (Exception updateLeagueException)
             {
-                _logger.LogError(updateLeagueException, $"Update league failed");
+                _logger.LogError(updateLeagueException, "Update league failed");
             }
 
             return (null, null);
         }
-
+        
+        private async Task RemoveLeague(int summonerId, LeagueType leagueType)
+        {
+            var league = _leagueInfos.GetAll().FirstOrDefault(l => l.SummonerId == summonerId && l.LeagueType == leagueType);
+            await _leagueInfos.HardRemove(league);
+        }
+        
         private async Task UpdateLeague(LeagueInfo leagueInfo, int summonerId)
         {
             var league = _leagueInfos.GetAll().FirstOrDefault(l => l.SummonerId == summonerId && l.LeagueType == leagueInfo.LeagueType);
