@@ -14,6 +14,10 @@ namespace LeagueActivityBot.Host
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
                 .UseDefaultSerilog()
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseUrls("http://*:5100", "https://*:5101");
+                    webBuilder.UseStartup<Startup>(); 
+                });
     }
 }
