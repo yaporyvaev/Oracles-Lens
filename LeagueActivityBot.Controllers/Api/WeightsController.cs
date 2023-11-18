@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LeagueActivityBot.Controllers.Api
 {
     [ApiController]
-    [Route("api/private/[controller]")]
+    [Route("api/[controller]")]
     public class WeightsController : ControllerBase
     {
         private readonly WeightsService _weightsService;
