@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using LeagueActivityBot.Entities;
 using Newtonsoft.Json;
 
 namespace LeagueActivityBot.Models
@@ -53,6 +54,8 @@ namespace LeagueActivityBot.Models
         public int TotalHealsOnTeammates {get; set; }
         public int DamageSelfMitigated { get; set; }
         
+        public int GoldEarned { get; set; }
+        
         public string Puuid { get; set; }
         public string SummonerId { get; set; }
         public string SummonerName { get; set; }
@@ -95,7 +98,7 @@ namespace LeagueActivityBot.Models
                 return (double)(Kills + Assists) / divider;
             }
         }
-        
+
         public string GetCreepScore() => $"{TotalMinionsKilled + NeutralMinionsKilled} CS";
         public string GetVisionScore() => $"{VisionScore} VS";
         public string GetDamageTakenScore() => $"{TotalDamageTaken:#,#} dmg taken";
@@ -108,6 +111,23 @@ namespace LeagueActivityBot.Models
         {
             var damagePercentage = Math.Round(TotalDamageDealtToChampions / teamDamage * 100);
             return $"{TotalDamageDealtToChampions:#,#} ({damagePercentage}%) dmg";
+        }
+
+        public double? Score { get; set; }
+        public double CalculateScore(ScoreWeights weights)
+        {
+            var result = 
+                weights.Kda * Kda +
+                weights.Gold * GoldEarned +
+                weights.Level * ChampLevel +
+                weights.CcTime * TimeCCingOthers +
+                weights.DmgHealed * TotalHeal +
+                weights.DmgMitigated * DamageSelfMitigated +
+                weights.DmgShielded * TotalDamageShieldedOnTeammates +
+                weights.DmgTaken * TotalDamageTaken +
+                weights.DmgToChampions * TotalDamageDealtToChampions;
+
+            return result;
         }
     }
 }

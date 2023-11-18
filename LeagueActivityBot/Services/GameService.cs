@@ -21,6 +21,7 @@ namespace LeagueActivityBot.Services
         private readonly IMediator _mediator;
         private readonly LeagueService _leagueService;
         private readonly IMemoryCache _memoryCache;
+        private readonly WeightsService _weightsService;
 
         public GameService(
             IRepository<GameInfo> gameInfoRepository, 
@@ -28,7 +29,8 @@ namespace LeagueActivityBot.Services
             IMediator mediator, 
             IRepository<GameParticipant> gameParticipantRepository, 
             LeagueService leagueService, 
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache, 
+            WeightsService weightsService)
         {
             _gameInfoRepository = gameInfoRepository;
             _riotClient = riotClient;
@@ -36,6 +38,7 @@ namespace LeagueActivityBot.Services
             _gameParticipantRepository = gameParticipantRepository;
             _leagueService = leagueService;
             _memoryCache = memoryCache;
+            _weightsService = weightsService;
         }
         
         public async Task<MatchInfo> GetGameInfo(long gameId)
@@ -59,6 +62,7 @@ namespace LeagueActivityBot.Services
             var summoners = game.GameParticipants.Select(p => p.Summoner).ToArray();
             var gameInfo = await GetGameInfo(game.GameId);
             if (gameInfo == null) return;
+            await CalculateScore(gameInfo);
 
             Dictionary<string, EndGameLeagueDelta> leagueDelta = null;
             if (game.IsRankedGame)
@@ -101,7 +105,18 @@ namespace LeagueActivityBot.Services
             
             await _gameInfoRepository.Update(game);
         }
-        
+
+        private async Task CalculateScore(MatchInfo gameInfo)
+        {
+            var weights = await _weightsService.GetScore();
+            if (weights == null) return;
+
+            foreach (var participant in gameInfo.Info.Participants)
+            {
+                participant.Score = Math.Round(participant.CalculateScore(weights), 2);
+            }
+        }
+
         /// <summary>
         /// Try to update gameInfo
         /// </summary>

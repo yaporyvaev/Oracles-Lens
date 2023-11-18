@@ -6,6 +6,7 @@ using LeagueActivityBot.Notifications.OnSoloGameEnded;
 using LeagueActivityBot.Telegram.Factories;
 using LeagueActivityBot.Telegram.RecentMessages;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace LeagueActivityBot.Telegram.Handlers
 {
@@ -36,7 +37,8 @@ namespace LeagueActivityBot.Telegram.Handlers
             
             if (!string.IsNullOrEmpty(message))
             {
-                await _telegramBotClientWrapper.SendAutoDeletableTextMessageAsync(_options.TelegramChatId, message, TelegramMessageOptions.MessageTimeToLive, cancellationToken);
+                // _telegramBotClientWrapper.SendAutoDeletableTextMessageAsync(_options.TelegramChatId, message, TelegramMessageOptions.MessageTimeToLive, cancellationToken);
+                await _telegramBotClientWrapper.TgClient.SendTextMessageAsync(_options.TelegramChatId, message, ParseMode.Html, disableWebPagePreview:true, disableNotification:true, cancellationToken:cancellationToken);
                 
                 var relatedMessage = _recentGameNotificationMessageStore.Get(notification.MatchInfo.Info.GameId);
                 if (relatedMessage != null)

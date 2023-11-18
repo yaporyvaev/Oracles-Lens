@@ -9,6 +9,7 @@ namespace LeagueActivityBot.Database
         public DbSet<LeagueInfo> LeagueInfos { get; set; }
         public DbSet<GameInfo> GameInfos { get; set; }
         public DbSet<GameParticipant> GameParticipants { get; set; }
+        public DbSet<ScoreWeights> ScoreWeights { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)

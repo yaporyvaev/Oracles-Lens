@@ -26,6 +26,7 @@ namespace LeagueActivityBot
             serviceCollection.AddTransient<LeagueService>();
             serviceCollection.AddTransient<SummonerService>();
             serviceCollection.AddTransient<ChampionInfoService>();
+            serviceCollection.AddTransient<WeightsService>();
 
             return serviceCollection;
         }
