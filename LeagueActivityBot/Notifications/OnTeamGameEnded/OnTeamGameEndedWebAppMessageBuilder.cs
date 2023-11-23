@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Text;
 using JetBrains.Annotations;
 using LeagueActivityBot.Abstractions;
 using LeagueActivityBot.Constants;
@@ -20,16 +19,9 @@ namespace LeagueActivityBot.Notifications.OnTeamGameEnded
             var summoners = notification.Summoners.ToArray();
             var matchResult = BaseEndGameMessageBuilder.GetMatchResult(matchInfo.Info.Participants.First(p => p.SummonerName == summoners.First().Name));
             
-            var sb = new StringBuilder(
-                $"<a href=\"{notification.WebAppUrl}?startapp={matchInfo.Info.GameId}&startApp={matchInfo.Info.GameId}\">Team {matchResult} {QueueTypeConstants.GetQueueTypeById(notification.MatchInfo.Info.QueueId)}</a>\n");
-            
-            foreach (var participant in matchInfo.Info.Participants.OrderByDescending(p => p.Score))
-            {
-                if (participant.Score == null) break;
-                sb.Append($"\n{participant.ChampionName} - {participant.Score}");
-            }
-            
-            return sb.ToString();
+            var result = $"<a href=\"{notification.WebAppUrl}?startapp={matchInfo.Info.GameId}&startApp={matchInfo.Info.GameId}\">Team {matchResult} {QueueTypeConstants.GetQueueTypeById(notification.MatchInfo.Info.QueueId)}</a>";
+
+            return result;
         }
 
     }
